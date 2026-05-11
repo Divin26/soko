@@ -1,4 +1,4 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { supabase } from './supabase'
 
 const inputStyle = { width: '100%', padding: '11px 14px', border: '1px solid #E5E7EB', borderRadius: '8px', fontSize: '14px', boxSizing: 'border-box' }
@@ -9,7 +9,50 @@ const btnOutline = { width: '100%', padding: '13px', background: 'transparent', 
 function App() {
   const [user, setUser] = useState(null)
   const [loading, setLoading] = useState(true)
+  const iframeRef = useRef(null)
 
+  // When user is set, send login message to soko.html iframe
+  useEffect(() => {
+    if (!user) return
+    const iframe = iframeRef.current
+    if (!iframe) return
+
+    function sendLogin() {
+      iframe.contentWindow.postMessage({
+        type: 'SOKO_LOGIN',
+        user: {
+          name: user.name,
+          role: user.role,       // 'buyer' | 'seller' | 'admin'
+          email: user.email,
+          phone: user.phone || '',
+        }
+      }, '*')
+    }
+
+    // iframe may already be loaded or still loading
+    if (iframe.contentDocument?.readyState === 'complete') {
+      sendLogin()
+    } else {
+      iframe.addEventListener('load', sendLogin, { once: true })
+    }
+
+    return () => iframe.removeEventListener('load', sendLogin)
+  }, [user])
+
+  // Listen for logout message coming back from soko.html
+  useEffect(() => {
+    function handleMessage(e) {
+      if (e.data?.type === 'SOKO_LOGOUT') {
+        supabase.auth.signOut()
+        localStorage.removeItem('sokoUser')
+        setUser(null)
+      }
+    }
+    window.addEventListener('message', handleMessage)
+    return () => window.removeEventListener('message', handleMessage)
+  }, [])
+
+  // Restore session on page load
   useEffect(() => {
     async function checkSession() {
       try {
@@ -29,14 +72,6 @@ function App() {
       }
     }
     checkSession()
-
-    window.addEventListener('message', (e) => {
-      if (e.data?.type === 'SOKO_LOGOUT') {
-        supabase.auth.signOut()
-        localStorage.removeItem('sokoUser')
-        setUser(null)
-      }
-    })
   }, [])
 
   if (loading) return (
@@ -49,16 +84,10 @@ function App() {
 
   if (!user) return <AuthScreen setUser={setUser} />
 
-  localStorage.setItem('sokoUser', JSON.stringify({
-    name: user.name,
-    role: user.role,
-    email: user.email,
-    phone: user.phone || ''
-  }))
-
   return (
     <div style={{ width: '100vw', height: '100vh', margin: 0, padding: 0 }}>
       <iframe
+        ref={iframeRef}
         src="/soko.html"
         style={{ width: '100%', height: '100%', border: 'none', display: 'block' }}
         title="SOKO Marketplace"
@@ -125,11 +154,11 @@ function Login({ setUser, onForgot }) {
       {error && <div style={{ background: '#FDECEA', color: '#E53935', padding: '10px', borderRadius: '8px', marginBottom: '12px', fontSize: '13px' }}>{error}</div>}
       <div style={{ marginBottom: '12px' }}>
         <label style={labelStyle}>Email Address</label>
-        <input style={inputStyle} placeholder="you@email.com" type="email" value={email} onChange={e => setEmail(e.target.value)} />
+        <input style={inputStyle} placeholder="you@email.com" type="email" value={email} onChange={e => setEmail(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleLogin()} />
       </div>
       <div style={{ marginBottom: '6px' }}>
         <label style={labelStyle}>Password</label>
-        <input type="password" style={inputStyle} placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} />
+        <input type="password" style={inputStyle} placeholder="••••••••" value={password} onChange={e => setPassword(e.target.value)} onKeyDown={e => e.key === 'Enter' && handleLogin()} />
       </div>
       <div style={{ textAlign: 'right', marginBottom: '16px' }}>
         <span onClick={onForgot} style={{ fontSize: '13px', color: '#FF9900', fontWeight: 600, cursor: 'pointer' }}>Forgot Password?</span>
@@ -205,7 +234,7 @@ function ForgotPassword({ onBack }) {
   async function handleReset() {
     if (!email) { setError('Please enter your email'); return }
     setLoading(true); setError('')
-    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: 'http://localhost:5173' })
+    const { error } = await supabase.auth.resetPasswordForEmail(email, { redirectTo: window.location.origin })
     setLoading(false)
     if (error) { setError(error.message); return }
     setSent(true)
