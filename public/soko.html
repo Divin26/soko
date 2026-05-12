@@ -4,6 +4,7 @@
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>SOKO — Rwanda's Marketplace</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
@@ -512,7 +513,8 @@ tr:hover td{background:var(--bg);}
         <div class="fg"><label class="fl">Email address</label><input class="fi" id="login-email" type="email" placeholder="you@email.com" onkeydown="if(event.key==='Enter')doLogin()"/></div>
         <div class="fg"><label class="fl">Phone <span style="font-weight:400;text-transform:none;font-size:11px;">(optional)</span></label><input class="fi" id="login-phone" type="tel" placeholder="+250 7XX XXX XXX" onkeydown="if(event.key==='Enter')doLogin()"/></div>
         <div class="fg"><label class="fl">Password</label><input class="fi" id="login-pass" type="password" placeholder="At least 6 characters" onkeydown="if(event.key==='Enter')doLogin()"/></div>
-        <button class="btn-or btn-or-dk" style="margin-bottom:12px;" onclick="doLogin()">Sign in →</button>
+        <button class="btn-or btn-or-dk" style="margin-bottom:8px;" onclick="doLogin()">Sign in →</button>
+        <div style="text-align:right;margin-bottom:12px;"><span onclick="forgotPassword()" style="font-size:12px;color:var(--b);cursor:pointer;text-decoration:underline;">Forgot password?</span></div>
         <div style="font-size:11px;color:var(--ink3);margin-bottom:12px;">By signing in you agree to SOKO's Conditions of Use and Privacy Notice.</div>
         <div class="auth-div">or demo access</div>
         <div class="demo-box">Sign in as: <span class="dl" onclick="quickLogin('buyer')">🛍️ Buyer</span> · <span class="dl" onclick="quickLogin('seller')">🏪 Seller</span> · <span class="dl" onclick="quickLogin('admin')">⚙️ Admin</span></div>
@@ -1018,6 +1020,16 @@ let DISPUTES=[
   {id:'DSP-03',buyer:'Eric Habimana',orderId:'ORD-2035',type:'Damaged product',desc:'Dress arrived with a tear.',status:'resolved',escrowAction:'released',date:'2025-05-05'},
 ];
 
+// ══════════════════════════════════════════════════════════════
+// SUPABASE INIT — replace these with your real project values
+// Get them from: https://supabase.com → Project Settings → API
+// ══════════════════════════════════════════════════════════════
+const SUPABASE_URL = 'https://YOUR_PROJECT.supabase.co';
+const SUPABASE_ANON_KEY = 'YOUR_ANON_KEY';
+const sb = (typeof supabase !== 'undefined')
+  ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+  : null;
+
 // STATE
 let cart=[],currentUser=null,lang='en',selectedRole='buyer';
 let commissionRate=4; // 2% from buyer + 2% from seller = 4% total. Never shown in app. // Platform commission % — changeable from Admin Settings
@@ -1070,21 +1082,66 @@ function selectRole(r){
   document.getElementById('role-seller').classList.toggle('active',r==='seller');
   document.getElementById('seller-kyc-note').style.display=r==='seller'?'block':'none';
 }
-function doLogin(){
+async function doLogin(){
   const email=document.getElementById('login-email').value.trim();
   const phone=document.getElementById('login-phone').value.trim();
   const pw=document.getElementById('login-pass').value;
   if((!email&&!phone)||!pw){toast('Please enter your email/phone and password','r');return;}
+
+  // If Supabase is configured, use real auth
+  if(sb && SUPABASE_URL !== 'https://YOUR_PROJECT.supabase.co'){
+    toast('Signing in…');
+    const identifier = email || phone;
+    const {data,error} = await sb.auth.signInWithPassword({email:identifier,password:pw});
+    if(error){toast(error.message,'r');return;}
+    // Fetch profile from users table
+    let {data:profile} = await sb.from('users').select('*').eq('email',identifier).single();
+    if(!profile){
+      // Create profile if missing
+      const {data:np} = await sb.from('users').insert([{
+        name:identifier.split('@')[0], email:identifier,
+        auth_id:data.user.id, role:'buyer', verified:false, status:'active'
+      }]).select().single();
+      profile=np;
+    }
+    if(profile){
+      signupData={name:profile.name,email:profile.email,phone:profile.phone||phone,role:profile.role,_ctx:'login'};
+      loginSuccess();
+    }
+    return;
+  }
+
+  // DEMO fallback (no Supabase configured)
   signupData={email,phone,name:email?email.split('@')[0]:'User',role:'buyer',_ctx:'login'};
   showOtp();
 }
-function doSignup(){
+async function doSignup(){
   const fn=document.getElementById('su-fname').value.trim(),ln=document.getElementById('su-lname').value.trim();
   const email=document.getElementById('su-email').value.trim(),pw=document.getElementById('su-pass').value;
+  const phone=document.getElementById('su-phone').value||'';
   if(!fn||!ln||!email||!pw){toast('Please fill all required fields','r');return;}
   if(pw.length<6){toast('Password must be at least 6 characters','r');return;}
-  signupData={name:fn+' '+ln,email,phone:document.getElementById('su-phone').value||'',role:selectedRole,_ctx:'signup'};
-  USERS.push({name:signupData.name,phone:signupData.phone,email,role:selectedRole,verified:false,joined:new Date().toISOString().slice(0,10),status:selectedRole==='seller'?'pending':'active',earnings:0,pendingPayout:0});
+
+  // If Supabase is configured, use real auth
+  if(sb && SUPABASE_URL !== 'https://YOUR_PROJECT.supabase.co'){
+    toast('Creating your account…');
+    const {data,error} = await sb.auth.signUp({email,password:pw});
+    if(error){toast(error.message,'r');return;}
+    const {data:profile,error:profileError} = await sb.from('users').insert([{
+      name:fn+' '+ln, email, phone:phone||null,
+      role:selectedRole, auth_id:data.user.id,
+      verified:false, status:selectedRole==='seller'?'pending':'active'
+    }]).select().single();
+    if(profileError){toast('Account created! Please sign in.','g');authTab('login');return;}
+    signupData={name:profile.name,email:profile.email,phone:profile.phone||'',role:profile.role,_ctx:'signup'};
+    if(selectedRole==='seller'){showOtp();}
+    else{loginSuccess();}
+    return;
+  }
+
+  // DEMO fallback
+  signupData={name:fn+' '+ln,email,phone,role:selectedRole,_ctx:'signup'};
+  USERS.push({name:signupData.name,phone,email,role:selectedRole,verified:false,joined:new Date().toISOString().slice(0,10),status:selectedRole==='seller'?'pending':'active',earnings:0,pendingPayout:0});
   showOtp();
 }
 function showOtp(){
@@ -1130,7 +1187,10 @@ function quickLogin(role){
   signupData={buyer:{name:'Jean Mutoni',phone:'+250 788 001',email:'jean@soko.rw',role:'buyer'},seller:{name:'Alice Uwimana',phone:'+250 788 002',email:'alice@soko.rw',role:'seller'},admin:{name:'System Admin',phone:'+250 788 000',email:'admin@soko.rw',role:'admin'}}[role];
   signupData._ctx='login';loginSuccess();
 }
-function doLogout(){
+async function doLogout(){
+  if(sb && SUPABASE_URL !== 'https://YOUR_PROJECT.supabase.co'){
+    await sb.auth.signOut();
+  }
   currentUser=null;cart=[];
   ['view-buyer','view-seller','view-admin'].forEach(id=>document.getElementById(id).classList.remove('active'));
   document.getElementById('view-auth').classList.add('active');
@@ -1538,6 +1598,33 @@ function addSellerProduct(){
 }
 
 // ADMIN
+// ── AUTO SESSION RESTORE ─────────────────────────────────────
+// If user already logged in (Supabase session exists), skip login screen
+async function restoreSession(){
+  if(!sb || SUPABASE_URL === 'https://YOUR_PROJECT.supabase.co') return;
+  try{
+    const {data:{session}} = await sb.auth.getSession();
+    if(!session) return;
+    const {data:profile} = await sb.from('users').select('*').eq('email',session.user.email).single();
+    if(profile){
+      signupData={name:profile.name,email:profile.email,phone:profile.phone||'',role:profile.role,_ctx:'login'};
+      loginSuccess();
+    }
+  } catch(e){console.log('Session restore failed:',e);}
+}
+// Run on page load
+window.addEventListener('DOMContentLoaded', restoreSession);
+
+// ── FORGOT PASSWORD ───────────────────────────────────────────
+async function forgotPassword(){
+  const email=document.getElementById('login-email').value.trim();
+  if(!email){toast('Enter your email address first','r');return;}
+  if(!sb || SUPABASE_URL==='https://YOUR_PROJECT.supabase.co'){toast('Configure Supabase to use password reset','r');return;}
+  const {error} = await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin});
+  if(error){toast(error.message,'r');return;}
+  toast('✓ Password reset link sent to '+email,'g');
+}
+
 const ADMIN_NAV=[{icon:'📊',label:'Overview',id:'overview'},{icon:'🔒',label:'Escrow',id:'escrow'},{icon:'💸',label:'Payouts',id:'payouts',badge:()=>PAYOUTS.filter(p=>p.status==='pending').length},{icon:'🪪',label:'KYC',id:'kyc',badge:()=>KYC.filter(k=>k.status==='pending').length},{icon:'👥',label:'Users',id:'users'},{icon:'📦',label:'Products',id:'products'},{icon:'🛒',label:'Orders',id:'orders'},{icon:'🛡️',label:'Disputes',id:'disputes',badge:()=>DISPUTES.filter(d=>d.status==='open').length},{icon:'⚙️',label:'Settings',id:'settings'}];
 function buildAdminNav(){
   const el=document.getElementById('admin-nav');
@@ -1880,14 +1967,7 @@ function saveCommissionRate(){
   // Show confirmation with impact
   toast('✓ Commission updated to '+commissionRate+'% — all orders recalculated','g');
 }
-// Bridge: receive login from React/Supabase
-window.addEventListener('message', e => {
-  if (e.data?.type === 'SOKO_LOGIN') {
-    const u = e.data.user;
-    signupData = { name: u.name, email: u.email, phone: u.phone, role: u.role, _ctx: 'login' };
-    loginSuccess();
-  }
-});
+
 </script>
 </body>
 </html>
