@@ -976,8 +976,7 @@ let PRODUCTS = [];
 async function loadProducts(){
   if(!sb) return;
   try {
-    const {data, error} = await sb.from('products').select('*').eq('active', true);
-    if(error) throw error;
+   const {data, error} = await sb.from('products').select('*'); if(error) throw error;
     PRODUCTS = data.map(p => ({
       id: p.id,
       name: p.name,
@@ -1212,8 +1211,7 @@ async function doLogout(){
 }
 
 // BUYER HOME
-async function buildBuyerHome(){
-  await loadProducts();  renderPromos();renderCats();
+  renderPromos();renderCats();
   renderProds(PRODUCTS.slice(0,8),'home-products');
   renderProds(PRODUCTS.filter(p=>p.cat==='food').slice(0,4),'food-products');
   renderProds(PRODUCTS.filter(p=>p.cat==='electronics').slice(0,4),'elec-products');
