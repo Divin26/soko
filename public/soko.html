@@ -972,7 +972,32 @@ const CATS=[
   {id:'sports',en:'Sports',fr:'Sports',rw:'Siporo',icon:'⚽'},
 ];
 let PRODUCTS = [];
-let ORDERS=[
+
+async function loadProducts(){
+  if(!sb) return;
+  try {
+    const {data, error} = await sb.from('products').select('*').eq('active', true);
+    if(error) throw error;
+    PRODUCTS = data.map(p => ({
+      id: p.id,
+      name: p.name,
+      cat: p.cat || p.category,
+      price: p.price,
+      stock: p.stock,
+      emoji: p.emoji || '📦',
+      images: p.images || [],
+      rating: p.rating || 5.0,
+      reviews: p.reviews || p.reviews_count || 0,
+      seller: p.seller || p.seller_name,
+      sellerPhone: p.seller_phone || p.sellers_phone || '+250 788 000 000',
+      desc: p.description || '',
+      badge: p.badge === 'EMPTY' ? null : p.badge,
+    }));
+    currentShopList = [...PRODUCTS];
+  } catch(e) {
+    console.error('Failed to load products:', e);
+  }
+}let ORDERS=[
   {id:'ORD-2041',buyer:'Jean Mutoni',phone:'+250 788 000 001',addr:'KG 7 Ave',city:'Kigali',product:'Nike Air Force 1',productId:9,qty:1,total:45000,commission:900,sellerNet:44100,payment:'MTN MoMo',delivery:'moto',status:'confirmed',escrow:'held',date:'2025-05-08',seller:'SneakerHub RW'},
   {id:'ORD-2038',buyer:'Marie Claire',phone:'+250 788 000 002',addr:'KN 5 Rd',city:'Kigali',product:'Samsung Galaxy A55',productId:5,qty:1,total:280000,commission:5600,sellerNet:274400,payment:'Airtel Money',delivery:'moto',status:'shipped',escrow:'held',date:'2025-05-06',seller:'PhoneCity KG'},
   {id:'ORD-2035',buyer:'Eric Habimana',phone:'+250 788 000 003',addr:'KG 200 St',city:'Kigali',product:'African Print Dress',productId:11,qty:2,total:30000,commission:600,sellerNet:29400,payment:'Cash on Delivery',delivery:'pickup',status:'delivered',escrow:'released',date:'2025-05-04',seller:'Umucyo Fashion'},
@@ -1157,8 +1182,8 @@ function submitKYC(){
   KYC.push({id:'kyc-'+(KYC.length+1),name:n,phone:signupData.phone||signupData.email,idNum:i,date:new Date().toISOString().slice(0,10),status:'pending',idImage:kycImageData});
   signupData.kycSubmitted=true;loginSuccess();
 }
-function loginSuccess(){
-  currentUser={...signupData};
+async function loginSuccess(){
+  await loadProducts();  currentUser={...signupData};
   document.getElementById('view-auth').classList.remove('active');
   if(currentUser.role==='admin'){document.getElementById('view-admin').classList.add('active');buildAdminNav();renderAdmin('overview');}
   else if(currentUser.role==='seller'){document.getElementById('view-seller').classList.add('active');buildSellerNav();renderSeller('dashboard');}
@@ -1187,8 +1212,8 @@ async function doLogout(){
 }
 
 // BUYER HOME
-function buildBuyerHome(){
-  renderPromos();renderCats();
+async function buildBuyerHome(){
+  await loadProducts();  renderPromos();renderCats();
   renderProds(PRODUCTS.slice(0,8),'home-products');
   renderProds(PRODUCTS.filter(p=>p.cat==='food').slice(0,4),'food-products');
   renderProds(PRODUCTS.filter(p=>p.cat==='electronics').slice(0,4),'elec-products');
