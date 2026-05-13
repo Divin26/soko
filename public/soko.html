@@ -967,24 +967,7 @@ const CATS=[
   {id:'beauty',en:'Beauty',fr:'Beauté',rw:'Ubwiza',icon:'💄'},
   {id:'sports',en:'Sports',fr:'Sports',rw:'Siporo',icon:'⚽'},
 ];
-let PRODUCTS=[
-  {id:1,name:'Fresh Avocados 1kg — Organic Musanze',cat:'food',price:1500,stock:50,emoji:'🥑',images:[],rating:4.9,reviews:88,seller:'Farm Fresh RW',sellerPhone:'+250 788 800 001',desc:'Fresh organic avocados from Musanze farms. 1kg bag. Delivered same day in Kigali.',badge:'new'},
-  {id:2,name:'Primus Beer — 12 Pack × 500ml',cat:'food',price:9000,stock:100,emoji:'🍺',images:[],rating:4.8,reviews:142,seller:'Drinks RW',sellerPhone:'+250 788 800 002',desc:"Rwanda's favourite beer. 12×500ml cold bottles.",badge:'hot'},
-  {id:3,name:'Fresh Whole Milk — 1 Litre Daily',cat:'food',price:800,stock:150,emoji:'🥛',images:[],rating:4.9,reviews:203,seller:'Farm Fresh RW',sellerPhone:'+250 788 800 001',desc:'Fresh pasteurized milk. Daily delivery from local Rwanda farms.',badge:''},
-  {id:4,name:'Ibirayi Potatoes — 5kg Local Farm',cat:'food',price:2500,stock:200,emoji:'🥔',images:[],rating:4.7,reviews:55,seller:'Farm Fresh RW',sellerPhone:'+250 788 800 001',desc:'Fresh potatoes from Rwandan farms. 5kg bag.',badge:''},
-  {id:5,name:'Samsung Galaxy A55 5G — 128GB',cat:'electronics',price:280000,stock:5,emoji:'📱',images:[],rating:4.7,reviews:18,seller:'PhoneCity KG',sellerPhone:'+250 788 200 002',desc:'Samsung A55 5G — 128GB, 8GB RAM, triple camera, 12-month warranty.',badge:'new'},
-  {id:6,name:'Wireless Earbuds Pro — Bluetooth 5.2',cat:'electronics',price:22000,stock:20,emoji:'🎧',images:[],rating:4.5,reviews:89,seller:'TechHub RW',sellerPhone:'+250 788 100 001',desc:'Premium earbuds. Bluetooth 5.2, 24hr battery, noise cancelling.',badge:'sale'},
-  {id:7,name:'Laptop HP 256G10 — Intel i5 8GB RAM',cat:'electronics',price:520000,stock:3,emoji:'💻',images:[],rating:4.6,reviews:11,seller:'PhoneCity KG',sellerPhone:'+250 788 200 002',desc:'HP Laptop: Intel Core i5, 8GB RAM, 256GB SSD. Windows 11.',badge:'hot'},
-  {id:8,name:'Sony Bluetooth Speaker — 20W Waterproof',cat:'electronics',price:35000,stock:14,emoji:'🔊',images:[],rating:4.6,reviews:56,seller:'TechHub RW',sellerPhone:'+250 788 100 001',desc:'Portable waterproof speaker. 20W, 12hr battery.',badge:''},
-  {id:9,name:'Nike Air Force 1 — White (Sizes 39–46)',cat:'shoes',price:45000,stock:12,emoji:'👟',images:[],rating:4.8,reviews:42,seller:'SneakerHub RW',sellerPhone:'+250 788 100 001',desc:'Authentic Nike Air Force 1 sneakers. White. Sizes 39–46. New in box.',badge:'hot'},
-  {id:10,name:'Adidas Ultraboost 22 — Running Shoes',cat:'shoes',price:38000,stock:8,emoji:'👟',images:[],rating:4.9,reviews:33,seller:'SportZone RW',sellerPhone:'+250 788 400 004',desc:'Adidas Ultraboost 22. Responsive cushioning. Sizes 38–47.',badge:''},
-  {id:11,name:'African Print Kente Dress — S/M/L/XL',cat:'clothes',price:15000,stock:30,emoji:'👗',images:[],rating:4.6,reviews:67,seller:'Umucyo Fashion',sellerPhone:'+250 788 300 003',desc:'Beautiful Kente-style African print dress.',badge:''},
-  {id:12,name:"Men's Rwanda Hoodie — Premium Cotton",cat:'clothes',price:12000,stock:25,emoji:'👕',images:[],rating:4.4,reviews:38,seller:'Umucyo Fashion',sellerPhone:'+250 788 300 003',desc:'"Made in Rwanda" premium cotton hoodie.',badge:'new'},
-  {id:13,name:'Rice Cooker 1.8L — Non-stick with Steamer',cat:'home',price:18000,stock:22,emoji:'🍚',images:[],rating:4.7,reviews:61,seller:'HomeStore RW',sellerPhone:'+250 788 700 007',desc:'1.8L rice cooker. Non-stick, steamer tray, keep-warm.',badge:''},
-  {id:14,name:'Football — FIFA Standard Size 5',cat:'sports',price:9000,stock:30,emoji:'⚽',images:[],rating:4.8,reviews:92,seller:'SportZone RW',sellerPhone:'+250 788 400 004',desc:'FIFA-quality football. All ages, indoor/outdoor.',badge:''},
-  {id:15,name:'Vitamin C Brightening Serum 30ml',cat:'beauty',price:8500,stock:45,emoji:'🧴',images:[],rating:4.7,reviews:124,seller:'GlowSkin RW',sellerPhone:'+250 788 500 005',desc:'30ml brightening serum. Reduces dark spots.',badge:''},
-  {id:16,name:'Cooking Oil — Pure Sunflower 5L',cat:'food',price:12000,stock:80,emoji:'🛢️',images:[],rating:4.6,reviews:77,seller:'Drinks RW',sellerPhone:'+250 788 800 002',desc:'Pure sunflower cooking oil. 5 litre bottle.',badge:''},
-];
+let PRODUCTS = [];
 let ORDERS=[
   {id:'ORD-2041',buyer:'Jean Mutoni',phone:'+250 788 000 001',addr:'KG 7 Ave',city:'Kigali',product:'Nike Air Force 1',productId:9,qty:1,total:45000,commission:900,sellerNet:44100,payment:'MTN MoMo',delivery:'moto',status:'confirmed',escrow:'held',date:'2025-05-08',seller:'SneakerHub RW'},
   {id:'ORD-2038',buyer:'Marie Claire',phone:'+250 788 000 002',addr:'KN 5 Rd',city:'Kigali',product:'Samsung Galaxy A55',productId:5,qty:1,total:280000,commission:5600,sellerNet:274400,payment:'Airtel Money',delivery:'moto',status:'shipped',escrow:'held',date:'2025-05-06',seller:'PhoneCity KG'},
@@ -1021,9 +1004,9 @@ let DISPUTES=[
 ];
 
 // ══════════════════════════════════════════════════════════════
-// SUPABASE INIT — replace these with your real project values
+//  — replace these with your real project values
 // Get them from: https://supabase.com → Project Settings → API
-// ══════════════════════════════════════════════════════════════
+// ═══════SUPABASE INIT═══════════════════════════════════════════════════════
 const SUPABASE_URL = 'https://rjimbkxhrrreaiesdzjr.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJqaW1ia3hocnJyZWFpZXNkempyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NDQ1MTUsImV4cCI6MjA5MjQyMDUxNX0.0Dra6oFMdef7oU0_XB7HQYfPKVgRqXXXVIoqzjeA78Y';
 const sb = (typeof supabase !== 'undefined')
@@ -1620,8 +1603,7 @@ async function forgotPassword(){
   const email=document.getElementById('login-email').value.trim();
   if(!email){toast('Enter your email address first','r');return;}
   if(!sb || SUPABASE_URL==='https://YOUR_PROJECT.supabase.co'){toast('Configure Supabase to use password reset','r');return;}
-  const {error} = await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin});
-  if(error){toast(error.message,'r');return;}
+ const {error} = await sb.auth.resetPasswordForEmail(email,{redirectTo:'https://luxury-kringle-5df74f.netlify.app/soko.html'}); if(error){toast(error.message,'r');return;}
   toast('✓ Password reset link sent to '+email,'g');
 }
 
