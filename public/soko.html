@@ -1237,8 +1237,8 @@ function renderProds(list,cid){
   c.innerHTML=list.map(p=>{
     const badge=p.badge?`<div class="prod-badge ${p.badge}">${p.badge==='hot'?'Best Seller':p.badge==='new'?'New':'Sale'}</div>`:'';
     const thumb=(p.images&&p.images.length)?`<img src="${p.images[0]}" style="width:100%;height:100%;object-fit:cover;"/>`:`<span>${p.emoji}</span>`;
-    return `<div class="prod-card"><div class="prod-thumb">${badge}${thumb}</div><div class="prod-info" onclick="showProduct(${p.id})"><div class="prod-brand">${p.seller}</div><div class="prod-name">${p.name}</div><div><span class="prod-stars">${stars(p.rating)}</span><span class="prod-rc">${p.reviews.toLocaleString()}</span></div><div class="prod-price">RWF ${fmt(p.price)}</div><div style="font-size:11px;color:var(--g);font-weight:600;">🔒 Payment protected</div></div><div style="padding:0 12px 12px;"><button class="btn-atc" onclick="addToCartGrid(event,${p.id})">Add to cart</button></div></div>`;
-  }).join('');
+    return `<div class="prod-card"><div class="prod-thumb">${badge}${thumb}</div><div class="prod-info" ><div class="prod-brand">${p.seller}</div><div class="prod-name">${p.name}</div><div><span class="prod-stars">${stars(p.rating)}</span><span class="prod-rc">${p.reviews.toLocaleString()}</span></div><div class="prod-price">RWF ${fmt(p.price)}</div><div style="font-size:11px;color:var(--g);font-weight:600;">🔒 Payment protected</div></div><div style="padding:0 12px 12px;"><button class="btn-atc" >Add to cart</button></div></div>`;
+  }).join('');onclick=onclick="addToCartGrid(event,'${p.id}')""showProduct('${p.id}')"
 }
 function buildBecomeSeller(){
   const el=document.getElementById('become-steps');if(!el)return;
@@ -1319,8 +1319,8 @@ function showProduct(id){
         <div class="buy-box-stock">${p.stock>0?'In Stock':'Out of Stock'}</div>
         ${p.stock>0?`<div style="font-size:12px;font-weight:600;margin-bottom:6px;">Qty:</div>
         <div class="qty-ctrl"><button class="qty-btn" onclick="changeQty(-1)">−</button><span class="qty-num" id="detail-qty">1</span><button class="qty-btn" onclick="changeQty(1)">+</button></div>
-        <button class="btn-atcr" onclick="addDetailToCart(${p.id})">Add to Cart</button>
-        <button class="btn-buynow" onclick="buyNow(${p.id})">Buy Now</button>`:''}
+        <button class="btn-atcr" onclick="addDetailToCart('${p.id}')">Add to Cart</button>
+        <button class="btn-buynow" onclick="buyNow('${p.id}')">Buy Now</button>`:''}
         <div style="font-size:12px;color:var(--ink3);margin-bottom:10px;">🔒 Secure transaction</div>
         <div class="buy-box-seller">Sold by <span>${p.seller}</span><div style="color:var(--g);font-size:12px;font-weight:600;margin-top:2px;">✓ KYC Verified</div></div>
         <div class="contact-btns">
@@ -1650,7 +1650,7 @@ async function signInWithGoogle(){
   const {error} = await sb.auth.signInWithOAuth({
     provider:'google',
     options:{
-      redirectTo:'https://luxury-kringle-5df74f.netlify.app/soko.html'
+      redirectTo: window.location.origin + window.location.pathname
     }
   });
   if(error) toast(error.message,'r');
