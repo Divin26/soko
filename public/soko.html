@@ -1209,8 +1209,11 @@ async function doLogout(){
   ['otp1','otp2','otp3','otp4'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   closeAll();toast('You have signed out');
 }
-
 // BUYER HOME
+async function buildBuyerHome(){
+  await loadProducts();
+  renderPromos();renderCats();
+  renderProds(PRODUCTS.slice(0,8),'home-products');
   renderPromos();renderCats();
   renderProds(PRODUCTS.slice(0,8),'home-products');
   renderProds(PRODUCTS.filter(p=>p.cat==='food').slice(0,4),'food-products');
