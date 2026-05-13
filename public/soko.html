@@ -1633,12 +1633,12 @@ function showResetPasswordForm() {
       <input class="fi" id="reset-pass" type="password" placeholder="At least 6 characters"/>
     </div>
     <div class="fg">
-      <label class="fi" id="reset-pass2" type="password" placeholder="Repeat your key"/>
+      <label class="fl">Confirm Secret Key</label>
+      <input class="fi" id="reset-pass2" type="password" placeholder="Repeat your key"/>
     </div>
     <button class="btn-or btn-or-dk" onclick="doResetPassword()">Save & Continue →</button>
   `;
 }
-
 async function doResetPassword() {
   const pw  = document.getElementById('reset-pass')?.value;
   const pw2 = document.getElementById('reset-pass2')?.value;
