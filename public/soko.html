@@ -1238,7 +1238,8 @@ function renderProds(list,cid){
     const badge=p.badge?`<div class="prod-badge ${p.badge}">${p.badge==='hot'?'Best Seller':p.badge==='new'?'New':'Sale'}</div>`:'';
     const thumb=(p.images&&p.images.length)?`<img src="${p.images[0]}" style="width:100%;height:100%;object-fit:cover;"/>`:`<span>${p.emoji}</span>`;
     return `<div class="prod-card"><div class="prod-thumb">${badge}${thumb}</div><div class="prod-info" ><div class="prod-brand">${p.seller}</div><div class="prod-name">${p.name}</div><div><span class="prod-stars">${stars(p.rating)}</span><span class="prod-rc">${p.reviews.toLocaleString()}</span></div><div class="prod-price">RWF ${fmt(p.price)}</div><div style="font-size:11px;color:var(--g);font-weight:600;">🔒 Payment protected</div></div><div style="padding:0 12px 12px;"><button class="btn-atc" >Add to cart</button></div></div>`;
-  }).join('');onclick=onclick="addToCartGrid(event,'${p.id}')""showProduct('${p.id}')"
+  return `<div class="prod-card"><div class="prod-thumb" onclick="showProduct('${p.id}')">${badge}${thumb}</div><div class="prod-info" onclick="showProduct('${p.id}')"><div class="prod-brand">${p.seller}</div><div class="prod-name">${p.name}</div><div><span class="prod-stars">${stars(p.rating)}</span><span class="prod-rc">${p.reviews.toLocaleString()}</span></div><div class="prod-price">RWF ${fmt(p.price)}</div><div style="font-size:11px;color:var(--g);font-weight:600;">🔒 Payment protected</div></div><div style="padding:0 12px 12px;"><button class="btn-atc" onclick="addToCartGrid(event,'${p.id}')">Add to cart</button></div></div>`;
+  }).join('');
 }
 function buildBecomeSeller(){
   const el=document.getElementById('become-steps');if(!el)return;
@@ -1362,13 +1363,13 @@ function renderCart(){
       <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
         <span style="font-size:12px;font-weight:600;">Qty:</span>
         <div style="display:flex;align-items:center;border:var(--border);border-radius:var(--r4);">
-          <button class="qty-btn" style="width:28px;height:28px;font-size:14px;" onclick="cartQty(${item.id},-1)">−</button>
+          <button class="qty-btn" style="width:28px;height:28px;font-size:14px;" onclick="cartQty('${item.id}',-1)">−</button>
           <span style="width:32px;text-align:center;font-size:13px;font-weight:700;">${item.qty}</span>
-          <button class="qty-btn" style="width:28px;height:28px;font-size:14px;" onclick="cartQty(${item.id},1)">+</button>
+          <button class="qty-btn" style="width:28px;height:28px;font-size:14px;" onclick="cartQty('${item.id}',1)">+</button>
         </div>
       </div>
       <div style="display:flex;gap:8px;margin-top:6px;">
-        <button style="padding:5px 10px;border:var(--border);border-radius:var(--r4);background:var(--bg2);font-size:12px;cursor:pointer;color:var(--b);" onclick="cartRemove(${item.id})">Delete</button>
+        <button style="padding:5px 10px;border:var(--border);border-radius:var(--r4);onclick="cartRemove('${item.id}')"background:var(--bg2);font-size:12px;cursor:pointer;color:var(--b);" >Delete</button>
         <button style="padding:5px 10px;border:var(--border);border-radius:var(--r4);background:var(--bg2);font-size:12px;cursor:pointer;color:var(--b);">Save for later</button>
       </div>
     </div>
