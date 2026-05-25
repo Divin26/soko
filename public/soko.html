@@ -27,7 +27,7 @@ button{font-family:var(--font);cursor:pointer;}input,select,textarea{font-family
 a{color:inherit;text-decoration:none;}img{display:block;max-width:100%;}
 .view{display:none;min-height:100vh;flex-direction:column;}.view.active{display:flex;}
 
-/* AUTH */
+/* ── AUTH ─────────────────────────────────────────────────── */
 .auth-page{min-height:100vh;background:var(--bg2);display:flex;flex-direction:column;}
 .auth-hdr{background:var(--nv);padding:14px 0;text-align:center;}
 .auth-logo{font-family:var(--font2);font-size:32px;font-weight:900;color:#fff;}
@@ -69,7 +69,7 @@ a{color:inherit;text-decoration:none;}img{display:block;max-width:100%;}
 .otp-inp:focus{border-color:var(--or);}
 .kyc-note{background:var(--abg);border:1px solid var(--ab);border-radius:var(--r4);padding:10px 12px;font-size:12px;color:#8B5E00;margin-bottom:12px;}
 
-/* TOPNAV */
+/* ── TOPNAV ───────────────────────────────────────────────── */
 .topnav{background:var(--nv);display:flex;align-items:center;height:60px;padding:0 16px;gap:8px;position:sticky;top:0;z-index:200;}
 .tnav-logo{font-family:var(--font2);font-size:24px;font-weight:900;color:#fff;padding:4px 8px;border:2px solid transparent;border-radius:var(--r4);cursor:pointer;transition:border-color .15s;flex-shrink:0;}
 .tnav-logo span{color:var(--or);}
@@ -93,7 +93,7 @@ a{color:inherit;text-decoration:none;}img{display:block;max-width:100%;}
 .tnav-lang{padding:5px;border:1px solid rgba(255,255,255,.2);border-radius:var(--r4);background:rgba(255,255,255,.07);color:#fff;font-size:12px;font-weight:600;outline:none;}
 .tnav-lang option{background:var(--nv);}
 
-/* DROPDOWNS */
+/* ── DROPDOWNS ────────────────────────────────────────────── */
 .acct-dd{display:none;position:fixed;top:62px;right:60px;width:220px;background:var(--w);border:var(--border);border-radius:var(--r8);box-shadow:var(--shl);z-index:400;}
 .acct-dd.open{display:block;}
 .acct-dd-hdr{background:var(--nv);padding:12px 16px;border-radius:var(--r8) var(--r8) 0 0;}
@@ -117,13 +117,13 @@ a{color:inherit;text-decoration:none;}img{display:block;max-width:100%;}
 .adw-item.red{color:#FF6B6B;}
 .adw-sep{border-top:1px solid rgba(255,255,255,.1);margin:6px 0;}
 
-/* SUBNAV */
+/* ── SUBNAV ───────────────────────────────────────────────── */
 .subnav{background:var(--nv2);display:flex;align-items:center;padding:0 16px;height:38px;gap:0;overflow-x:auto;scrollbar-width:none;}
 .subnav::-webkit-scrollbar{display:none;}
 .snav{padding:6px 12px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;border:2px solid transparent;border-radius:var(--r4);transition:border-color .15s;}
 .snav:hover{border-color:#fff;}
 
-/* HERO */
+/* ── HERO ─────────────────────────────────────────────────── */
 .hero{background:linear-gradient(135deg,#131921 0%,#1d3461 50%,#0a1f0a 100%);padding:44px 24px 36px;color:#fff;position:relative;overflow:hidden;}
 .hero::after{content:'🛍️';position:absolute;right:-20px;bottom:-30px;font-size:200px;opacity:.05;}
 .hero-inner{position:relative;z-index:1;max-width:520px;}
@@ -139,18 +139,16 @@ a{color:inherit;text-decoration:none;}img{display:block;max-width:100%;}
 .hstat-v{font-family:var(--font2);font-size:22px;font-weight:800;}
 .hstat-l{font-size:11px;color:rgba(255,255,255,.45);margin-top:1px;}
 
-/* TRUST */
+/* ── TRUST / SECTIONS ─────────────────────────────────────── */
 .trust-bar{background:var(--w);border-bottom:var(--border);display:flex;justify-content:center;flex-wrap:wrap;}
 .trust-item{display:flex;align-items:center;gap:7px;padding:9px 18px;border-right:var(--border2);}
 .trust-item:last-child{border-right:none;}
-
-/* SECTIONS */
 .sec{background:var(--w);margin:16px 20px;border-radius:var(--r12);padding:18px;box-shadow:var(--sh);}
 .sec-title{font-family:var(--font2);font-size:19px;font-weight:700;margin-bottom:14px;}
 .sec-sa{float:right;font-size:13px;color:var(--b);cursor:pointer;}
 .sec-sa:hover{color:var(--or);text-decoration:underline;}
 
-/* PROMO */
+/* ── PROMO ────────────────────────────────────────────────── */
 .promo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;}
 .promo-tile{border-radius:var(--r12);padding:20px;min-height:128px;position:relative;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between;}
 .promo-tile::after{content:attr(data-emoji);position:absolute;right:-5px;bottom:-10px;font-size:76px;opacity:.12;}
@@ -162,12 +160,10 @@ a{color:inherit;text-decoration:none;}img{display:block;max-width:100%;}
 .promo-title{font-family:var(--font2);font-size:16px;font-weight:800;color:#fff;margin-bottom:8px;}
 .promo-cta{font-size:12px;color:var(--or2);font-weight:600;}
 
-/* CATEGORIES */
+/* ── CATEGORIES / PRODUCTS ────────────────────────────────── */
 .cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:10px;}
 .cat-card{background:var(--bg2);border:var(--border);border-radius:var(--r8);padding:14px 10px;cursor:pointer;text-align:center;transition:all .2s;}
 .cat-card:hover{border-color:var(--or);box-shadow:var(--sh);}
-
-/* PRODUCTS */
 .prod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:16px;}
 .prod-card{background:var(--w);border:var(--border);border-radius:var(--r8);overflow:hidden;cursor:pointer;transition:all .2s;}
 .prod-card:hover{border-color:#E77600;box-shadow:0 0 0 2px rgba(231,118,0,.25),var(--sh);}
@@ -185,7 +181,7 @@ a{color:inherit;text-decoration:none;}img{display:block;max-width:100%;}
 .btn-atc{width:100%;padding:8px;margin:10px 0 0;background:linear-gradient(to bottom,#FFD814,#F7CA00);border:1px solid var(--ordk);border-radius:var(--r4);font-size:13px;font-weight:600;cursor:pointer;}
 .btn-atc:hover{background:linear-gradient(to bottom,#F7CA00,#EEB901);}
 
-/* SHOP LAYOUT */
+/* ── SHOP / FILTER ────────────────────────────────────────── */
 .shop-wrap{display:flex;gap:16px;margin:16px 20px;}
 .filter-col{width:210px;flex-shrink:0;}
 .filter-box{background:var(--w);border:var(--border);border-radius:var(--r8);padding:14px;margin-bottom:12px;box-shadow:var(--sh);}
@@ -196,7 +192,7 @@ a{color:inherit;text-decoration:none;}img{display:block;max-width:100%;}
 .shop-col{flex:1;}
 .shop-topbar{background:var(--w);border:var(--border);border-radius:var(--r8);padding:11px 16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--sh);}
 
-/* PAGE HEADER */
+/* ── PAGE HEADER ──────────────────────────────────────────── */
 .page-hdr{background:var(--w);border-bottom:var(--border);padding:10px 20px;display:flex;align-items:center;gap:10px;}
 .back-btn{padding:7px 12px;border:var(--border);border-radius:var(--r4);background:var(--bg2);font-size:13px;cursor:pointer;}
 .back-btn:hover{background:var(--bg3);}
@@ -204,7 +200,7 @@ a{color:inherit;text-decoration:none;}img{display:block;max-width:100%;}
 .breadcrumb a{color:var(--b);cursor:pointer;}
 .breadcrumb a:hover{text-decoration:underline;}
 
-/* PRODUCT DETAIL */
+/* ── PRODUCT DETAIL ───────────────────────────────────────── */
 .detail-wrap{display:flex;gap:24px;padding:20px;background:var(--w);margin:16px 20px;border-radius:var(--r8);border:var(--border);box-shadow:var(--sh);}
 .detail-gallery{width:360px;flex-shrink:0;}
 .detail-main-img{width:100%;aspect-ratio:1;background:var(--bg2);border:var(--border);border-radius:var(--r8);display:flex;align-items:center;justify-content:center;font-size:130px;overflow:hidden;margin-bottom:8px;}
@@ -243,7 +239,7 @@ a{color:inherit;text-decoration:none;}img{display:block;max-width:100%;}
 .rev-hdr{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
 .rev-avatar{width:32px;height:32px;border-radius:50%;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;}
 
-/* CART */
+/* ── CART ─────────────────────────────────────────────────── */
 .cart-wrap{display:flex;gap:16px;padding:20px;align-items:flex-start;}
 .cart-main{flex:1;}
 .cart-panel{background:var(--w);border:var(--border);border-radius:var(--r8);padding:16px;box-shadow:var(--sh);margin-bottom:12px;}
@@ -256,7 +252,7 @@ a{color:inherit;text-decoration:none;}img{display:block;max-width:100%;}
 .cart-escrow-note{background:var(--gbg);border:1px solid var(--gb);border-radius:var(--r4);padding:8px 10px;font-size:12px;color:var(--gd);margin-bottom:14px;}
 .btn-checkout{width:100%;padding:12px;border-radius:24px;background:linear-gradient(to bottom,#FFD814,#F7CA00);border:1px solid var(--ordk);font-size:15px;font-weight:700;cursor:pointer;margin-bottom:8px;}
 
-/* CHECKOUT */
+/* ── CHECKOUT ─────────────────────────────────────────────── */
 .checkout-wrap{display:flex;gap:16px;padding:20px;align-items:flex-start;}
 .checkout-main{flex:1;}
 .checkout-sec{background:var(--w);border:var(--border);border-radius:var(--r8);padding:18px 20px;margin-bottom:12px;box-shadow:var(--sh);}
@@ -270,7 +266,7 @@ a{color:inherit;text-decoration:none;}img{display:block;max-width:100%;}
 .co-row.total{font-weight:700;color:var(--ink);font-size:16px;border-top:var(--border);padding-top:10px;margin-top:4px;}
 .btn-place{width:100%;padding:14px;border-radius:24px;background:linear-gradient(to bottom,#FFD814,#F7CA00);border:1px solid var(--ordk);font-size:15px;font-weight:800;cursor:pointer;margin-top:12px;}
 
-/* SUCCESS */
+/* ── SUCCESS / ORDERS ─────────────────────────────────────── */
 .success-wrap{display:flex;flex-direction:column;align-items:center;padding:40px 20px;text-align:center;}
 .success-icon{width:72px;height:72px;background:var(--g);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;color:#fff;margin:0 auto 20px;animation:pop .4s ease;}
 @keyframes pop{0%{transform:scale(0)}80%{transform:scale(1.1)}100%{transform:scale(1)}}
@@ -284,8 +280,6 @@ a{color:inherit;text-decoration:none;}img{display:block;max-width:100%;}
 .td.active{background:var(--abg);border:2px solid var(--a);color:#8B5E00;}
 .td.pending{background:var(--bg2);border:2px solid var(--bg3);color:var(--ink4);}
 .btn-confirm-del{padding:14px 32px;border-radius:24px;background:linear-gradient(to bottom,#00C878,#00A85E);border:none;font-size:15px;font-weight:700;cursor:pointer;color:#fff;margin:16px auto 8px;display:block;}
-
-/* ORDERS */
 .orders-wrap{padding:20px;}
 .order-card{background:var(--w);border:var(--border);border-radius:var(--r8);margin-bottom:14px;overflow:hidden;box-shadow:var(--sh);}
 .order-card-hdr{background:var(--bg2);padding:10px 16px;display:flex;gap:20px;flex-wrap:wrap;}
@@ -304,7 +298,7 @@ a{color:inherit;text-decoration:none;}img{display:block;max-width:100%;}
 .ep-rel{background:var(--gbg);color:var(--gd);border:1px solid var(--gb);}
 .ep-frz{background:var(--rbg);color:var(--r);border:1px solid var(--rb);}
 
-/* SELLER */
+/* ── SELLER ───────────────────────────────────────────────── */
 .seller-topnav{background:var(--nv);height:60px;display:flex;align-items:center;padding:0 20px;gap:12px;}
 .seller-logo{font-family:var(--font2);font-size:20px;font-weight:900;color:#fff;}
 .seller-logo span{color:var(--or);}
@@ -335,7 +329,7 @@ a{color:inherit;text-decoration:none;}img{display:block;max-width:100%;}
 .earn-item-val.g{color:#00D68F;}
 .earn-item-val.o{color:var(--or);}
 
-/* ADMIN */
+/* ── ADMIN ────────────────────────────────────────────────── */
 .admin-topnav{background:var(--nv);height:60px;display:flex;align-items:center;padding:0 20px;gap:12px;}
 .admin-logo{font-family:var(--font2);font-size:20px;font-weight:900;color:#fff;}
 .admin-logo span{color:var(--or);}
@@ -368,7 +362,7 @@ a{color:inherit;text-decoration:none;}img{display:block;max-width:100%;}
 .comm-item-val{font-family:var(--font2);font-size:20px;font-weight:800;}
 .comm-item-lbl{font-size:10px;color:rgba(255,255,255,.4);margin-top:4px;text-transform:uppercase;}
 
-/* TABLES */
+/* ── TABLES ───────────────────────────────────────────────── */
 .tbl-wrap{background:var(--w);border:var(--border);border-radius:var(--r8);overflow:hidden;margin-bottom:14px;box-shadow:var(--sh);}
 .tbl-hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:var(--border);}
 .tbl-hdr-title{font-size:14px;font-weight:700;}
@@ -379,7 +373,7 @@ td{padding:11px 16px;border-bottom:1px solid var(--bg2);color:var(--ink2);vertic
 tr:last-child td{border-bottom:none;}
 tr:hover td{background:var(--bg);}
 
-/* ESCROW FLOW */
+/* ── ESCROW FLOW ──────────────────────────────────────────── */
 .ef-card{background:linear-gradient(135deg,#131921,#0a1f0a);border-radius:var(--r8);padding:20px;color:#fff;margin-bottom:18px;}
 .ef-title{font-size:14px;font-weight:700;color:#00D68F;margin-bottom:14px;}
 .ef-steps{display:flex;align-items:center;overflow-x:auto;}
@@ -392,18 +386,16 @@ tr:hover td{background:var(--bg);}
 .ef-conn{flex:1;height:2px;background:rgba(255,255,255,.1);min-width:14px;margin-bottom:20px;}
 .ef-conn.done{background:#00D68F;}
 
-/* PAYOUT */
+/* ── PAYOUT / SETTINGS / DISPUTES ────────────────────────── */
 .payout-card{background:var(--w);border:var(--border);border-radius:var(--r8);padding:16px;margin-bottom:10px;box-shadow:var(--sh);}
 .payout-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
 .payout-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--g),var(--g2));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:15px;flex-shrink:0;}
-
-/* SETTINGS */
 .settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
 .settings-card{background:var(--w);border:var(--border);border-radius:var(--r8);padding:18px;box-shadow:var(--sh);}
 .settings-card-title{font-size:14px;font-weight:700;margin-bottom:14px;padding-bottom:10px;border-bottom:var(--border);}
 .dispute-card{background:var(--w);border:var(--border);border-radius:var(--r8);padding:16px;margin-bottom:10px;box-shadow:var(--sh);}
 
-/* BUTTONS */
+/* ── BUTTONS ──────────────────────────────────────────────── */
 .bx{padding:6px 12px;border-radius:var(--r4);font-size:12px;font-weight:700;border:none;cursor:pointer;transition:all .15s;}
 .bx-g{background:var(--gbg);color:var(--gd);border:1px solid var(--gb);}
 .bx-g:hover{background:var(--g);color:#fff;}
@@ -416,7 +408,7 @@ tr:hover td{background:var(--bg);}
 .bx-ghost{background:var(--bg2);color:var(--ink3);border:var(--border);}
 .bx-ghost:hover{background:var(--bg3);}
 
-/* FORMS */
+/* ── FORMS / PILLS ────────────────────────────────────────── */
 .fld{margin-bottom:12px;}
 .fld-lbl{font-size:11px;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px;display:block;}
 .fld-inp{width:100%;padding:9px 12px;border:2px solid var(--bg3);border-radius:var(--r4);font-size:13px;color:var(--ink);outline:none;transition:border .15s;}
@@ -424,8 +416,6 @@ tr:hover td{background:var(--bg);}
 .fld-sel{width:100%;padding:9px 12px;border:2px solid var(--bg3);border-radius:var(--r4);font-size:13px;color:var(--ink);outline:none;background:var(--w);}
 .fld-ta{resize:vertical;min-height:80px;}
 .fld-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
-
-/* PILLS */
 .pill{display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:700;}
 .pill-g{background:var(--gbg);color:var(--gd);border:1px solid var(--gb);}
 .pill-r{background:var(--rbg);color:var(--r);border:1px solid var(--rb);}
@@ -434,7 +424,7 @@ tr:hover td{background:var(--bg);}
 .pill-gray{background:var(--bg2);color:var(--ink3);border:var(--border);}
 .pill-dk{background:var(--ink);color:#fff;}
 
-/* MODAL */
+/* ── MODAL ────────────────────────────────────────────────── */
 .modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:600;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px);}
 .modal-bg.open{display:flex;}
 .modal{background:var(--w);border-radius:var(--r12);width:min(520px,100%);max-height:90vh;overflow-y:auto;box-shadow:var(--shl);}
@@ -445,7 +435,7 @@ tr:hover td{background:var(--bg);}
 .modal-body{padding:20px;}
 .modal-footer{padding:14px 20px;border-top:var(--border);display:flex;justify-content:flex-end;gap:8px;}
 
-/* IMAGE UPLOAD */
+/* ── IMAGE UPLOAD ─────────────────────────────────────────── */
 .img-drop{border:2px dashed var(--bg3);border-radius:var(--r8);padding:26px;text-align:center;cursor:pointer;background:var(--bg2);transition:all .2s;}
 .img-drop:hover,.img-drop.over{border-color:var(--or);background:var(--abg);}
 .img-previews{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;}
@@ -454,20 +444,29 @@ tr:hover td{background:var(--bg);}
 .img-preview-remove{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:var(--r);color:#fff;border:none;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
 .img-main-badge{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.55);color:#fff;font-size:9px;text-align:center;border-radius:0 0 var(--r4) var(--r4);padding:2px 0;}
 
-/* BOTTOM NAV */
+/* ── BOTTOM NAV / TOAST ───────────────────────────────────── */
 .bnav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--w);border-top:var(--border);z-index:90;}
 .bnav-inner{display:flex;}
 .bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0;border:none;background:transparent;color:var(--ink3);font-size:10px;font-weight:600;cursor:pointer;}
 .bnav-item.active{color:var(--or);}
 .bnav-ico{font-size:20px;}
-
-/* TOAST */
 #toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(12px);background:var(--nv);color:#fff;padding:11px 22px;border-radius:var(--r8);font-size:13px;font-weight:600;z-index:9999;opacity:0;pointer-events:none;transition:all .25s;max-width:calc(100vw - 40px);text-align:center;box-shadow:var(--shl);}
 #toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
 #toast.g{background:var(--g);}
 #toast.r{background:var(--r);}
 #toast.o{background:var(--or);color:var(--ink);}
 
+/* ── LOADING SCREEN ───────────────────────────────────────── */
+.loading-screen{position:fixed;inset:0;background:var(--nv);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .4s;}
+.loading-screen.hidden{opacity:0;pointer-events:none;}
+.loading-logo{font-family:var(--font2);font-size:48px;font-weight:900;color:#fff;margin-bottom:10px;}
+.loading-logo span{color:var(--or);}
+.loading-sub{font-size:13px;color:rgba(255,255,255,.4);margin-bottom:28px;}
+.loading-bar{width:200px;height:3px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden;}
+.loading-fill{height:100%;background:var(--or);border-radius:2px;animation:loadfill 1.4s ease forwards;}
+@keyframes loadfill{0%{width:0%}60%{width:70%}100%{width:100%}}
+
+/* ── RESPONSIVE ───────────────────────────────────────────── */
 @media(max-width:900px){.detail-wrap{flex-direction:column;}.buy-box{width:100%;}.detail-gallery{width:100%;}}
 @media(max-width:768px){
   .bnav{display:block;}.main{padding-bottom:70px;}
@@ -486,9 +485,17 @@ tr:hover td{background:var(--bg);}
 </style>
 </head>
 <body>
+
+<!-- LOADING SCREEN -->
+<div class="loading-screen" id="loading-screen">
+  <div class="loading-logo">SO<span>KO</span></div>
+  <div class="loading-sub">🇷🇼 Rwanda's Marketplace</div>
+  <div class="loading-bar"><div class="loading-fill"></div></div>
+</div>
+
 <div id="toast"></div>
 
-<!-- AUTH -->
+<!-- ══════════════════════ AUTH VIEW ════════════════════════ -->
 <div class="view active" id="view-auth">
 <div class="auth-page">
   <div class="auth-hdr">
@@ -509,20 +516,18 @@ tr:hover td{background:var(--bg);}
         <button class="atab active" id="atab-login" onclick="authTab('login')">Sign In</button>
         <button class="atab" id="atab-signup" onclick="authTab('signup')">Create Account</button>
       </div>
+      <!-- LOGIN -->
       <div class="apanel" id="apanel-login">
         <div class="fg"><label class="fl">Email address</label><input class="fi" id="login-email" type="email" placeholder="you@email.com" onkeydown="if(event.key==='Enter')doLogin()"/></div>
-        <div class="fg"><label class="fl">Phone <span style="font-weight:400;text-transform:none;font-size:11px;">(optional)</span></label><input class="fi" id="login-phone" type="tel" placeholder="+250 7XX XXX XXX" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+        <div class="fg"><label class="fl">Phone <span style="font-weight:400;text-transform:none;font-size:11px;">(optional)</span></label><input class="fi" id="login-phone" type="tel" placeholder="+250 7XX XXX XXX"/></div>
         <div class="fg"><label class="fl">Password</label><input class="fi" id="login-pass" type="password" placeholder="At least 6 characters" onkeydown="if(event.key==='Enter')doLogin()"/></div>
         <button class="btn-or btn-or-dk" style="margin-bottom:8px;" onclick="doLogin()">Sign in →</button>
         <div style="text-align:right;margin-bottom:12px;"><span onclick="forgotPassword()" style="font-size:12px;color:var(--b);cursor:pointer;text-decoration:underline;">Forgot password?</span></div>
         <div style="font-size:11px;color:var(--ink3);margin-bottom:12px;">By signing in you agree to SOKO's Conditions of Use and Privacy Notice.</div>
-       <div class="auth-div">or continue with</div>
-<button onclick="signInWithGoogle()" style="width:100%;padding:10px;border:1px solid #ddd;border-radius:4px;background:#fff;display:flex;align-items:center;justify-content:center;gap:10px;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:12px;">
-  <img src="https://www.google.com/favicon.ico" style="width:18px;height:18px;"/> 
-  Continue with Google
-</button>
-<div class="auth-div">or demo access</div> <div class="demo-box">Sign in as: <span class="dl" onclick="quickLogin('buyer')">🛍️ Buyer</span> · <span class="dl" onclick="quickLogin('seller')">🏪 Seller</span> · <span class="dl" onclick="quickLogin('admin')">⚙️ Admin</span></div>
+        <div class="auth-div">or demo access</div>
+        <div class="demo-box">Sign in as: <span class="dl" onclick="quickLogin('buyer')">🛍️ Buyer</span> · <span class="dl" onclick="quickLogin('seller')">🏪 Seller</span> · <span class="dl" onclick="quickLogin('admin')">⚙️ Admin</span></div>
       </div>
+      <!-- SIGNUP -->
       <div class="apanel" id="apanel-signup" style="display:none;">
         <div class="role-sel">
           <div class="role-opt active" id="role-buyer" onclick="selectRole('buyer')"><div class="role-opt-icon">🛍️</div><div style="font-size:13px;font-weight:700;">Buy</div><div style="font-size:11px;color:var(--ink3);">Browse & buy</div></div>
@@ -539,6 +544,7 @@ tr:hover td{background:var(--bg);}
         <button class="btn-or" style="margin-bottom:12px;" onclick="doSignup()">Create your SOKO account →</button>
         <div style="font-size:11px;color:var(--ink3);">By creating an account you agree to SOKO's Conditions of Use and Privacy Notice.</div>
       </div>
+      <!-- OTP -->
       <div class="apanel" id="apanel-otp" style="display:none;">
         <div style="text-align:center;padding:14px 0;">
           <div style="font-size:36px;margin-bottom:10px;">📱</div>
@@ -553,6 +559,7 @@ tr:hover td{background:var(--bg);}
           <div style="font-size:12px;color:var(--g);font-weight:600;">Demo code: 1234</div>
         </div>
       </div>
+      <!-- KYC -->
       <div class="apanel" id="apanel-kyc" style="display:none;">
         <div style="background:var(--abg);border:1px solid var(--ab);border-radius:var(--r4);padding:12px;margin-bottom:14px;font-size:13px;color:#8B5E00;">📋 <strong>Identity Verification Required</strong><br/>Submit your National ID to become a verified seller.</div>
         <div class="fg"><label class="fl">Full name (as on ID)</label><input class="fi" id="kyc-name" placeholder="Jean Paul Mutoni"/></div>
@@ -560,7 +567,7 @@ tr:hover td{background:var(--bg);}
         <div class="fg">
           <label class="fl">Upload ID photo</label>
           <div class="img-drop" id="kyc-drop" onclick="document.getElementById('kyc-file').click()" ondragover="event.preventDefault();this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="handleKycDrop(event)">
-            <div id="kyc-preview-area"><div style="font-size:28px;margin-bottom:6px;">📷</div><div style="font-size:13px;color:var(--ink3);" id="kyc-upload-lbl">Click to upload your ID image</div><div style="font-size:11px;color:var(--ink4);margin-top:3px;">JPEG, PNG — max 5MB</div></div>
+            <div id="kyc-preview-area"><div style="font-size:28px;margin-bottom:6px;">📷</div><div style="font-size:13px;color:var(--ink3);">Click to upload your ID image</div><div style="font-size:11px;color:var(--ink4);margin-top:3px;">JPEG, PNG — max 5MB</div></div>
             <input type="file" id="kyc-file" accept="image/*" style="display:none;" onchange="handleKycUpload(this.files[0])"/>
           </div>
         </div>
@@ -570,17 +577,32 @@ tr:hover td{background:var(--bg);}
   </div>
 </div>
 </div>
+<!-- ═══ END PART 1 — continue with Part 2 (Buyer view HTML) ═══ -->
+<!-- ═══ PART 2 — BUYER VIEW ═══════════════════════════════════
+     Paste this block directly after the closing </div></div>
+     of the AUTH VIEW from Part 1.
+     ═══════════════════════════════════════════════════════════ -->
 
-<!-- BUYER VIEW -->
+<!-- ══════════════════════ BUYER VIEW ════════════════════════ -->
 <div class="view" id="view-buyer">
+  <!-- TOPNAV -->
   <div class="topnav">
     <div class="tnav-logo" onclick="buyerHome()">SO<span>KO</span></div>
-    <div class="tnav-loc" onclick="openModal('modal-location')" title="Change delivery location">
+    <div class="tnav-loc" onclick="openModal('modal-location')">
       <div class="tnav-loc-top">📍 Deliver to</div>
       <div class="tnav-loc-bot" id="nav-location-text">Kigali, Rwanda</div>
     </div>
     <div class="tnav-search">
-      <select class="tnav-scat"><option value="">All</option><option value="food">Food</option><option value="electronics">Electronics</option><option value="clothes">Clothes</option><option value="shoes">Shoes</option><option value="home">Home</option><option value="beauty">Beauty</option><option value="sports">Sports</option></select>
+      <select class="tnav-scat" id="search-cat-sel">
+        <option value="">All</option>
+        <option value="food">Food</option>
+        <option value="electronics">Electronics</option>
+        <option value="clothes">Clothes</option>
+        <option value="shoes">Shoes</option>
+        <option value="home">Home</option>
+        <option value="beauty">Beauty</option>
+        <option value="sports">Sports</option>
+      </select>
       <input class="tnav-sinp" id="search-inp" placeholder="Search SOKO.rw" oninput="doSearch(this.value)" onkeydown="if(event.key==='Enter')doSearch(this.value)"/>
       <button class="tnav-sbtn" onclick="doSearch(document.getElementById('search-inp').value)">🔍</button>
     </div>
@@ -595,14 +617,25 @@ tr:hover td{background:var(--bg);}
       </div>
       <div class="tnav-cart" onclick="buyerShowView('cart')">
         <span style="font-size:26px;color:#fff;">🛒</span>
-        <div><div style="font-size:20px;font-weight:800;color:var(--or);" id="cart-badge">0</div><div style="font-size:13px;font-weight:700;color:#fff;">Cart</div></div>
+        <div>
+          <div style="font-size:20px;font-weight:800;color:var(--or);" id="cart-badge">0</div>
+          <div style="font-size:13px;font-weight:700;color:#fff;">Cart</div>
+        </div>
       </div>
-      <select class="tnav-lang" onchange="applyLang(this.value)"><option value="en">EN</option><option value="fr">FR</option><option value="rw">RW</option></select>
+      <select class="tnav-lang" onchange="applyLang(this.value)">
+        <option value="en">EN</option>
+        <option value="fr">FR</option>
+        <option value="rw">RW</option>
+      </select>
     </div>
   </div>
 
+  <!-- ACCOUNT DROPDOWN -->
   <div class="acct-dd" id="acct-dd">
-    <div class="acct-dd-hdr"><div class="acct-dd-name" id="acct-dd-name">Jean Mutoni</div><div class="acct-dd-role">Buyer Account</div></div>
+    <div class="acct-dd-hdr">
+      <div class="acct-dd-name" id="acct-dd-name">Jean Mutoni</div>
+      <div class="acct-dd-role" id="acct-dd-role">Buyer Account</div>
+    </div>
     <div class="acct-dd-item" onclick="buyerShowView('orders');closeAll()">📦 Your Orders</div>
     <div class="acct-dd-item" onclick="buyerShowView('review');closeAll()">⭐ Write a Review</div>
     <div class="acct-dd-item" onclick="buyerShowView('dispute');closeAll()">🛡️ Report a Problem</div>
@@ -611,11 +644,16 @@ tr:hover td{background:var(--bg);}
     <div class="acct-dd-item red" onclick="doLogout()">🚪 Sign Out</div>
   </div>
 
+  <!-- NOTIFICATIONS PANEL -->
   <div class="notif-panel" id="notif-panel">
-    <div class="notif-hdr"><div style="color:#fff;font-weight:700;">Notifications</div><button onclick="toggleNotif()" style="background:none;border:none;color:rgba(255,255,255,.6);font-size:16px;cursor:pointer;">✕</button></div>
+    <div class="notif-hdr">
+      <div style="color:#fff;font-weight:700;">Notifications</div>
+      <button onclick="toggleNotif()" style="background:none;border:none;color:rgba(255,255,255,.6);font-size:16px;cursor:pointer;">✕</button>
+    </div>
     <div id="notif-items"></div>
   </div>
 
+  <!-- ALL DRAWER -->
   <div class="all-drawer" id="all-drawer">
     <div class="adw-title">Browse SOKO</div>
     <div class="adw-item" onclick="buyerHome();closeAll()">🏠 Home</div>
@@ -632,6 +670,7 @@ tr:hover td{background:var(--bg);}
     <div class="adw-item red" onclick="doLogout()">🚪 Sign Out</div>
   </div>
 
+  <!-- SUBNAV -->
   <div class="subnav">
     <div class="snav" id="all-menu-btn" onclick="toggleDrawer()">☰ All</div>
     <div class="snav" onclick="filterCat('food')">🍎 Food & Drinks</div>
@@ -644,7 +683,10 @@ tr:hover td{background:var(--bg);}
     <div class="snav" onclick="buyerShowView('become-seller')">🏪 Sell on SOKO</div>
   </div>
 
+  <!-- MAIN CONTENT AREA -->
   <div class="main" id="buyer-main">
+
+    <!-- ── HOME ─────────────────────────────────────────────── -->
     <div id="buyer-home">
       <div class="hero">
         <div class="hero-inner">
@@ -670,27 +712,47 @@ tr:hover td{background:var(--bg);}
         <div class="trust-item"><span style="font-size:17px;">📲</span><span style="font-size:12px;font-weight:600;color:var(--ink2);">MTN MoMo / Airtel Money</span></div>
         <div class="trust-item"><span style="font-size:17px;">↩️</span><span style="font-size:12px;font-weight:600;color:var(--ink2);">Dispute protection</span></div>
       </div>
-      <div class="sec"><div class="sec-title">🔥 Today's Deals <span class="sec-sa" onclick="buyerShowView('shop')">See all →</span></div><div class="promo-grid" id="promo-grid"></div></div>
-      <div class="sec"><div class="sec-title">Shop by Category <span class="sec-sa" onclick="buyerShowView('shop')">All →</span></div><div class="cat-grid" id="cat-grid"></div></div>
-      <div class="sec"><div class="sec-title">Featured Products <span class="sec-sa" onclick="buyerShowView('shop')">See all →</span></div><div class="prod-grid" id="home-products"></div></div>
-      <div class="sec"><div class="sec-title">🍎 Fresh Food & Drinks <span class="sec-sa" onclick="filterCat('food')">See all →</span></div><div class="prod-grid" id="food-products"></div></div>
-      <div class="sec"><div class="sec-title">📱 Electronics <span class="sec-sa" onclick="filterCat('electronics')">See all →</span></div><div class="prod-grid" id="elec-products"></div></div>
+      <div class="sec">
+        <div class="sec-title">🔥 Today's Deals <span class="sec-sa" onclick="buyerShowView('shop')">See all →</span></div>
+        <div class="promo-grid" id="promo-grid"></div>
+      </div>
+      <div class="sec">
+        <div class="sec-title">Shop by Category <span class="sec-sa" onclick="buyerShowView('shop')">All →</span></div>
+        <div class="cat-grid" id="cat-grid"></div>
+      </div>
+      <div class="sec">
+        <div class="sec-title">Featured Products <span class="sec-sa" onclick="buyerShowView('shop')">See all →</span></div>
+        <div class="prod-grid" id="home-products"></div>
+      </div>
+      <div class="sec">
+        <div class="sec-title">🍎 Fresh Food & Drinks <span class="sec-sa" onclick="filterCat('food')">See all →</span></div>
+        <div class="prod-grid" id="food-products"></div>
+      </div>
+      <div class="sec">
+        <div class="sec-title">📱 Electronics <span class="sec-sa" onclick="filterCat('electronics')">See all →</span></div>
+        <div class="prod-grid" id="elec-products"></div>
+      </div>
     </div>
 
+    <!-- ── SHOP ──────────────────────────────────────────────── -->
     <div id="buyer-shop" style="display:none;">
-      <div class="page-hdr"><button class="back-btn" onclick="buyerHome()">← Back</button><div class="breadcrumb"><a onclick="buyerHome()">Home</a> › <span id="shop-bc">All Products</span></div></div>
+      <div class="page-hdr">
+        <button class="back-btn" onclick="buyerHome()">← Back</button>
+        <div class="breadcrumb"><a onclick="buyerHome()">Home</a> › <span id="shop-bc">All Products</span></div>
+      </div>
       <div class="shop-wrap">
         <div class="filter-col">
           <div class="filter-box">
             <div class="filter-box-title">Filter by</div>
-            <div class="filter-sec">Category</div><div id="filter-cats"></div>
+            <div class="filter-sec">Category</div>
+            <div id="filter-cats"></div>
             <div class="filter-sec">Price</div>
-            <div class="fopt"><input type="radio" name="price" checked/> Any price</div>
+            <div class="fopt"><input type="radio" name="price" checked onchange="renderProds(currentShopList,'shop-products')"/> Any price</div>
             <div class="fopt"><input type="radio" name="price" onchange="filterByPrice(0,5000)"/> Under 5,000 RWF</div>
             <div class="fopt"><input type="radio" name="price" onchange="filterByPrice(5000,50000)"/> 5,000–50,000 RWF</div>
             <div class="fopt"><input type="radio" name="price" onchange="filterByPrice(50000,9999999)"/> Over 50,000 RWF</div>
             <div class="filter-sec">Rating</div>
-            <div class="fopt"><input type="radio" name="rating" checked/> Any rating</div>
+            <div class="fopt"><input type="radio" name="rating" checked onchange="renderProds(currentShopList,'shop-products')"/> Any rating</div>
             <div class="fopt"><input type="radio" name="rating" onchange="filterByRating(4)"/> ⭐⭐⭐⭐ & up</div>
           </div>
         </div>
@@ -709,20 +771,36 @@ tr:hover td{background:var(--bg);}
       </div>
     </div>
 
+    <!-- ── PRODUCT DETAIL ────────────────────────────────────── -->
     <div id="buyer-detail" style="display:none;">
-      <div class="page-hdr"><button class="back-btn" onclick="goBack()">← Back</button><div class="breadcrumb" id="detail-crumb"></div></div>
+      <div class="page-hdr">
+        <button class="back-btn" onclick="goBack()">← Back</button>
+        <div class="breadcrumb" id="detail-crumb"></div>
+      </div>
       <div id="detail-content"></div>
     </div>
 
+    <!-- ── CART ──────────────────────────────────────────────── -->
     <div id="buyer-cart" style="display:none;">
-      <div class="page-hdr"><button class="back-btn" onclick="goBack()">← Continue shopping</button><div class="breadcrumb">Cart</div></div>
-      <div class="cart-wrap"><div class="cart-main"><div id="cart-items"></div></div><div class="cart-sidebar" id="cart-summary"></div></div>
+      <div class="page-hdr">
+        <button class="back-btn" onclick="goBack()">← Continue shopping</button>
+        <div class="breadcrumb">Shopping Cart</div>
+      </div>
+      <div class="cart-wrap">
+        <div class="cart-main"><div id="cart-items"></div></div>
+        <div class="cart-sidebar" id="cart-summary"></div>
+      </div>
     </div>
 
+    <!-- ── CHECKOUT ──────────────────────────────────────────── -->
     <div id="buyer-checkout" style="display:none;">
-      <div class="page-hdr"><button class="back-btn" onclick="buyerShowView('cart')">← Back to Cart</button><div class="breadcrumb"><a onclick="buyerShowView('cart')">Cart</a> › Checkout</div></div>
+      <div class="page-hdr">
+        <button class="back-btn" onclick="buyerShowView('cart')">← Back to Cart</button>
+        <div class="breadcrumb"><a onclick="buyerShowView('cart')">Cart</a> › Checkout</div>
+      </div>
       <div class="checkout-wrap">
         <div class="checkout-main">
+          <!-- Step 1: Address -->
           <div class="checkout-sec">
             <div class="checkout-sec-title">1. Delivery address</div>
             <div class="fld-row">
@@ -735,19 +813,46 @@ tr:hover td{background:var(--bg);}
               <div class="fld"><label class="fld-lbl">Sector</label><input class="fld-inp" id="co-sector" placeholder="Kimironko"/></div>
             </div>
           </div>
+          <!-- Step 2: Delivery -->
           <div class="checkout-sec">
             <div class="checkout-sec-title">2. Delivery method</div>
-            <div class="del-opt sel" onclick="selDel(this)"><input type="radio" style="accent-color:var(--or);" checked/><span style="font-size:22px;">🏍️</span><div><div style="font-size:14px;font-weight:700;">Moto Delivery</div><div style="font-size:12px;color:var(--ink3);">500–2,000 RWF · 1–3 hours</div></div></div>
-            <div class="del-opt" onclick="selDel(this)"><input type="radio" style="accent-color:var(--or);"/><span style="font-size:22px;">📍</span><div><div style="font-size:14px;font-weight:700;">Pickup Point</div><div style="font-size:12px;color:var(--ink3);">Free · Collect at our office</div></div></div>
+            <div class="del-opt sel" onclick="selDel(this)">
+              <input type="radio" style="accent-color:var(--or);" checked/>
+              <span style="font-size:22px;">🏍️</span>
+              <div><div style="font-size:14px;font-weight:700;">Moto Delivery</div><div style="font-size:12px;color:var(--ink3);">500–2,000 RWF · 1–3 hours</div></div>
+            </div>
+            <div class="del-opt" onclick="selDel(this)">
+              <input type="radio" style="accent-color:var(--or);"/>
+              <span style="font-size:22px;">📍</span>
+              <div><div style="font-size:14px;font-weight:700;">Pickup Point</div><div style="font-size:12px;color:var(--ink3);">Free · Collect at our office</div></div>
+            </div>
           </div>
+          <!-- Step 3: Payment -->
           <div class="checkout-sec">
             <div class="checkout-sec-title">3. Payment method</div>
-            <div class="pay-opt sel" onclick="selPay(this)"><input type="radio" style="accent-color:var(--or);" checked/><span style="font-size:24px;">📲</span><div><div style="font-size:14px;font-weight:700;">MTN Mobile Money</div><div style="font-size:12px;color:var(--ink3);">Dial *182# — instant</div></div></div>
-            <div class="pay-opt" onclick="selPay(this)"><input type="radio" style="accent-color:var(--or);"/><span style="font-size:24px;">📱</span><div><div style="font-size:14px;font-weight:700;">Airtel Money</div><div style="font-size:12px;color:var(--ink3);">Dial *185# to pay</div></div></div>
-            <div class="pay-opt" onclick="selPay(this)"><input type="radio" style="accent-color:var(--or);"/><span style="font-size:24px;">💵</span><div><div style="font-size:14px;font-weight:700;">Cash on Delivery</div><div style="font-size:12px;color:var(--ink3);">Pay when you receive</div></div></div>
-            <div class="pay-opt" onclick="selPay(this)"><input type="radio" style="accent-color:var(--or);"/><span style="font-size:24px;">💳</span><div><div style="font-size:14px;font-weight:700;">Debit / Credit Card</div><div style="font-size:12px;color:var(--ink3);">Visa or Mastercard</div></div></div>
+            <div class="pay-opt sel" onclick="selPay(this)">
+              <input type="radio" style="accent-color:var(--or);" checked/>
+              <span style="font-size:24px;">📲</span>
+              <div><div style="font-size:14px;font-weight:700;">MTN Mobile Money</div><div style="font-size:12px;color:var(--ink3);">Dial *182# — instant</div></div>
+            </div>
+            <div class="pay-opt" onclick="selPay(this)">
+              <input type="radio" style="accent-color:var(--or);"/>
+              <span style="font-size:24px;">📱</span>
+              <div><div style="font-size:14px;font-weight:700;">Airtel Money</div><div style="font-size:12px;color:var(--ink3);">Dial *185# to pay</div></div>
+            </div>
+            <div class="pay-opt" onclick="selPay(this)">
+              <input type="radio" style="accent-color:var(--or);"/>
+              <span style="font-size:24px;">💵</span>
+              <div><div style="font-size:14px;font-weight:700;">Cash on Delivery</div><div style="font-size:12px;color:var(--ink3);">Pay when you receive</div></div>
+            </div>
+            <div class="pay-opt" onclick="selPay(this)">
+              <input type="radio" style="accent-color:var(--or);"/>
+              <span style="font-size:24px;">💳</span>
+              <div><div style="font-size:14px;font-weight:700;">Debit / Credit Card</div><div style="font-size:12px;color:var(--ink3);">Visa or Mastercard</div></div>
+            </div>
           </div>
         </div>
+        <!-- Checkout Sidebar -->
         <div class="checkout-sidebar">
           <div style="font-size:17px;font-weight:700;margin-bottom:14px;">Order Summary</div>
           <div id="co-summary"></div>
@@ -756,7 +861,7 @@ tr:hover td{background:var(--bg);}
             <div class="escrow-step"><div class="escrow-dot">1</div><span>You pay → SOKO holds funds</span></div>
             <div class="escrow-step"><div class="escrow-dot">2</div><span>Seller ships your order</span></div>
             <div class="escrow-step"><div class="escrow-dot">3</div><span>You confirm receipt</span></div>
-            <div class="escrow-step"><div class="escrow-dot">4</div><span>2% service fee included for payment protection</span></div>
+            <div class="escrow-step"><div class="escrow-dot">4</div><span>2% service fee · payment released to seller</span></div>
           </div>
           <button class="btn-place" onclick="placeOrder()">Place your order →</button>
           <div style="font-size:11px;color:var(--ink4);margin-top:8px;text-align:center;">Secure checkout powered by SOKO Escrow</div>
@@ -764,6 +869,7 @@ tr:hover td{background:var(--bg);}
       </div>
     </div>
 
+    <!-- ── ORDER SUCCESS ──────────────────────────────────────── -->
     <div id="buyer-success" style="display:none;">
       <div class="success-wrap">
         <div class="success-icon">✓</div>
@@ -778,35 +884,56 @@ tr:hover td{background:var(--bg);}
           <div class="tracker-step"><div class="td pending">○</div><div><div style="font-size:13px;font-weight:600;">Funds Released to Seller</div><div style="font-size:11px;color:var(--ink4);">Payment released to seller</div></div></div>
         </div>
         <button class="btn-confirm-del" onclick="confirmDelivery()">✓ I Received My Order — Release Payment</button>
-        <button style="padding:11px 24px;border-radius:24px;border:var(--border);background:var(--w);font-size:14px;cursor:pointer;display:block;margin:0 auto;" onclick="buyerHome()">Continue Shopping</button>
+        <button style="padding:11px 24px;border-radius:24px;border:var(--border);background:var(--w);font-size:14px;cursor:pointer;display:block;margin:8px auto 0;" onclick="buyerHome()">Continue Shopping</button>
       </div>
     </div>
 
+    <!-- ── ORDERS ─────────────────────────────────────────────── -->
     <div id="buyer-orders" style="display:none;">
-      <div class="page-hdr"><button class="back-btn" onclick="buyerHome()">← Back</button><div class="breadcrumb">Your Orders</div></div>
+      <div class="page-hdr">
+        <button class="back-btn" onclick="buyerHome()">← Back</button>
+        <div class="breadcrumb">Your Orders</div>
+      </div>
       <div class="orders-wrap" id="orders-content"></div>
     </div>
 
+    <!-- ── BECOME SELLER ──────────────────────────────────────── -->
     <div id="buyer-become-seller" style="display:none;">
-      <div class="page-hdr"><button class="back-btn" onclick="goBack()">← Back</button><div class="breadcrumb">Sell on SOKO</div></div>
+      <div class="page-hdr">
+        <button class="back-btn" onclick="goBack()">← Back</button>
+        <div class="breadcrumb">Sell on SOKO</div>
+      </div>
       <div style="max-width:680px;margin:0 auto;padding:24px;">
         <div class="sec" style="text-align:center;padding:32px;">
           <div style="font-size:56px;margin-bottom:14px;">🏪</div>
           <h1 style="font-family:var(--font2);font-size:26px;font-weight:800;margin-bottom:10px;">Start Selling on SOKO</h1>
           <p style="color:var(--ink3);font-size:14px;max-width:460px;margin:0 auto 24px;">Join verified Rwanda sellers. Upload real product photos, receive escrow-protected payments, weekly payouts to your Mobile Money.</p>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;text-align:left;margin-bottom:24px;" id="become-steps"></div>
-          <button class="btn-or btn-or-dk" style="width:auto;padding:12px 28px;" onclick="toast('Create a Seller account to begin applying')">Start Selling →</button>
+          <button class="btn-or btn-or-dk" style="width:auto;padding:12px 28px;" onclick="authTab('signup');selectRole('seller');document.getElementById('view-auth').classList.add('active');document.getElementById('view-buyer').classList.remove('active');">Start Selling →</button>
         </div>
       </div>
     </div>
 
+    <!-- ── DISPUTE ────────────────────────────────────────────── -->
     <div id="buyer-dispute" style="display:none;">
-      <div class="page-hdr"><button class="back-btn" onclick="goBack()">← Back</button><div class="breadcrumb">Report a Problem</div></div>
+      <div class="page-hdr">
+        <button class="back-btn" onclick="goBack()">← Back</button>
+        <div class="breadcrumb">Report a Problem</div>
+      </div>
       <div style="max-width:580px;margin:20px auto;padding:0 20px;">
         <div class="checkout-sec">
           <div class="checkout-sec-title">Report an Issue</div>
           <div style="background:var(--bbg);border:1px solid var(--bb);border-radius:var(--r4);padding:10px 14px;font-size:13px;color:var(--b);margin-bottom:14px;">🔒 Your payment is still in escrow and will NOT be released to the seller until this dispute is resolved.</div>
-          <div class="fld"><label class="fld-lbl">Issue type</label><select class="fld-sel" id="dispute-type"><option>Wrong item received</option><option>Damaged product</option><option>Item not delivered</option><option>Fake / counterfeit product</option><option>Other</option></select></div>
+          <div class="fld">
+            <label class="fld-lbl">Issue type</label>
+            <select class="fld-sel" id="dispute-type">
+              <option>Wrong item received</option>
+              <option>Damaged product</option>
+              <option>Item not delivered</option>
+              <option>Fake / counterfeit product</option>
+              <option>Other</option>
+            </select>
+          </div>
           <div class="fld"><label class="fld-lbl">Order ID</label><input class="fld-inp" id="dispute-order" placeholder="ORD-XXXX"/></div>
           <div class="fld"><label class="fld-lbl">Description</label><textarea class="fld-inp fld-ta" id="dispute-desc" placeholder="Describe the issue in detail…"></textarea></div>
           <button class="btn-or btn-or-dk" onclick="submitDispute()">Submit Report →</button>
@@ -814,71 +941,114 @@ tr:hover td{background:var(--bg);}
       </div>
     </div>
 
+    <!-- ── REVIEW ─────────────────────────────────────────────── -->
     <div id="buyer-review" style="display:none;">
-      <div class="page-hdr"><button class="back-btn" onclick="goBack()">← Back</button><div class="breadcrumb">Write a Review</div></div>
+      <div class="page-hdr">
+        <button class="back-btn" onclick="goBack()">← Back</button>
+        <div class="breadcrumb">Write a Review</div>
+      </div>
       <div style="max-width:500px;margin:20px auto;padding:0 20px;">
         <div class="checkout-sec">
           <div class="checkout-sec-title">Rate this product</div>
           <div style="text-align:center;margin-bottom:18px;">
             <div style="font-size:13px;color:var(--ink3);margin-bottom:10px;font-weight:600;">Overall rating</div>
             <div style="display:flex;justify-content:center;gap:8px;font-size:40px;" id="star-row">
-              <span onclick="pickStar(1)" style="cursor:pointer;">☆</span><span onclick="pickStar(2)" style="cursor:pointer;">☆</span><span onclick="pickStar(3)" style="cursor:pointer;">☆</span><span onclick="pickStar(4)" style="cursor:pointer;">☆</span><span onclick="pickStar(5)" style="cursor:pointer;">☆</span>
+              <span onclick="pickStar(1)" style="cursor:pointer;">☆</span>
+              <span onclick="pickStar(2)" style="cursor:pointer;">☆</span>
+              <span onclick="pickStar(3)" style="cursor:pointer;">☆</span>
+              <span onclick="pickStar(4)" style="cursor:pointer;">☆</span>
+              <span onclick="pickStar(5)" style="cursor:pointer;">☆</span>
             </div>
           </div>
-          <div class="fld"><label class="fld-lbl">Headline (optional)</label><input class="fld-inp" placeholder="What's most important to know?"/></div>
+          <div class="fld"><label class="fld-lbl">Headline (optional)</label><input class="fld-inp" id="review-title" placeholder="What's most important to know?"/></div>
           <div class="fld"><label class="fld-lbl">Review (optional)</label><textarea class="fld-inp fld-ta" id="review-text" placeholder="What did you like or dislike?"></textarea></div>
           <button class="btn-or btn-or-dk" onclick="submitReview()">Submit Review</button>
         </div>
       </div>
     </div>
+
+  </div><!-- end #buyer-main -->
+
+  <!-- BUYER BOTTOM NAV -->
+  <div class="bnav">
+    <div class="bnav-inner">
+      <button class="bnav-item active" onclick="bnavSet(this);buyerHome()"><span class="bnav-ico">🏠</span>Home</button>
+      <button class="bnav-item" onclick="bnavSet(this);buyerShowView('shop')"><span class="bnav-ico">🔍</span>Shop</button>
+      <button class="bnav-item" onclick="bnavSet(this);buyerShowView('orders')"><span class="bnav-ico">📦</span>Orders</button>
+      <button class="bnav-item" onclick="bnavSet(this);buyerShowView('cart')"><span class="bnav-ico">🛒</span>Cart</button>
+      <button class="bnav-item" onclick="bnavSet(this);toggleAcctDD()"><span class="bnav-ico">👤</span>Account</button>
+    </div>
   </div>
 
-  <div class="bnav"><div class="bnav-inner">
-    <button class="bnav-item active" onclick="bnavSet(this);buyerHome()"><span class="bnav-ico">🏠</span>Home</button>
-    <button class="bnav-item" onclick="bnavSet(this);buyerShowView('shop')"><span class="bnav-ico">🔍</span>Shop</button>
-    <button class="bnav-item" onclick="bnavSet(this);buyerShowView('orders')"><span class="bnav-ico">📦</span>Orders</button>
-    <button class="bnav-item" onclick="bnavSet(this);buyerShowView('cart')"><span class="bnav-ico">🛒</span>Cart</button>
-    <button class="bnav-item" onclick="bnavSet(this);toggleAcctDD()"><span class="bnav-ico">👤</span>Account</button>
-  </div></div>
-</div>
+</div><!-- end #view-buyer -->
 
-<!-- SELLER VIEW -->
+<!-- ═══ END PART 2 — continue with Part 3 (Seller + Admin views + Modals) ═══ -->
+<!-- ═══ PART 3 — SELLER VIEW + ADMIN VIEW + ALL MODALS ════════
+     Paste this block directly after the end of Part 2.
+     ═══════════════════════════════════════════════════════════ -->
+
+<!-- ══════════════════════ SELLER VIEW ═══════════════════════ -->
 <div class="view" id="view-seller">
   <div class="seller-topnav">
     <div class="seller-logo">SO<span>KO</span> Seller Central</div>
     <span class="seller-badge" id="seller-kyc-badge">⏳ KYC Pending</span>
     <div style="margin-left:auto;display:flex;gap:8px;align-items:center;">
-      <select style="padding:5px;background:rgba(255,255,255,.1);border:none;color:#fff;border-radius:3px;font-size:12px;outline:none;" onchange="applyLang(this.value)"><option value="en">EN</option><option value="fr">FR</option><option value="rw">RW</option></select>
+      <select style="padding:5px;background:rgba(255,255,255,.1);border:none;color:#fff;border-radius:3px;font-size:12px;outline:none;" onchange="applyLang(this.value)">
+        <option value="en">EN</option><option value="fr">FR</option><option value="rw">RW</option>
+      </select>
       <button style="padding:6px 14px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:3px;color:#fff;font-size:12px;cursor:pointer;" onclick="doLogout()">Sign Out</button>
     </div>
   </div>
-  <div class="seller-layout" style="flex:1;"><div class="seller-sidebar"><div id="seller-nav"></div></div><div class="seller-main"><div id="seller-content"></div></div></div>
+  <div class="seller-layout" style="flex:1;">
+    <div class="seller-sidebar"><div id="seller-nav"></div></div>
+    <div class="seller-main"><div id="seller-content"></div></div>
+  </div>
   <div class="bnav"><div class="bnav-inner" id="seller-bnav"></div></div>
 </div>
 
-<!-- ADMIN VIEW -->
+<!-- ══════════════════════ ADMIN VIEW ════════════════════════ -->
 <div class="view" id="view-admin">
   <div class="admin-topnav">
-    <div><div class="admin-logo">SO<span>KO</span></div><div style="font-size:10px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.06em;">Admin Console</div></div>
+    <div>
+      <div class="admin-logo">SO<span>KO</span></div>
+      <div style="font-size:10px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.06em;">Admin Console</div>
+    </div>
     <div style="margin-left:auto;display:flex;gap:8px;align-items:center;">
-      <select style="padding:5px;background:rgba(255,255,255,.1);border:none;color:#fff;border-radius:3px;font-size:12px;outline:none;" onchange="applyLang(this.value)"><option value="en">EN</option><option value="fr">FR</option><option value="rw">RW</option></select>
+      <select style="padding:5px;background:rgba(255,255,255,.1);border:none;color:#fff;border-radius:3px;font-size:12px;outline:none;" onchange="applyLang(this.value)">
+        <option value="en">EN</option><option value="fr">FR</option><option value="rw">RW</option>
+      </select>
       <button style="padding:7px 14px;background:var(--r);border:none;border-radius:3px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;" onclick="doLogout()">Logout</button>
     </div>
   </div>
   <div class="admin-layout" style="flex:1;">
-    <div class="admin-sidebar"><div class="admin-sb-brand"><div class="admin-sb-logo">SO<span>KO</span></div><div class="admin-sb-role">Platform Admin</div></div><nav id="admin-nav"></nav></div>
+    <div class="admin-sidebar">
+      <div class="admin-sb-brand">
+        <div class="admin-sb-logo">SO<span>KO</span></div>
+        <div class="admin-sb-role">Platform Admin</div>
+      </div>
+      <nav id="admin-nav"></nav>
+    </div>
     <div class="admin-main"><div id="admin-content"></div></div>
   </div>
 </div>
 
-<!-- MODALS -->
+<!-- ══════════════════════ MODALS ════════════════════════════ -->
+
+<!-- ADD PRODUCT -->
 <div class="modal-bg" id="modal-add-product">
   <div class="modal">
-    <div class="modal-hd"><div class="modal-title">Add New Product</div><button class="modal-close" onclick="closeModal('modal-add-product')">✕</button></div>
+    <div class="modal-hd">
+      <div class="modal-title">Add New Product</div>
+      <button class="modal-close" onclick="closeModal('modal-add-product')">✕</button>
+    </div>
     <div class="modal-body">
       <div class="fld">
         <label class="fld-lbl">Product images (up to 5)</label>
-        <div class="img-drop" id="prod-drop" onclick="document.getElementById('prod-file').click()" ondragover="event.preventDefault();this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="handleProdDrop(event)">
+        <div class="img-drop" id="prod-drop"
+          onclick="document.getElementById('prod-file').click()"
+          ondragover="event.preventDefault();this.classList.add('over')"
+          ondragleave="this.classList.remove('over')"
+          ondrop="handleProdDrop(event)">
           <div style="font-size:32px;margin-bottom:8px;">📸</div>
           <div style="font-size:14px;font-weight:700;margin-bottom:5px;">Click or drag images here</div>
           <div style="font-size:12px;color:var(--ink4);">JPEG, PNG, WEBP · Max 5MB each · Up to 5 images</div>
@@ -889,7 +1059,18 @@ tr:hover td{background:var(--bg);}
       </div>
       <div class="fld"><label class="fld-lbl">Product name</label><input class="fld-inp" id="mp-name" placeholder="e.g. Fresh Avocados 1kg"/></div>
       <div class="fld-row">
-        <div class="fld"><label class="fld-lbl">Category</label><select class="fld-sel" id="mp-cat"><option value="food">🍎 Food & Drinks</option><option value="electronics">📱 Electronics</option><option value="clothes">👕 Clothes</option><option value="shoes">👟 Shoes</option><option value="home">🏠 Home</option><option value="beauty">💄 Beauty</option><option value="sports">⚽ Sports</option></select></div>
+        <div class="fld">
+          <label class="fld-lbl">Category</label>
+          <select class="fld-sel" id="mp-cat">
+            <option value="food">🍎 Food & Drinks</option>
+            <option value="electronics">📱 Electronics</option>
+            <option value="clothes">👕 Clothes</option>
+            <option value="shoes">👟 Shoes</option>
+            <option value="home">🏠 Home</option>
+            <option value="beauty">💄 Beauty</option>
+            <option value="sports">⚽ Sports</option>
+          </select>
+        </div>
         <div class="fld"><label class="fld-lbl">Price (RWF)</label><input class="fld-inp" id="mp-price" type="number" placeholder="25000"/></div>
       </div>
       <div class="fld-row">
@@ -897,43 +1078,85 @@ tr:hover td{background:var(--bg);}
         <div class="fld"><label class="fld-lbl">Emoji fallback</label><input class="fld-inp" id="mp-emoji" placeholder="🍎"/></div>
       </div>
       <div class="fld"><label class="fld-lbl">Description</label><textarea class="fld-inp fld-ta" id="mp-desc" placeholder="Describe your product…"></textarea></div>
-      <div style="background:var(--gbg);border:1px solid var(--gb);border-radius:var(--r4);padding:10px 12px;font-size:12px;color:var(--gd);">💡 You receive your earnings after a small platform fee. Payments are escrow-protected.</div>
+      <div style="background:var(--gbg);border:1px solid var(--gb);border-radius:var(--r4);padding:10px 12px;font-size:12px;color:var(--gd);">
+        💡 You receive your earnings after a small platform fee. Payments are escrow-protected.
+      </div>
     </div>
-    <div class="modal-footer"><button class="bx bx-ghost" onclick="closeModal('modal-add-product')">Cancel</button><button class="bx bx-g" style="padding:8px 18px;" onclick="addSellerProduct()">Add Product</button></div>
+    <div class="modal-footer">
+      <button class="bx bx-ghost" onclick="closeModal('modal-add-product')">Cancel</button>
+      <button class="bx bx-g" style="padding:8px 18px;" onclick="addSellerProduct()">Add Product</button>
+    </div>
   </div>
 </div>
 
+<!-- ORDER STATUS -->
 <div class="modal-bg" id="modal-order-status">
   <div class="modal">
-    <div class="modal-hd"><div class="modal-title">Update Order Status</div><button class="modal-close" onclick="closeModal('modal-order-status')">✕</button></div>
+    <div class="modal-hd">
+      <div class="modal-title">Update Order Status</div>
+      <button class="modal-close" onclick="closeModal('modal-order-status')">✕</button>
+    </div>
     <div class="modal-body">
       <div id="order-modal-info" style="background:var(--bg2);border-radius:var(--r4);padding:12px;margin-bottom:12px;font-size:13px;"></div>
       <div id="order-escrow-info" style="margin-bottom:12px;"></div>
-      <div class="fld"><label class="fld-lbl">New Status</label><select class="fld-sel" id="order-new-status"><option>pending</option><option>confirmed</option><option>shipped</option><option>delivered</option><option>cancelled</option></select></div>
+      <div class="fld">
+        <label class="fld-lbl">New Status</label>
+        <select class="fld-sel" id="order-new-status">
+          <option>pending</option>
+          <option>confirmed</option>
+          <option>shipped</option>
+          <option>delivered</option>
+          <option>cancelled</option>
+        </select>
+      </div>
     </div>
-    <div class="modal-footer"><button class="bx bx-ghost" onclick="closeModal('modal-order-status')">Cancel</button><button class="bx bx-g" style="padding:8px 18px;" onclick="saveOrderStatus()">Update</button></div>
+    <div class="modal-footer">
+      <button class="bx bx-ghost" onclick="closeModal('modal-order-status')">Cancel</button>
+      <button class="bx bx-g" style="padding:8px 18px;" onclick="saveOrderStatus()">Update</button>
+    </div>
   </div>
 </div>
 
+<!-- PAYOUT -->
 <div class="modal-bg" id="modal-payout">
   <div class="modal">
-    <div class="modal-hd"><div class="modal-title">Process Payout</div><button class="modal-close" onclick="closeModal('modal-payout')">✕</button></div>
+    <div class="modal-hd">
+      <div class="modal-title">Process Payout</div>
+      <button class="modal-close" onclick="closeModal('modal-payout')">✕</button>
+    </div>
     <div class="modal-body">
       <div id="payout-modal-detail"></div>
-      <div class="fld" style="margin-top:14px;"><label class="fld-lbl">Payout method</label><select class="fld-sel" id="payout-method"><option>MTN MoMo</option><option>Airtel Money</option><option>Bank Transfer</option></select></div>
+      <div class="fld" style="margin-top:14px;">
+        <label class="fld-lbl">Payout method</label>
+        <select class="fld-sel" id="payout-method">
+          <option>MTN MoMo</option>
+          <option>Airtel Money</option>
+          <option>Bank Transfer</option>
+        </select>
+      </div>
       <div class="fld"><label class="fld-lbl">Reference note</label><input class="fld-inp" id="payout-note" placeholder="e.g. Weekly payout May 2025"/></div>
-      <div style="background:var(--abg);border:1px solid var(--ab);border-radius:var(--r4);padding:10px 12px;font-size:12px;color:#8B5E00;">⚠️ Confirm you have manually transferred the funds before clicking below.</div>
+      <div style="background:var(--abg);border:1px solid var(--ab);border-radius:var(--r4);padding:10px 12px;font-size:12px;color:#8B5E00;">
+        ⚠️ Confirm you have manually transferred the funds before clicking below.
+      </div>
     </div>
-    <div class="modal-footer"><button class="bx bx-ghost" onclick="closeModal('modal-payout')">Cancel</button><button class="bx bx-g" style="padding:8px 18px;" onclick="confirmPayout()">Confirm Payout Sent ✓</button></div>
+    <div class="modal-footer">
+      <button class="bx bx-ghost" onclick="closeModal('modal-payout')">Cancel</button>
+      <button class="bx bx-g" style="padding:8px 18px;" onclick="confirmPayout()">Confirm Payout Sent ✓</button>
+    </div>
   </div>
 </div>
 
+<!-- LOCATION -->
 <div class="modal-bg" id="modal-location">
   <div class="modal" style="max-width:400px;">
-    <div class="modal-hd"><div class="modal-title">📍 Change Delivery Location</div><button class="modal-close" onclick="closeModal('modal-location')">✕</button></div>
+    <div class="modal-hd">
+      <div class="modal-title">📍 Change Delivery Location</div>
+      <button class="modal-close" onclick="closeModal('modal-location')">✕</button>
+    </div>
     <div class="modal-body">
       <p style="font-size:13px;color:var(--ink3);margin-bottom:14px;">Choose your city or enter a specific address.</p>
-      <div class="fld"><label class="fld-lbl">Select city</label>
+      <div class="fld">
+        <label class="fld-lbl">Select city</label>
         <select class="fld-sel" id="loc-city" onchange="locPreview(this.value)">
           <option value="Kigali, Rwanda">Kigali</option>
           <option value="Butare, Rwanda">Butare (Huye)</option>
@@ -945,22 +1168,78 @@ tr:hover td{background:var(--bg);}
           <option value="Gitarama, Rwanda">Gitarama (Muhanga)</option>
         </select>
       </div>
-      <div class="fld"><label class="fld-lbl">Or enter specific address</label><input class="fld-inp" id="loc-custom" placeholder="KG 7 Ave, Kimironko, Kigali" oninput="locPreview(this.value||document.getElementById('loc-city').value)"/></div>
-      <div style="background:var(--gbg);border:1px solid var(--gb);border-radius:var(--r4);padding:10px 14px;font-size:13px;color:var(--gd);margin-top:8px;">📍 <span id="loc-preview">Kigali, Rwanda</span></div>
+      <div class="fld">
+        <label class="fld-lbl">Or enter specific address</label>
+        <input class="fld-inp" id="loc-custom" placeholder="KG 7 Ave, Kimironko, Kigali"
+          oninput="locPreview(this.value||document.getElementById('loc-city').value)"/>
+      </div>
+      <div style="background:var(--gbg);border:1px solid var(--gb);border-radius:var(--r4);padding:10px 14px;font-size:13px;color:var(--gd);margin-top:8px;">
+        📍 <span id="loc-preview">Kigali, Rwanda</span>
+      </div>
     </div>
-    <div class="modal-footer"><button class="bx bx-ghost" onclick="closeModal('modal-location')">Cancel</button><button class="bx bx-g" style="padding:9px 20px;" onclick="saveLocation()">Save Location</button></div>
+    <div class="modal-footer">
+      <button class="bx bx-ghost" onclick="closeModal('modal-location')">Cancel</button>
+      <button class="bx bx-g" style="padding:9px 20px;" onclick="saveLocation()">Save Location</button>
+    </div>
   </div>
 </div>
 
+<!-- DISPUTE DETAIL (Admin) -->
 <div class="modal-bg" id="modal-dispute-detail">
-  <div class="modal"><div class="modal-hd"><div class="modal-title">🛡️ Dispute Details</div><button class="modal-close" onclick="closeModal('modal-dispute-detail')">✕</button></div><div class="modal-body" id="dispute-detail-body"></div><div class="modal-footer" id="dispute-detail-footer"></div></div>
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-title">🛡️ Dispute Details</div>
+      <button class="modal-close" onclick="closeModal('modal-dispute-detail')">✕</button>
+    </div>
+    <div class="modal-body" id="dispute-detail-body"></div>
+    <div class="modal-footer" id="dispute-detail-footer"></div>
+  </div>
 </div>
 
+<!-- USER DETAIL (Admin) -->
 <div class="modal-bg" id="modal-user-detail">
-  <div class="modal"><div class="modal-hd"><div class="modal-title">👤 User Details</div><button class="modal-close" onclick="closeModal('modal-user-detail')">✕</button></div><div class="modal-body" id="user-detail-body"></div></div>
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-title">👤 User Details</div>
+      <button class="modal-close" onclick="closeModal('modal-user-detail')">✕</button>
+    </div>
+    <div class="modal-body" id="user-detail-body"></div>
+  </div>
 </div>
 
+<!-- PRODUCT DETAIL (Admin quick view) -->
+<div class="modal-bg" id="modal-product-detail">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-title">📦 Product Details</div>
+      <button class="modal-close" onclick="closeModal('modal-product-detail')">✕</button>
+    </div>
+    <div class="modal-body" id="product-detail-body"></div>
+    <div class="modal-footer">
+      <button class="bx bx-ghost" onclick="closeModal('modal-product-detail')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- KYC DETAIL (Admin) -->
+<div class="modal-bg" id="modal-kyc-detail">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-title">🪪 KYC Application</div>
+      <button class="modal-close" onclick="closeModal('modal-kyc-detail')">✕</button>
+    </div>
+    <div class="modal-body" id="kyc-detail-body"></div>
+    <div class="modal-footer" id="kyc-detail-footer"></div>
+  </div>
+</div>
+
+<!-- ═══ END PART 3 — continue with Part 4 (all JavaScript) ═══ -->
 <script>
+// SUPABASE
+const SUPABASE_URL = 'https://rjimbkxhrrreaiesdzjr.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJqaW1ia3hocnJyZWFpZXNkempyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NDQ1MTUsImV4cCI6MjA5MjQyMDUxNX0.0Dra6oFMdef7oU0_XB7HQYfPKVgRqXXXVIoqzjeA78Y';
+const sb = (typeof supabase !== 'undefined') ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
 // DATA
 const CATS=[
   {id:'food',en:'Food & Drinks',fr:'Alimentation',rw:'Ibiribwa',icon:'🍎'},
@@ -971,79 +1250,68 @@ const CATS=[
   {id:'beauty',en:'Beauty',fr:'Beauté',rw:'Ubwiza',icon:'💄'},
   {id:'sports',en:'Sports',fr:'Sports',rw:'Siporo',icon:'⚽'},
 ];
-let PRODUCTS = [];
 
-async function loadProducts(){
-  if(!sb) return;
-  try {
-   const {data, error} = await sb.from('products').select('*'); if(error) throw error;
-    PRODUCTS = data.map(p => ({
-      id: p.id,
-      name: p.name,
-      cat: p.cat || p.category,
-      price: p.price,
-      stock: p.stock,
-      emoji: p.emoji || '📦',
-      images: p.images || [],
-      rating: p.rating || 5.0,
-      reviews: p.reviews || p.reviews_count || 0,
-      seller: p.seller || p.seller_name,
-      sellerPhone: p.seller_phone || p.sellers_phone || '+250 788 000 000',
-      desc: p.description || '',
-      badge: p.badge === 'EMPTY' ? null : p.badge,
-    }));
-    currentShopList = [...PRODUCTS];
-  } catch(e) {
-    console.error('Failed to load products:', e);
-  }
-}let ORDERS=[
-  {id:'ORD-2041',buyer:'Jean Mutoni',phone:'+250 788 000 001',addr:'KG 7 Ave',city:'Kigali',product:'Nike Air Force 1',productId:9,qty:1,total:45000,commission:900,sellerNet:44100,payment:'MTN MoMo',delivery:'moto',status:'confirmed',escrow:'held',date:'2025-05-08',seller:'SneakerHub RW'},
-  {id:'ORD-2038',buyer:'Marie Claire',phone:'+250 788 000 002',addr:'KN 5 Rd',city:'Kigali',product:'Samsung Galaxy A55',productId:5,qty:1,total:280000,commission:5600,sellerNet:274400,payment:'Airtel Money',delivery:'moto',status:'shipped',escrow:'held',date:'2025-05-06',seller:'PhoneCity KG'},
-  {id:'ORD-2035',buyer:'Eric Habimana',phone:'+250 788 000 003',addr:'KG 200 St',city:'Kigali',product:'African Print Dress',productId:11,qty:2,total:30000,commission:600,sellerNet:29400,payment:'Cash on Delivery',delivery:'pickup',status:'delivered',escrow:'released',date:'2025-05-04',seller:'Umucyo Fashion'},
-  {id:'ORD-2030',buyer:'Diane Uwase',phone:'+250 788 000 004',addr:'KK 15 Ave',city:'Kigali',product:'Wireless Earbuds Pro',productId:6,qty:1,total:22000,commission:440,sellerNet:21560,payment:'MTN MoMo',delivery:'moto',status:'pending',escrow:'held',date:'2025-05-03',seller:'TechHub RW'},
-  {id:'ORD-2028',buyer:'Patrick Nkurunziza',phone:'+250 788 000 005',addr:'KK 3 Ave',city:'Kigali',product:'Adidas Ultraboost 22',productId:10,qty:1,total:38000,commission:760,sellerNet:37240,payment:'Card',delivery:'moto',status:'cancelled',escrow:'refunded',date:'2025-05-01',seller:'SportZone RW'},
+let PRODUCTS=[
+  {id:1,name:'Fresh Avocados 1kg — Organic Musanze',cat:'food',price:1500,stock:50,emoji:'🥑',images:[],rating:4.9,reviews:88,seller:'Farm Fresh RW',sellerPhone:'+250788800001',desc:'Fresh organic avocados from Musanze farms. 1kg bag.',badge:'new'},
+  {id:2,name:'Primus Beer — 12 Pack × 500ml',cat:'food',price:9000,stock:100,emoji:'🍺',images:[],rating:4.8,reviews:142,seller:'Drinks RW',sellerPhone:'+250788800002',desc:"Rwanda's favourite beer. 12×500ml cold bottles.",badge:'hot'},
+  {id:3,name:'Fresh Whole Milk — 1 Litre Daily',cat:'food',price:800,stock:150,emoji:'🥛',images:[],rating:4.9,reviews:203,seller:'Farm Fresh RW',sellerPhone:'+250788800001',desc:'Fresh pasteurized milk from local Rwanda farms.',badge:''},
+  {id:4,name:'Ibirayi Potatoes — 5kg Local Farm',cat:'food',price:2500,stock:200,emoji:'🥔',images:[],rating:4.7,reviews:55,seller:'Farm Fresh RW',sellerPhone:'+250788800001',desc:'Fresh potatoes from Rwandan farms. 5kg bag.',badge:''},
+  {id:5,name:'Samsung Galaxy A55 5G — 128GB',cat:'electronics',price:280000,stock:5,emoji:'📱',images:[],rating:4.7,reviews:18,seller:'PhoneCity KG',sellerPhone:'+250788200002',desc:'Samsung A55 5G — 128GB, 8GB RAM, triple camera.',badge:'new'},
+  {id:6,name:'Wireless Earbuds Pro — Bluetooth 5.2',cat:'electronics',price:22000,stock:20,emoji:'🎧',images:[],rating:4.5,reviews:89,seller:'TechHub RW',sellerPhone:'+250788100001',desc:'Premium earbuds. Bluetooth 5.2, 24hr battery.',badge:'sale'},
+  {id:7,name:'Laptop HP 256G10 — Intel i5 8GB RAM',cat:'electronics',price:520000,stock:3,emoji:'💻',images:[],rating:4.6,reviews:11,seller:'PhoneCity KG',sellerPhone:'+250788200002',desc:'HP Laptop: Intel Core i5, 8GB RAM, 256GB SSD.',badge:'hot'},
+  {id:8,name:'Sony Bluetooth Speaker — 20W Waterproof',cat:'electronics',price:35000,stock:14,emoji:'🔊',images:[],rating:4.6,reviews:56,seller:'TechHub RW',sellerPhone:'+250788100001',desc:'Portable waterproof speaker. 20W, 12hr battery.',badge:''},
+  {id:9,name:'Nike Air Force 1 — White (Sizes 39–46)',cat:'shoes',price:45000,stock:12,emoji:'👟',images:[],rating:4.8,reviews:42,seller:'SneakerHub RW',sellerPhone:'+250788100001',desc:'Authentic Nike Air Force 1. White. Sizes 39–46.',badge:'hot'},
+  {id:10,name:'Adidas Ultraboost 22 — Running Shoes',cat:'shoes',price:38000,stock:8,emoji:'👟',images:[],rating:4.9,reviews:33,seller:'SportZone RW',sellerPhone:'+250788400004',desc:'Adidas Ultraboost 22. Sizes 38–47.',badge:''},
+  {id:11,name:'African Print Kente Dress — S/M/L/XL',cat:'clothes',price:15000,stock:30,emoji:'👗',images:[],rating:4.6,reviews:67,seller:'Umucyo Fashion',sellerPhone:'+250788300003',desc:'Beautiful Kente-style African print dress.',badge:''},
+  {id:12,name:"Men's Rwanda Hoodie — Premium Cotton",cat:'clothes',price:12000,stock:25,emoji:'👕',images:[],rating:4.4,reviews:38,seller:'Umucyo Fashion',sellerPhone:'+250788300003',desc:'"Made in Rwanda" premium cotton hoodie.',badge:'new'},
+  {id:13,name:'Rice Cooker 1.8L — Non-stick with Steamer',cat:'home',price:18000,stock:22,emoji:'🍚',images:[],rating:4.7,reviews:61,seller:'HomeStore RW',sellerPhone:'+250788700007',desc:'1.8L rice cooker. Non-stick, steamer tray.',badge:''},
+  {id:14,name:'Football — FIFA Standard Size 5',cat:'sports',price:9000,stock:30,emoji:'⚽',images:[],rating:4.8,reviews:92,seller:'SportZone RW',sellerPhone:'+250788400004',desc:'FIFA-quality football. Indoor/outdoor.',badge:''},
+  {id:15,name:'Vitamin C Brightening Serum 30ml',cat:'beauty',price:8500,stock:45,emoji:'🧴',images:[],rating:4.7,reviews:124,seller:'GlowSkin RW',sellerPhone:'+250788500005',desc:'30ml brightening serum. Reduces dark spots.',badge:''},
+  {id:16,name:'Cooking Oil — Pure Sunflower 5L',cat:'food',price:12000,stock:80,emoji:'🛢️',images:[],rating:4.6,reviews:77,seller:'Drinks RW',sellerPhone:'+250788800002',desc:'Pure sunflower cooking oil. 5 litre bottle.',badge:''},
 ];
+
+let ORDERS=[
+  {id:'ORD-2041',buyer:'Jean Mutoni',phone:'+250788000001',addr:'KG 7 Ave',city:'Kigali',product:'Nike Air Force 1',productId:9,qty:1,total:45000,commission:1800,sellerNet:43200,payment:'MTN MoMo',delivery:'moto',status:'confirmed',escrow:'held',date:'2025-05-08',seller:'SneakerHub RW'},
+  {id:'ORD-2038',buyer:'Marie Claire',phone:'+250788000002',addr:'KN 5 Rd',city:'Kigali',product:'Samsung Galaxy A55',productId:5,qty:1,total:280000,commission:11200,sellerNet:268800,payment:'Airtel Money',delivery:'moto',status:'shipped',escrow:'held',date:'2025-05-06',seller:'PhoneCity KG'},
+  {id:'ORD-2035',buyer:'Eric Habimana',phone:'+250788000003',addr:'KG 200 St',city:'Kigali',product:'African Print Dress',productId:11,qty:2,total:30000,commission:1200,sellerNet:28800,payment:'Cash on Delivery',delivery:'pickup',status:'delivered',escrow:'released',date:'2025-05-04',seller:'Umucyo Fashion'},
+  {id:'ORD-2030',buyer:'Diane Uwase',phone:'+250788000004',addr:'KK 15 Ave',city:'Kigali',product:'Wireless Earbuds Pro',productId:6,qty:1,total:22000,commission:880,sellerNet:21120,payment:'MTN MoMo',delivery:'moto',status:'pending',escrow:'held',date:'2025-05-03',seller:'TechHub RW'},
+  {id:'ORD-2028',buyer:'Patrick N.',phone:'+250788000005',addr:'KK 3 Ave',city:'Kigali',product:'Adidas Ultraboost 22',productId:10,qty:1,total:38000,commission:1520,sellerNet:36480,payment:'Card',delivery:'moto',status:'cancelled',escrow:'refunded',date:'2025-05-01',seller:'SportZone RW'},
+];
+
 let KYC=[
-  {id:'kyc-1',name:'Alice Uwimana',phone:'+250 788 111 001',idNum:'1198570025080016',date:'2025-05-07',status:'pending'},
-  {id:'kyc-2',name:'Bob Ndikumana',phone:'+250 788 111 002',idNum:'1199400015060023',date:'2025-05-06',status:'pending'},
-  {id:'kyc-3',name:'Claudette Mukandahiro',phone:'+250 788 111 003',idNum:'1200450025040031',date:'2025-05-05',status:'pending'},
-  {id:'kyc-4',name:'Daniel Habimana',phone:'+250 788 111 004',idNum:'1197560035020042',date:'2025-05-03',status:'approved'},
-  {id:'kyc-5',name:'Eva Ingabire',phone:'+250 788 111 005',idNum:'1200580015010055',date:'2025-05-02',status:'rejected'},
+  {id:'kyc-1',name:'Alice Uwimana',phone:'+250788111001',idNum:'1198570025080016',date:'2025-05-07',status:'pending',idImage:null},
+  {id:'kyc-2',name:'Bob Ndikumana',phone:'+250788111002',idNum:'1199400015060023',date:'2025-05-06',status:'pending',idImage:null},
+  {id:'kyc-3',name:'Claudette Mukandahiro',phone:'+250788111003',idNum:'1200450025040031',date:'2025-05-05',status:'pending',idImage:null},
+  {id:'kyc-4',name:'Daniel Habimana',phone:'+250788111004',idNum:'1197560035020042',date:'2025-05-03',status:'approved',idImage:null},
+  {id:'kyc-5',name:'Eva Ingabire',phone:'+250788111005',idNum:'1200580015010055',date:'2025-05-02',status:'rejected',idImage:null},
 ];
+
 let USERS=[
-  {name:'Jean Mutoni',phone:'+250 788 000 001',role:'buyer',verified:true,joined:'2025-04-01',status:'active',earnings:0,pendingPayout:0},
-  {name:'Marie Claire',phone:'+250 788 000 002',role:'buyer',verified:true,joined:'2025-04-05',status:'active',earnings:0,pendingPayout:0},
-  {name:'Alice Uwimana',phone:'+250 788 111 001',role:'seller',verified:true,joined:'2025-04-10',status:'active',earnings:139300,pendingPayout:94300},
-  {name:'Bob Ndikumana',phone:'+250 788 111 002',role:'seller',verified:false,joined:'2025-05-06',status:'pending',earnings:0,pendingPayout:0},
-  {name:'TechHub RW',phone:'+250 788 100 001',role:'seller',verified:true,joined:'2025-03-15',status:'active',earnings:285600,pendingPayout:180000},
-  {name:'System Admin',phone:'+250 788 000 000',role:'admin',verified:true,joined:'2025-01-01',status:'active',earnings:0,pendingPayout:0},
+  {name:'Jean Mutoni',phone:'+250788000001',role:'buyer',verified:true,joined:'2025-04-01',status:'active',earnings:0,pendingPayout:0},
+  {name:'Marie Claire',phone:'+250788000002',role:'buyer',verified:true,joined:'2025-04-05',status:'active',earnings:0,pendingPayout:0},
+  {name:'Alice Uwimana',phone:'+250788111001',role:'seller',verified:true,joined:'2025-04-10',status:'active',earnings:139300,pendingPayout:94300},
+  {name:'Bob Ndikumana',phone:'+250788111002',role:'seller',verified:false,joined:'2025-05-06',status:'pending',earnings:0,pendingPayout:0},
+  {name:'TechHub RW',phone:'+250788100001',role:'seller',verified:true,joined:'2025-03-15',status:'active',earnings:285600,pendingPayout:180000},
+  {name:'System Admin',phone:'+250788000000',role:'admin',verified:true,joined:'2025-01-01',status:'active',earnings:0,pendingPayout:0},
 ];
+
 let PAYOUTS=[
-  {id:'PAY-001',seller:'Alice Uwimana',phone:'+250 788 111 001',amount:94300,ordersCount:3,method:'MTN MoMo',status:'pending',date:'2025-05-08'},
-  {id:'PAY-002',seller:'TechHub RW',phone:'+250 788 100 001',amount:180000,ordersCount:7,method:'MTN MoMo',status:'pending',date:'2025-05-07'},
-  {id:'PAY-003',seller:'PhoneCity KG',phone:'+250 788 200 002',amount:198400,ordersCount:2,method:'Bank Transfer',status:'pending',date:'2025-05-06'},
-  {id:'PAY-004',seller:'Umucyo Fashion',phone:'+250 788 300 003',amount:62000,ordersCount:5,method:'Airtel Money',status:'pending',date:'2025-05-05'},
-  {id:'PAY-005',seller:'SportZone RW',phone:'+250 788 400 004',amount:145000,ordersCount:8,method:'MTN MoMo',status:'paid',date:'2025-05-01'},
+  {id:'PAY-001',seller:'Alice Uwimana',phone:'+250788111001',amount:94300,ordersCount:3,method:'MTN MoMo',status:'pending',date:'2025-05-08'},
+  {id:'PAY-002',seller:'TechHub RW',phone:'+250788100001',amount:180000,ordersCount:7,method:'MTN MoMo',status:'pending',date:'2025-05-07'},
+  {id:'PAY-003',seller:'PhoneCity KG',phone:'+250788200002',amount:198400,ordersCount:2,method:'Bank Transfer',status:'pending',date:'2025-05-06'},
+  {id:'PAY-004',seller:'Umucyo Fashion',phone:'+250788300003',amount:62000,ordersCount:5,method:'Airtel Money',status:'pending',date:'2025-05-05'},
+  {id:'PAY-005',seller:'SportZone RW',phone:'+250788400004',amount:145000,ordersCount:8,method:'MTN MoMo',status:'paid',date:'2025-05-01'},
 ];
+
 let DISPUTES=[
   {id:'DSP-01',buyer:'Jean Mutoni',orderId:'ORD-2030',type:'Wrong item received',desc:'Received white shoes but ordered black.',status:'open',escrowAction:'frozen',date:'2025-05-08'},
   {id:'DSP-02',buyer:'Marie Claire',orderId:'ORD-2028',type:'Item not delivered',desc:'Order cancelled but MoMo was charged.',status:'open',escrowAction:'frozen',date:'2025-05-07'},
   {id:'DSP-03',buyer:'Eric Habimana',orderId:'ORD-2035',type:'Damaged product',desc:'Dress arrived with a tear.',status:'resolved',escrowAction:'released',date:'2025-05-05'},
 ];
 
-// ══════════════════════════════════════════════════════════════
-//  — replace these with your real project values
-// Get them from: https://supabase.com → Project Settings → API
-// ═══════SUPABASE INIT═══════════════════════════════════════════════════════
-const SUPABASE_URL = 'https://rjimbkxhrrreaiesdzjr.supabase.co';
-const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJqaW1ia3hocnJyZWFpZXNkempyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NDQ1MTUsImV4cCI6MjA5MjQyMDUxNX0.0Dra6oFMdef7oU0_XB7HQYfPKVgRqXXXVIoqzjeA78Y';
-const sb = (typeof supabase !== 'undefined')
-  ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
-  : null;
-
 // STATE
 let cart=[],currentUser=null,lang='en',selectedRole='buyer';
-let commissionRate=4; // 2% from buyer + 2% from seller = 4% total. Never shown in app. // Platform commission % — changeable from Admin Settings
+let commissionRate=4;
 let currentBuyerView='home',prevBuyerView='home',activeProductId=null;
 let editingOrderId=null,editingPayoutId=null,pickedStar=0,signupData={};
 let currentShopList=[...PRODUCTS],currentLocation='Kigali, Rwanda';
@@ -1053,17 +1321,22 @@ let prodImages=[],kycImageData=null;
 const toast=(msg,type)=>{const t=document.getElementById('toast');t.textContent=msg;t.className=type?'show '+type:'show';clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2800);};
 const openModal=id=>document.getElementById(id).classList.add('open');
 const closeModal=id=>document.getElementById(id).classList.remove('open');
-document.querySelectorAll('.modal-bg').forEach(b=>b.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');}));
 const getCat=id=>{const c=CATS.find(x=>x.id===id);return c?(c[lang]||c.en):id;};
 const stars=r=>'★'.repeat(Math.round(r))+'☆'.repeat(5-Math.round(r));
 const fmt=n=>Number(n).toLocaleString();
 const closeAll=()=>{document.getElementById('acct-dd').classList.remove('open');document.getElementById('notif-panel').classList.remove('open');document.getElementById('all-drawer').classList.remove('open');};
 const closeAcctDD=()=>document.getElementById('acct-dd').classList.remove('open');
 
+document.querySelectorAll('.modal-bg').forEach(b=>b.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');}));
 document.addEventListener('click',e=>{
   if(!e.target.closest('#acct-dd')&&!e.target.closest('[onclick*="toggleAcctDD"]'))document.getElementById('acct-dd').classList.remove('open');
   if(!e.target.closest('#notif-panel')&&!e.target.closest('[onclick*="toggleNotif"]'))document.getElementById('notif-panel').classList.remove('open');
   if(!e.target.closest('#all-drawer')&&!e.target.closest('#all-menu-btn'))document.getElementById('all-drawer').classList.remove('open');
+});
+
+window.addEventListener('DOMContentLoaded',()=>{
+  setTimeout(()=>{const ls=document.getElementById('loading-screen');if(ls)ls.classList.add('hidden');},1500);
+  restoreSession();
 });
 
 // LANGUAGE
@@ -1098,31 +1371,19 @@ async function doLogin(){
   const phone=document.getElementById('login-phone').value.trim();
   const pw=document.getElementById('login-pass').value;
   if((!email&&!phone)||!pw){toast('Please enter your email/phone and password','r');return;}
-
-  // If Supabase is configured, use real auth
-  if(sb && SUPABASE_URL !== 'https://YOUR_PROJECT.supabase.co'){
+  if(sb){
     toast('Signing in…');
-    const identifier = email || phone;
-    const {data,error} = await sb.auth.signInWithPassword({email:identifier,password:pw});
+    const identifier=email||phone;
+    const{data,error}=await sb.auth.signInWithPassword({email:identifier,password:pw});
     if(error){toast(error.message,'r');return;}
-    // Fetch profile from users table
-    let {data:profile} = await sb.from('users').select('*').eq('email',identifier).single();
+    let{data:profile}=await sb.from('users').select('*').eq('email',identifier).single();
     if(!profile){
-      // Create profile if missing
-      const {data:np} = await sb.from('users').insert([{
-        name:identifier.split('@')[0], email:identifier,
-        auth_id:data.user.id, role:'buyer', verified:false, status:'active'
-      }]).select().single();
+      const{data:np}=await sb.from('users').insert([{name:identifier.split('@')[0],email:identifier,auth_id:data.user.id,role:'buyer',verified:false,status:'active'}]).select().single();
       profile=np;
     }
-    if(profile){
-      signupData={name:profile.name,email:profile.email,phone:profile.phone||phone,role:profile.role,_ctx:'login'};
-      loginSuccess();
-    }
+    if(profile){signupData={name:profile.name,email:profile.email,phone:profile.phone||phone,role:profile.role,_ctx:'login'};loginSuccess();}
     return;
   }
-
-  // DEMO fallback (no Supabase configured)
   signupData={email,phone,name:email?email.split('@')[0]:'User',role:'buyer',_ctx:'login'};
   showOtp();
 }
@@ -1132,25 +1393,16 @@ async function doSignup(){
   const phone=document.getElementById('su-phone').value||'';
   if(!fn||!ln||!email||!pw){toast('Please fill all required fields','r');return;}
   if(pw.length<6){toast('Password must be at least 6 characters','r');return;}
-
-  // If Supabase is configured, use real auth
-  if(sb && SUPABASE_URL !== 'https://YOUR_PROJECT.supabase.co'){
+  if(sb){
     toast('Creating your account…');
-    const {data,error} = await sb.auth.signUp({email,password:pw});
+    const{data,error}=await sb.auth.signUp({email,password:pw});
     if(error){toast(error.message,'r');return;}
-    const {data:profile,error:profileError} = await sb.from('users').insert([{
-      name:fn+' '+ln, email, phone:phone||null,
-      role:selectedRole, auth_id:data.user.id,
-      verified:false, status:selectedRole==='seller'?'pending':'active'
-    }]).select().single();
+    const{data:profile,error:profileError}=await sb.from('users').insert([{name:fn+' '+ln,email,phone:phone||null,role:selectedRole,auth_id:data.user.id,verified:false,status:selectedRole==='seller'?'pending':'active'}]).select().single();
     if(profileError){toast('Account created! Please sign in.','g');authTab('login');return;}
     signupData={name:profile.name,email:profile.email,phone:profile.phone||'',role:profile.role,_ctx:'signup'};
-    if(selectedRole==='seller'){showOtp();}
-    else{loginSuccess();}
+    if(selectedRole==='seller')showOtp();else loginSuccess();
     return;
   }
-
-  // DEMO fallback
   signupData={name:fn+' '+ln,email,phone,role:selectedRole,_ctx:'signup'};
   USERS.push({name:signupData.name,phone,email,role:selectedRole,verified:false,joined:new Date().toISOString().slice(0,10),status:selectedRole==='seller'?'pending':'active',earnings:0,pendingPayout:0});
   showOtp();
@@ -1166,7 +1418,7 @@ function otpSubmit(){
   if(code==='1234'){
     if(signupData.role==='seller'&&signupData._ctx==='signup'){document.getElementById('apanel-otp').style.display='none';document.getElementById('apanel-kyc').style.display='block';}
     else loginSuccess();
-  } else toast('Incorrect code — try 1234','r');
+  }else toast('Incorrect code — try 1234','r');
 }
 function handleKycUpload(file){
   if(!file)return;
@@ -1181,8 +1433,8 @@ function submitKYC(){
   KYC.push({id:'kyc-'+(KYC.length+1),name:n,phone:signupData.phone||signupData.email,idNum:i,date:new Date().toISOString().slice(0,10),status:'pending',idImage:kycImageData});
   signupData.kycSubmitted=true;loginSuccess();
 }
-async function loginSuccess(){
-  await loadProducts();  currentUser={...signupData};
+function loginSuccess(){
+  currentUser={...signupData};
   document.getElementById('view-auth').classList.remove('active');
   if(currentUser.role==='admin'){document.getElementById('view-admin').classList.add('active');buildAdminNav();renderAdmin('overview');}
   else if(currentUser.role==='seller'){document.getElementById('view-seller').classList.add('active');buildSellerNav();renderSeller('dashboard');}
@@ -1195,13 +1447,11 @@ async function loginSuccess(){
   toast('Welcome, '+currentUser.name.split(' ')[0]+'! 👋','g');
 }
 function quickLogin(role){
-  signupData={buyer:{name:'Jean Mutoni',phone:'+250 788 001',email:'jean@soko.rw',role:'buyer'},seller:{name:'Alice Uwimana',phone:'+250 788 002',email:'alice@soko.rw',role:'seller'},admin:{name:'System Admin',phone:'+250 788 000',email:'admin@soko.rw',role:'admin'}}[role];
-  signupData._ctx='login';loginSuccess();
+  const accounts={buyer:{name:'Jean Mutoni',phone:'+250788001',email:'jean@soko.rw',role:'buyer'},seller:{name:'Alice Uwimana',phone:'+250788002',email:'alice@soko.rw',role:'seller'},admin:{name:'System Admin',phone:'+250788000',email:'admin@soko.rw',role:'admin'}};
+  signupData=accounts[role];signupData._ctx='login';loginSuccess();
 }
 async function doLogout(){
-  if(sb && SUPABASE_URL !== 'https://YOUR_PROJECT.supabase.co'){
-    await sb.auth.signOut();
-  }
+  if(sb)await sb.auth.signOut();
   currentUser=null;cart=[];
   ['view-buyer','view-seller','view-admin'].forEach(id=>document.getElementById(id).classList.remove('active'));
   document.getElementById('view-auth').classList.add('active');
@@ -1209,11 +1459,52 @@ async function doLogout(){
   ['otp1','otp2','otp3','otp4'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   closeAll();toast('You have signed out');
 }
+async function restoreSession(){
+  if(!sb)return;
+  try{
+    const{data:{session}}=await sb.auth.getSession();
+    if(!session)return;
+    const{data:profile}=await sb.from('users').select('*').eq('email',session.user.email).single();
+    if(profile){signupData={name:profile.name,email:profile.email,phone:profile.phone||'',role:profile.role,_ctx:'login'};loginSuccess();}
+  }catch(e){console.log('Session restore:',e);}
+}
+async function forgotPassword(){
+  const email=document.getElementById('login-email').value.trim();
+  if(!email){toast('Enter your email address first','r');return;}
+  if(!sb){toast('Supabase not configured','r');return;}
+  const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin});
+  if(error){toast(error.message,'r');return;}
+  toast('✓ Password reset link sent to '+email,'g');
+}
+async function loadProducts(){
+  if(!sb) return;
+  try {
+    const {data, error} = await sb.from('products').select('*');
+    if(error) throw error;
+    if(data && data.length) {
+      PRODUCTS = data.map(p => ({
+        id: p.id,
+        name: p.name,
+        cat: p.category || p.cat,
+        price: p.price,
+        stock: p.stock,
+        emoji: p.emoji || '📦',
+        images: p.images || [],
+        rating: p.rating || 5.0,
+        reviews: p.reviews_count || p.reviews || 0,
+        seller: p.seller_name || p.seller,
+        sellerPhone: p.seller_phone || '+250788000000',
+        desc: p.description || '',
+        badge: (p.badge && p.badge !== 'EMPTY') ? p.badge : '',
+      }));
+      currentShopList = [...PRODUCTS];
+    }
+  } catch(e) {
+    console.error('Failed to load products from Supabase:', e);
+  }
+}
 // BUYER HOME
-async function buildBuyerHome(){
-  await loadProducts();
-  renderPromos();renderCats();
-  renderProds(PRODUCTS.slice(0,8),'home-products');
+function buildBuyerHome(){
   renderPromos();renderCats();
   renderProds(PRODUCTS.slice(0,8),'home-products');
   renderProds(PRODUCTS.filter(p=>p.cat==='food').slice(0,4),'food-products');
@@ -1237,12 +1528,11 @@ function renderProds(list,cid){
   c.innerHTML=list.map(p=>{
     const badge=p.badge?`<div class="prod-badge ${p.badge}">${p.badge==='hot'?'Best Seller':p.badge==='new'?'New':'Sale'}</div>`:'';
     const thumb=(p.images&&p.images.length)?`<img src="${p.images[0]}" style="width:100%;height:100%;object-fit:cover;"/>`:`<span>${p.emoji}</span>`;
-    return `<div class="prod-card"><div class="prod-thumb">${badge}${thumb}</div><div class="prod-info" ><div class="prod-brand">${p.seller}</div><div class="prod-name">${p.name}</div><div><span class="prod-stars">${stars(p.rating)}</span><span class="prod-rc">${p.reviews.toLocaleString()}</span></div><div class="prod-price">RWF ${fmt(p.price)}</div><div style="font-size:11px;color:var(--g);font-weight:600;">🔒 Payment protected</div></div><div style="padding:0 12px 12px;"><button class="btn-atc" >Add to cart</button></div></div>`;
-  return `<div class="prod-card"><div class="prod-thumb" onclick="showProduct('${p.id}')">${badge}${thumb}</div><div class="prod-info" onclick="showProduct('${p.id}')"><div class="prod-brand">${p.seller}</div><div class="prod-name">${p.name}</div><div><span class="prod-stars">${stars(p.rating)}</span><span class="prod-rc">${p.reviews.toLocaleString()}</span></div><div class="prod-price">RWF ${fmt(p.price)}</div><div style="font-size:11px;color:var(--g);font-weight:600;">🔒 Payment protected</div></div><div style="padding:0 12px 12px;"><button class="btn-atc" onclick="addToCartGrid(event,'${p.id}')">Add to cart</button></div></div>`;
+    return `<div class="prod-card"><div class="prod-thumb">${badge}${thumb}</div><div class="prod-info" onclick="showProduct(${p.id})"><div class="prod-brand">${p.seller}</div><div class="prod-name">${p.name}</div><div><span class="prod-stars">${stars(p.rating)}</span><span class="prod-rc">${p.reviews.toLocaleString()}</span></div><div class="prod-price">RWF ${fmt(p.price)}</div><div style="font-size:11px;color:var(--g);font-weight:600;">🔒 Payment protected</div></div><div style="padding:0 12px 12px;"><button class="btn-atc" onclick="addToCartGrid(event,${p.id})">Add to cart</button></div></div>`;
   }).join('');
 }
 function buildBecomeSeller(){
-  const el=document.getElementById('become-steps');if(!el)return;
+  const el=document.getElementById('become-steps');if(!el)return;el.innerHTML='';
   [{icon:'📋',t:'Submit your ID (KYC)',d:'National ID reviewed in 24–48 hours'},{icon:'📦',t:'List your products',d:'Upload real photos, prices, stock levels'},{icon:'🔒',t:'Escrow-protected sales',d:'Payment held until buyer confirms delivery'},{icon:'💰',t:'Weekly payouts',d:'98% of every sale sent to your MoMo'}]
   .forEach(s=>{el.innerHTML+=`<div style="background:var(--bg2);border-radius:8px;padding:14px;display:flex;gap:10px;"><span style="font-size:22px;">${s.icon}</span><div><div style="font-weight:700;font-size:13px;margin-bottom:2px;">${s.t}</div><div style="font-size:12px;color:var(--ink3);">${s.d}</div></div></div>`;});
 }
@@ -1252,7 +1542,7 @@ function buildNotifs(){
   .forEach(n=>{el.innerHTML+=`<div class="notif-item${n.u?' unread':''}"><div style="font-size:20px;flex-shrink:0;margin-top:1px;">${n.icon}</div><div><div style="font-size:13px;color:var(--ink2);">${n.text}</div><div style="font-size:11px;color:var(--ink4);margin-top:2px;">${n.time}</div></div></div>`;});
 }
 
-// BUYER NAV
+// BUYER NAVIGATION
 function buyerHome(){prevBuyerView=currentBuyerView;currentBuyerView='home';showBuyerSec('buyer-home');}
 function buyerShowView(v){
   prevBuyerView=currentBuyerView;currentBuyerView=v;
@@ -1285,11 +1575,10 @@ function showProduct(id){
   activeProductId=id;prevBuyerView=currentBuyerView;currentBuyerView='detail';
   showBuyerSec('buyer-detail');
   const p=PRODUCTS.find(x=>x.id===id);if(!p)return;
-  const comm=Math.round(p.price*(commissionRate/100)),net=p.price-comm;
   const hasPics=p.images&&p.images.length;
   const mainHtml=hasPics?`<img src="${p.images[0]}" style="width:100%;height:100%;object-fit:contain;"/>`:`<span style="font-size:130px;">${p.emoji}</span>`;
   const thumbsHtml=(hasPics?p.images.slice(0,4):[p.emoji,p.emoji,p.emoji]).map((img,i)=>`<div class="detail-thumb ${i===0?'active':''}" onclick="swapImg(this,'${img}',${hasPics})">${hasPics?`<img src="${img}"/>`:`<span style="font-size:20px;">${img}</span>`}</div>`).join('');
-  const revs=[{u:'Jean M.',s:5,t:'Excellent product! Fast delivery, highly recommend.',d:'May 5, 2025'},{u:'Marie C.',s:4,t:'Good quality, exactly as described. Seller communicated well.',d:'May 3, 2025'},{u:'Eric H.',s:5,t:'Very happy with this purchase. Will buy again!',d:'April 28, 2025'}];
+  const revs=[{u:'Jean M.',s:5,t:'Excellent product! Fast delivery.',d:'May 5, 2025'},{u:'Marie C.',s:4,t:'Good quality, exactly as described.',d:'May 3, 2025'},{u:'Eric H.',s:5,t:'Very happy. Will buy again!',d:'April 28, 2025'}];
   document.getElementById('detail-crumb').innerHTML=`<a onclick="buyerHome()">Home</a> › <a onclick="filterCat('${p.cat}')">${getCat(p.cat)}</a> › ${p.name.slice(0,40)}…`;
   document.getElementById('detail-content').innerHTML=`
     <div class="detail-wrap">
@@ -1301,7 +1590,7 @@ function showProduct(id){
         <div style="font-size:12px;color:var(--b);margin-bottom:8px;"><a onclick="filterCat('${p.cat}')">${getCat(p.cat)}</a></div>
         <div class="detail-title">${p.name}</div>
         <div class="detail-brand">Visit the <span style="color:var(--b);">${p.seller}</span> Store</div>
-        <div class="detail-rating-row"><span style="color:var(--or);font-size:16px;">${stars(p.rating)}</span><span style="color:var(--or);font-weight:700;">${p.rating}</span><a style="color:var(--b);font-size:13px;cursor:pointer;">${p.reviews.toLocaleString()} ratings</a><span style="color:var(--ink4);">·</span><a style="color:var(--b);font-size:13px;">✓ Verified seller</a></div>
+        <div class="detail-rating-row"><span style="color:var(--or);font-size:16px;">${stars(p.rating)}</span><span style="color:var(--or);font-weight:700;">${p.rating}</span><a style="color:var(--b);font-size:13px;">${p.reviews.toLocaleString()} ratings</a><span style="color:var(--ink4);">·</span><a style="color:var(--b);font-size:13px;">✓ Verified seller</a></div>
         <div style="font-size:13px;color:var(--ink3);">List Price: <s>RWF ${fmt(Math.round(p.price*1.12))}</s></div>
         <div><span class="detail-price">RWF ${fmt(p.price)}</span> <span style="font-size:13px;color:var(--r);">(Save ${Math.round((1-1/1.12)*100)}%)</span></div>
         <div class="detail-desc">${p.desc}</div>
@@ -1309,7 +1598,7 @@ function showProduct(id){
           <div class="escrow-box-title">🔒 Payment is Escrow-Protected</div>
           <div class="escrow-step"><div class="escrow-dot">1</div><span>You pay RWF ${fmt(p.price)} → SOKO holds it safely</span></div>
           <div class="escrow-step"><div class="escrow-dot">2</div><span>Seller ships · You confirm delivery</span></div>
-          <div class="escrow-step"><div class="escrow-dot">3</div><span>Payment released to seller · your 2% service fee protects the transaction</span></div>
+          <div class="escrow-step"><div class="escrow-dot">3</div><span>Payment released · 2% service fee covers protection</span></div>
         </div>
         ${p.stock===0?'<div style="padding:14px;background:var(--rbg);border-radius:var(--r4);color:var(--r);font-weight:700;text-align:center;margin-top:12px;">Out of Stock</div>':''}
       </div>
@@ -1320,13 +1609,13 @@ function showProduct(id){
         <div class="buy-box-stock">${p.stock>0?'In Stock':'Out of Stock'}</div>
         ${p.stock>0?`<div style="font-size:12px;font-weight:600;margin-bottom:6px;">Qty:</div>
         <div class="qty-ctrl"><button class="qty-btn" onclick="changeQty(-1)">−</button><span class="qty-num" id="detail-qty">1</span><button class="qty-btn" onclick="changeQty(1)">+</button></div>
-        <button class="btn-atcr" onclick="addDetailToCart('${p.id}')">Add to Cart</button>
-        <button class="btn-buynow" onclick="buyNow('${p.id}')">Buy Now</button>`:''}
+        <button class="btn-atcr" onclick="addDetailToCart(${p.id})">Add to Cart</button>
+        <button class="btn-buynow" onclick="buyNow(${p.id})">Buy Now</button>`:''}
         <div style="font-size:12px;color:var(--ink3);margin-bottom:10px;">🔒 Secure transaction</div>
         <div class="buy-box-seller">Sold by <span>${p.seller}</span><div style="color:var(--g);font-size:12px;font-weight:600;margin-top:2px;">✓ KYC Verified</div></div>
         <div class="contact-btns">
           <a href="tel:${p.sellerPhone}" class="btn-contact">📞 Call</a>
-          <a href="https://wa.me/${p.sellerPhone.replace(/\s/g,'')}" class="btn-contact">💬 WhatsApp</a>
+          <a href="https://wa.me/${p.sellerPhone.replace(/\s/g,'')}" class="btn-contact" target="_blank">💬 WhatsApp</a>
         </div>
       </div>
     </div>
@@ -1363,14 +1652,13 @@ function renderCart(){
       <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
         <span style="font-size:12px;font-weight:600;">Qty:</span>
         <div style="display:flex;align-items:center;border:var(--border);border-radius:var(--r4);">
-          <button class="qty-btn" style="width:28px;height:28px;font-size:14px;" onclick="cartQty('${item.id}',-1)">−</button>
+          <button class="qty-btn" style="width:28px;height:28px;font-size:14px;" onclick="cartQty(${item.id},-1)">−</button>
           <span style="width:32px;text-align:center;font-size:13px;font-weight:700;">${item.qty}</span>
-          <button class="qty-btn" style="width:28px;height:28px;font-size:14px;" onclick="cartQty('${item.id}',1)">+</button>
+          <button class="qty-btn" style="width:28px;height:28px;font-size:14px;" onclick="cartQty(${item.id},1)">+</button>
         </div>
       </div>
       <div style="display:flex;gap:8px;margin-top:6px;">
-        <button style="padding:5px 10px;border:var(--border);border-radius:var(--r4);onclick="cartRemove('${item.id}')"background:var(--bg2);font-size:12px;cursor:pointer;color:var(--b);" >Delete</button>
-        <button style="padding:5px 10px;border:var(--border);border-radius:var(--r4);background:var(--bg2);font-size:12px;cursor:pointer;color:var(--b);">Save for later</button>
+        <button style="padding:5px 10px;border:var(--border);border-radius:var(--r4);background:var(--bg2);font-size:12px;cursor:pointer;color:var(--b);" onclick="cartRemove(${item.id})">Delete</button>
       </div>
     </div>
     <div style="font-size:16px;font-weight:700;flex-shrink:0;">RWF ${fmt(item.price*item.qty)}</div>
@@ -1408,7 +1696,7 @@ function confirmDelivery(){toast('✅ Delivery confirmed! Funds released to sell
 function renderOrders(){
   const el=document.getElementById('orders-content');if(!el)return;
   if(!ORDERS.length){el.innerHTML=`<div style="text-align:center;padding:60px;color:var(--ink3);"><div style="font-size:48px;margin-bottom:12px;">📦</div><div style="font-size:18px;font-weight:600;">No orders yet</div></div>`;return;}
-  el.innerHTML=ORDERS.slice(0,8).map(o=>{
+  el.innerHTML=ORDERS.slice(0,10).map(o=>{
     const p=PRODUCTS.find(x=>x.id===o.productId);
     const thumb=(p?.images&&p.images.length)?`<img src="${p.images[0]}" style="width:100%;height:100%;object-fit:cover;"/>`:`<span style="font-size:36px;">${p?.emoji||'📦'}</span>`;
     const ecls=o.escrow==='held'?'ep-held':o.escrow==='released'?'ep-rel':'ep-frz';
@@ -1425,10 +1713,10 @@ function renderOrders(){
         <div style="flex:1;">
           <div class="order-status ${scls}">${o.status==='delivered'?'Delivered':o.status==='shipped'?'On the way':o.status==='confirmed'?'Confirmed':o.status==='cancelled'?'Cancelled':'Pending'}</div>
           <div style="font-size:14px;font-weight:600;margin-bottom:5px;">${o.product} × ${o.qty}</div>
-          <div style="display:flex;gap:8px;align-items:center;flex-wrap:wrap;"><span class="ep ${ecls}">🔒 ${o.escrow}</span><span style="font-size:12px;color:var(--ink3);">Net: RWF ${fmt(o.sellerNet)}</span></div>
+          <span class="ep ${ecls}">🔒 ${o.escrow}</span>
         </div>
         <div style="display:flex;flex-direction:column;gap:6px;">
-          ${o.status==='shipped'?`<button class="bx bx-g" style="padding:7px 12px;" onclick="toast('✅ Delivery confirmed!','g')">Confirm Receipt</button>`:''}
+          ${o.status==='shipped'?`<button class="bx bx-g" style="padding:7px 12px;" onclick="confirmOrderDelivery('${o.id}')">Confirm Receipt</button>`:''}
           ${o.status==='delivered'?`<button class="bx bx-o" onclick="buyerShowView('review')">⭐ Rate</button>`:''}
           <button class="bx bx-ghost" onclick="buyerShowView('dispute')">🛡️ Dispute</button>
         </div>
@@ -1436,10 +1724,11 @@ function renderOrders(){
     </div>`;
   }).join('');
 }
+function confirmOrderDelivery(id){const o=ORDERS.find(x=>x.id===id);if(o){o.status='delivered';o.escrow='released';}toast('✅ Delivery confirmed!','g');renderOrders();}
 function submitDispute(){
   const t=document.getElementById('dispute-type').value,o=document.getElementById('dispute-order').value.trim(),d=document.getElementById('dispute-desc').value.trim();
   if(!o||!d){toast('Please fill all fields','r');return;}
-  DISPUTES.push({id:'DSP-0'+DISPUTES.length,buyer:currentUser?.name||'User',orderId:o,type:t,desc:d,status:'open',escrowAction:'frozen',date:new Date().toISOString().slice(0,10)});
+  DISPUTES.push({id:'DSP-'+DISPUTES.length,buyer:currentUser?.name||'User',orderId:o,type:t,desc:d,status:'open',escrowAction:'frozen',date:new Date().toISOString().slice(0,10)});
   const ord=ORDERS.find(x=>x.id===o);if(ord)ord.escrow='frozen';
   toast('✓ Report submitted. Escrow frozen.','g');buyerShowView('orders');
 }
@@ -1456,7 +1745,7 @@ function saveLocation(){
   closeModal('modal-location');toast('📍 Location updated: '+currentLocation,'g');
 }
 
-// IMAGE UPLOAD (Seller)
+// IMAGE UPLOAD
 function handleProdFiles(files){
   if(!files||!files.length)return;
   const remaining=5-prodImages.length;
@@ -1499,62 +1788,48 @@ function sellerDashHTML(){
   return `<div class="seller-page-hdr"><div class="seller-page-title">Dashboard</div><span style="font-size:13px;color:var(--ink3);">${new Date().toLocaleDateString('en-RW',{weekday:'short',month:'long',day:'numeric'})}</span></div>
   <div class="seller-content">
     <div class="metric-grid">
-      <div class="metric-card"><div class="metric-lbl">Revenue (Net)</div><div class="metric-val">139,300 <span style="font-size:13px;font-weight:400;color:var(--ink3);">RWF</span></div><div class="metric-sub">After platform fee deduction</div></div>
+      <div class="metric-card"><div class="metric-lbl">Revenue (Net)</div><div class="metric-val">139,300 <span style="font-size:13px;font-weight:400;color:var(--ink3);">RWF</span></div><div class="metric-sub">After platform fee</div></div>
       <div class="metric-card"><div class="metric-lbl">Total Orders</div><div class="metric-val mc-g">12</div><div class="metric-sub">3 pending shipment</div></div>
       <div class="metric-card"><div class="metric-lbl">In Escrow</div><div class="metric-val mc-o">45,000 RWF</div><div class="metric-sub">Awaiting confirmation</div></div>
       <div class="metric-card"><div class="metric-lbl">Avg. Rating</div><div class="metric-val">4.7 ⭐</div><div class="metric-sub">23 reviews</div></div>
     </div>
     <div class="tbl-wrap"><div class="tbl-hdr"><div class="tbl-hdr-title">Recent Orders</div></div>
-    <div class="tbl-scroll"><table><thead><tr><th>Order ID</th><th>Product</th><th>Buyer</th><th>Total</th><th>You Get (98%)</th><th>Escrow</th><th>Status</th><th>Action</th></tr></thead>
+    <div class="tbl-scroll"><table><thead><tr><th>Order ID</th><th>Product</th><th>Buyer</th><th>Total</th><th>You Get</th><th>Escrow</th><th>Status</th><th>Action</th></tr></thead>
     <tbody>${ORDERS.slice(0,5).map(o=>`<tr>
-      <td style="font-family:monospace;font-weight:700;">${o.id}</td>
-      <td>${o.product.slice(0,20)}…</td>
-      <td>${o.buyer}</td>
-      <td style="font-weight:700;">RWF ${fmt(o.total)}</td>
-      <td style="color:var(--gd);font-weight:700;">RWF ${fmt(o.sellerNet)}</td>
+      <td style="font-family:monospace;font-weight:700;">${o.id}</td><td>${o.product.slice(0,18)}…</td><td>${o.buyer}</td>
+      <td style="font-weight:700;">RWF ${fmt(o.total)}</td><td style="color:var(--gd);font-weight:700;">RWF ${fmt(o.sellerNet)}</td>
       <td><span class="ep ${o.escrow==='held'?'ep-held':o.escrow==='released'?'ep-rel':'ep-frz'}">🔒 ${o.escrow}</span></td>
       <td><span class="pill ${o.status==='delivered'?'pill-g':o.status==='shipped'?'pill-b':o.status==='cancelled'?'pill-r':'pill-a'}">${o.status}</span></td>
-      <td>${o.status==='pending'?`<button class="bx bx-b" onclick="markShipped('${o.id}')">Ship</button>`:'—'}</td>
+      <td>${o.status==='pending'?`<button class="bx bx-b" onclick="markShipped('${o.id}');renderSeller('dashboard')">Ship</button>`:'—'}</td>
     </tr>`).join('')}</tbody></table></div></div>
   </div>`;
 }
 function sellerProdsHTML(){
   return `<div class="seller-page-hdr"><div class="seller-page-title">My Products</div><button class="bx bx-g" style="padding:8px 16px;font-size:13px;" onclick="prodImages=[];renderProdPreviews();openModal('modal-add-product')">+ Add Product</button></div>
-  <div class="seller-content">
-    <div class="tbl-wrap"><div class="tbl-scroll"><table><thead><tr><th>Image</th><th>Product</th><th>Category</th><th>Price</th><th>You Get (98%)</th><th>Stock</th><th>Status</th></tr></thead>
-    <tbody>${PRODUCTS.slice(0,12).map(p=>`<tr>
-      <td><div style="width:44px;height:44px;background:var(--bg2);border-radius:var(--r4);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:24px;">${(p.images&&p.images.length)?`<img src="${p.images[0]}" style="width:100%;height:100%;object-fit:cover;"/>`:p.emoji}</div></td>
-      <td style="font-weight:600;">${p.name.slice(0,30)}…</td>
-      <td>${getCat(p.cat)}</td>
-      <td style="font-weight:700;">RWF ${fmt(p.price)}</td>
-      <td style="color:var(--gd);font-weight:700;">RWF ${fmt(Math.round(p.price*((100-commissionRate)/100)))}</td>
-      <td>${p.stock}</td>
-      <td><span class="pill ${p.stock>5?'pill-g':p.stock>0?'pill-a':'pill-r'}">${p.stock>5?'In stock':p.stock>0?'Low':'Out'}</span></td>
-    </tr>`).join('')}</tbody></table></div></div>
-  </div>`;
+  <div class="seller-content"><div class="tbl-wrap"><div class="tbl-scroll"><table><thead><tr><th>Image</th><th>Product</th><th>Category</th><th>Price</th><th>You Get (98%)</th><th>Stock</th><th>Status</th></tr></thead>
+  <tbody>${PRODUCTS.slice(0,12).map(p=>`<tr>
+    <td><div style="width:44px;height:44px;background:var(--bg2);border-radius:var(--r4);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:24px;">${(p.images&&p.images.length)?`<img src="${p.images[0]}" style="width:100%;height:100%;object-fit:cover;"/>`:p.emoji}</div></td>
+    <td style="font-weight:600;">${p.name.slice(0,28)}…</td><td>${getCat(p.cat)}</td>
+    <td style="font-weight:700;">RWF ${fmt(p.price)}</td><td style="color:var(--gd);font-weight:700;">RWF ${fmt(Math.round(p.price*0.98))}</td>
+    <td>${p.stock}</td><td><span class="pill ${p.stock>5?'pill-g':p.stock>0?'pill-a':'pill-r'}">${p.stock>5?'In stock':p.stock>0?'Low':'Out'}</span></td>
+  </tr>`).join('')}</tbody></table></div></div></div>`;
 }
 function sellerOrdersHTML(){
   return `<div class="seller-page-hdr"><div class="seller-page-title">Incoming Orders</div></div>
-  <div class="seller-content">
-    <div class="tbl-wrap"><div class="tbl-scroll"><table><thead><tr><th>Order ID</th><th>Product</th><th>Buyer</th><th>Phone</th><th>Total</th><th>Escrow</th><th>Status</th><th>Action</th></tr></thead>
-    <tbody>${ORDERS.slice(0,8).map(o=>`<tr>
-      <td style="font-family:monospace;font-weight:700;">${o.id}</td>
-      <td>${o.product.slice(0,20)}…</td>
-      <td>${o.buyer}</td>
-      <td style="color:var(--b);">${o.phone}</td>
-      <td style="font-weight:700;">RWF ${fmt(o.total)}</td>
-      <td><span class="ep ${o.escrow==='held'?'ep-held':o.escrow==='released'?'ep-rel':'ep-frz'}">🔒 ${o.escrow}</span></td>
-      <td><span class="pill ${o.status==='delivered'?'pill-g':o.status==='shipped'?'pill-b':o.status==='cancelled'?'pill-r':'pill-a'}">${o.status}</span></td>
-      <td>${o.status==='pending'?`<button class="bx bx-b" onclick="markShipped('${o.id}');renderSeller('orders')">Mark Shipped</button>`:'—'}</td>
-    </tr>`).join('')}</tbody></table></div></div>
-  </div>`;
+  <div class="seller-content"><div class="tbl-wrap"><div class="tbl-scroll"><table><thead><tr><th>Order ID</th><th>Product</th><th>Buyer</th><th>Phone</th><th>Total</th><th>Escrow</th><th>Status</th><th>Action</th></tr></thead>
+  <tbody>${ORDERS.slice(0,8).map(o=>`<tr>
+    <td style="font-family:monospace;font-weight:700;">${o.id}</td><td>${o.product.slice(0,18)}…</td><td>${o.buyer}</td>
+    <td style="color:var(--b);">${o.phone}</td><td style="font-weight:700;">RWF ${fmt(o.total)}</td>
+    <td><span class="ep ${o.escrow==='held'?'ep-held':o.escrow==='released'?'ep-rel':'ep-frz'}">🔒 ${o.escrow}</span></td>
+    <td><span class="pill ${o.status==='delivered'?'pill-g':o.status==='shipped'?'pill-b':o.status==='cancelled'?'pill-r':'pill-a'}">${o.status}</span></td>
+    <td>${o.status==='pending'?`<button class="bx bx-b" onclick="markShipped('${o.id}');renderSeller('orders')">Mark Shipped</button>`:'—'}</td>
+  </tr>`).join('')}</tbody></table></div></div></div>`;
 }
 function sellerEarnHTML(){
   return `<div class="seller-page-hdr"><div class="seller-page-title">Earnings & Payouts</div></div>
   <div class="seller-content">
     <div class="earn-card">
-      <div class="earn-lbl">Total Earnings (Net)</div>
-      <div class="earn-val">139,300 <span style="font-size:14px;color:rgba(255,255,255,.35);">RWF</span></div>
+      <div class="earn-lbl">Total Earnings (Net)</div><div class="earn-val">139,300 <span style="font-size:14px;color:rgba(255,255,255,.35);">RWF</span></div>
       <div style="font-size:12px;color:rgba(255,255,255,.4);">After platform fee deduction</div>
       <div class="earn-grid">
         <div class="earn-item"><div class="earn-item-lbl">In Escrow</div><div class="earn-item-val o">45,000 RWF</div></div>
@@ -1563,19 +1838,15 @@ function sellerEarnHTML(){
       <div style="background:rgba(0,150,80,.1);border:1px solid rgba(0,150,80,.2);border-radius:var(--r4);padding:10px 14px;margin-top:14px;font-size:12px;color:rgba(255,255,255,.65);">💳 SOKO settles weekly via MTN MoMo or bank. Funds release after buyer confirms delivery.</div>
     </div>
     <div class="tbl-wrap"><div class="tbl-hdr"><div class="tbl-hdr-title">Earnings History</div></div>
-    <div class="tbl-scroll"><table><thead><tr><th>Order ID</th><th>Product</th><th>Date</th><th>Payment</th><th>Gross</th><th>Platform Fee</th><th>You Receive</th><th>Escrow</th></tr></thead>
+    <div class="tbl-scroll"><table><thead><tr><th>Order ID</th><th>Product</th><th>Date</th><th>Gross</th><th>Platform Fee</th><th>You Receive</th><th>Escrow</th></tr></thead>
     <tbody>${ORDERS.filter(o=>o.status!=='cancelled').slice(0,6).map(o=>`<tr>
-      <td style="font-family:monospace;">${o.id}</td>
-      <td>${o.product.slice(0,18)}…</td>
-      <td style="color:var(--ink3);">${o.date}</td>
-      <td>${o.payment}</td>
-      <td>RWF ${fmt(o.total)}</td>
+      <td style="font-family:monospace;">${o.id}</td><td>${o.product.slice(0,16)}…</td>
+      <td style="color:var(--ink3);">${o.date}</td><td>RWF ${fmt(o.total)}</td>
       <td style="color:var(--r);">-RWF ${fmt(o.commission)}</td>
       <td style="font-weight:700;color:${o.escrow==='released'?'var(--g)':'var(--a)'};">RWF ${fmt(o.sellerNet)}</td>
       <td><span class="ep ${o.escrow==='held'?'ep-held':o.escrow==='released'?'ep-rel':'ep-frz'}">${o.escrow}</span></td>
     </tr>`).join('')}</tbody></table></div></div>
-    <div class="tbl-wrap"><div class="tbl-hdr"><div class="tbl-hdr-title">Commission Breakdown</div></div>
-    <div style="padding:16px;">
+    <div class="tbl-wrap"><div style="padding:16px;">
       <div style="display:flex;justify-content:space-between;font-size:13px;padding:9px 0;border-bottom:var(--border2);"><span>Buyer pays</span><span style="font-weight:700;">100%</span></div>
       <div style="display:flex;justify-content:space-between;font-size:13px;padding:9px 0;border-bottom:var(--border2);color:var(--r);"><span>Platform fee (2%)</span><span style="font-weight:700;">-2%</span></div>
       <div style="display:flex;justify-content:space-between;font-size:13px;padding:9px 0;color:var(--gd);font-weight:700;"><span>You receive</span><span>98% of sale price</span></div>
@@ -1589,7 +1860,7 @@ function sellerProfileHTML(){
     <div style="background:var(--w);border:var(--border);border-radius:var(--r8);padding:20px;margin-bottom:14px;box-shadow:var(--sh);">
       <div style="font-size:16px;font-weight:700;margin-bottom:14px;border-bottom:var(--border);padding-bottom:10px;">Store Details</div>
       <div class="fld"><label class="fld-lbl">Store name</label><input class="fld-inp" value="${currentUser?.name||'My Store RW'}"/></div>
-      <div class="fld"><label class="fld-lbl">Phone number</label><input class="fld-inp" value="${currentUser?.phone||'+250 7XX XXX XXX'}"/></div>
+      <div class="fld"><label class="fld-lbl">Phone</label><input class="fld-inp" value="${currentUser?.phone||'+250 7XX XXX XXX'}"/></div>
       <div class="fld"><label class="fld-lbl">WhatsApp</label><input class="fld-inp" placeholder="+250 7XX XXX XXX"/></div>
       <div class="fld"><label class="fld-lbl">Location</label><input class="fld-inp" placeholder="Kigali, Rwanda"/></div>
       <button class="bx bx-g" style="padding:9px 20px;font-size:13px;" onclick="toast('✓ Profile saved','g')">Save Changes</button>
@@ -1597,8 +1868,7 @@ function sellerProfileHTML(){
     <div style="background:var(--w);border:var(--border);border-radius:var(--r8);padding:20px;box-shadow:var(--sh);">
       <div style="font-size:16px;font-weight:700;margin-bottom:12px;">KYC Status</div>
       <span class="pill ${currentUser?.kycSubmitted?'pill-a':'pill-g'}">${currentUser?.kycSubmitted?'⏳ Pending Admin Review':'✓ Verified Seller'}</span>
-      <p style="font-size:13px;color:var(--ink3);margin-top:10px;line-height:1.6;">${currentUser?.kycSubmitted?'Your identity documents are under review. You\'ll receive an SMS once approved (24–48 hours).':'Your identity has been verified. You can list products and receive payments.'}</p>
-      <button class="bx bx-ghost" style="margin-top:12px;padding:8px 16px;font-size:13px;" onclick="doLogout()">← Sign Out</button>
+      <p style="font-size:13px;color:var(--ink3);margin-top:10px;line-height:1.6;">${currentUser?.kycSubmitted?"Your documents are under review. You'll receive an SMS once approved.":'Your identity has been verified. You can list products and receive payments.'}</p>
     </div>
   </div>`;
 }
@@ -1606,112 +1876,19 @@ function markShipped(id){const o=ORDERS.find(x=>x.id===id);if(o){o.status='shipp
 function addSellerProduct(){
   const name=document.getElementById('mp-name').value.trim(),price=parseInt(document.getElementById('mp-price').value);
   if(!name||!price){toast('Product name and price are required','r');return;}
-  PRODUCTS.unshift({id:Math.max(...PRODUCTS.map(p=>p.id))+1,name,cat:document.getElementById('mp-cat').value,price,stock:parseInt(document.getElementById('mp-stock').value)||10,emoji:document.getElementById('mp-emoji').value||'📦',images:prodImages.map(i=>i.url),rating:5.0,reviews:0,seller:currentUser?.name||'My Store',sellerPhone:currentUser?.phone||'+250 7XX',desc:document.getElementById('mp-desc').value||'',badge:'new'});
-  prodImages=[];closeModal('modal-add-product');renderSeller('products');
-  toast('✓ Product added successfully','g');
+  const newId=PRODUCTS.length?Math.max(...PRODUCTS.map(p=>p.id))+1:1;
+  PRODUCTS.unshift({id:newId,name,cat:document.getElementById('mp-cat').value,price,stock:parseInt(document.getElementById('mp-stock').value)||10,emoji:document.getElementById('mp-emoji').value||'📦',images:prodImages.map(i=>i.url),rating:5.0,reviews:0,seller:currentUser?.name||'My Store',sellerPhone:currentUser?.phone||'+250788000000',desc:document.getElementById('mp-desc').value||'',badge:'new'});
+  prodImages=[];closeModal('modal-add-product');renderSeller('products');toast('✓ Product added successfully','g');
 }
 
 // ADMIN
-// ── AUTO SESSION RESTORE ─────────────────────────────────────
-// If user already logged in (Supabase session exists), skip login screen
-async function restoreSession(){
-  if(!sb || SUPABASE_URL === 'https://YOUR_PROJECT.supabase.co') return;
-  try{
-    const {data:{session}} = await sb.auth.getSession();
-    if(!session) return;
-    const {data:profile} = await sb.from('users').select('*').eq('email',session.user.email).single();
-    if(profile){
-      signupData={name:profile.name,email:profile.email,phone:profile.phone||'',role:profile.role,_ctx:'login'};
-      loginSuccess();
-    }
-  } catch(e){console.log('Session restore failed:',e);}
-}
-// Run on page load
-window.addEventListener('DOMContentLoaded', async () => {
-  if(!sb || SUPABASE_URL === 'https://YOUR_PROJECT.supabase.co') return;
-  
-  // Check if this is a password reset callback
-  const hashParams = new URLSearchParams(window.location.hash.replace('#', '?'));
-  const type = hashParams.get('type');
-  
-  if(type === 'recovery') {
-    // Show auth page with reset form
-    document.getElementById('view-auth').classList.add('active');
-    ['view-buyer','view-seller','view-admin'].forEach(id => 
-      document.getElementById(id).classList.remove('active'));
-    
-    // Wait a moment for Supabase to process the token
-    setTimeout(() => showResetPasswordForm(), 500);
-    return;
-  }
-  
-  restoreSession();
-});
-async function signInWithGoogle(){
-  const {error} = await sb.auth.signInWithOAuth({
-    provider:'google',
-    options:{
-      redirectTo: window.location.origin + window.location.pathname
-    }
-  });
-  if(error) toast(error.message,'r');
-}
-// ── FORGOT PASSWORD ───────────────────────────────────────────
-function showResetPasswordForm() {
-  ['view-buyer','view-seller','view-admin'].forEach(id =>
-    document.getElementById(id).classList.remove('active'));
-  document.getElementById('view-auth').classList.add('active');
-
-  document.getElementById('apanel-login').innerHTML = `
-    <div style="text-align:center;margin-bottom:18px;">
-      <div style="font-size:32px;margin-bottom:8px;">🔑</div>
-      <div style="font-size:17px;font-weight:700;">Set a new login key</div>
-      <div style="font-size:13px;color:var(--ink3);margin-top:4px;">Enter your new details below</div>
-    </div>
-    <div class="fg">
-      <label class="fl">New Secret Key</label>
-      <input class="fi" id="reset-pass" type="password" placeholder="At least 6 characters"/>
-    </div>
-    <div class="fg">
-      <label class="fl">Confirm Secret Key</label>
-      <input class="fi" id="reset-pass2" type="password" placeholder="Repeat your key"/>
-    </div>
-    <button class="btn-or btn-or-dk" onclick="doResetPassword()">Save & Continue →</button>
-  `;
-}
-async function doResetPassword() {
-  const pw  = document.getElementById('reset-pass')?.value;
-  const pw2 = document.getElementById('reset-pass2')?.value;
-  if(!pw || pw.length < 6) { toast('Must be at least 6 characters','r'); return; }
-  if(pw !== pw2)           { toast('Keys do not match','r'); return; }
-
-  const { error } = await sb.auth.updateUser({ password: pw });
-  if(error) { toast(error.message,'r'); return; }
-
-  toast('✅ Done! Signing you in…','g');
-  await sb.auth.signOut();
-  setTimeout(() => { 
-    authTab('login'); 
-    window.location.hash = ''; 
-  }, 1500);
-}
-async function forgotPassword(){
-  const email=document.getElementById('login-email').value.trim();
-  if(!email){toast('Enter your email address first','r');return;}
-  if(!sb || SUPABASE_URL==='https://YOUR_PROJECT.supabase.co'){toast('Configure Supabase to use password reset','r');return;}
- const {error} = await sb.auth.resetPasswordForEmail(email,{redirectTo:'https://luxury-kringle-5df74f.netlify.app/soko.html'}); if(error){toast(error.message,'r');return;}
-  toast('✓ Password reset link sent to '+email,'g');
-}
-
 const ADMIN_NAV=[{icon:'📊',label:'Overview',id:'overview'},{icon:'🔒',label:'Escrow',id:'escrow'},{icon:'💸',label:'Payouts',id:'payouts',badge:()=>PAYOUTS.filter(p=>p.status==='pending').length},{icon:'🪪',label:'KYC',id:'kyc',badge:()=>KYC.filter(k=>k.status==='pending').length},{icon:'👥',label:'Users',id:'users'},{icon:'📦',label:'Products',id:'products'},{icon:'🛒',label:'Orders',id:'orders'},{icon:'🛡️',label:'Disputes',id:'disputes',badge:()=>DISPUTES.filter(d=>d.status==='open').length},{icon:'⚙️',label:'Settings',id:'settings'}];
 function buildAdminNav(){
   const el=document.getElementById('admin-nav');
   el.innerHTML=ADMIN_NAV.map((n,i)=>`<div class="anav-item ${i===0?'active':''}" onclick="adminNavClick(this,'${n.id}')"><span style="font-size:16px;width:22px;text-align:center;">${n.icon}</span>${n.label}${n.badge?`<span class="anav-badge" id="adm-b-${n.id}">${n.badge()}</span>`:''}</div>`).join('')+
   `<div class="anav-item" style="margin-top:auto;border-top:1px solid rgba(255,255,255,.07);padding-top:12px;" onclick="doLogout()"><span style="font-size:16px;width:22px;text-align:center;">🚪</span>Logout</div>`;
 }
-function adminNavClick(btn,id){
-  document.querySelectorAll('.anav-item').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderAdmin(id);
-}
+function adminNavClick(btn,id){document.querySelectorAll('.anav-item').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderAdmin(id);}
 function renderAdmin(section){
   const el=document.getElementById('admin-content');if(!el)return;
   ADMIN_NAV.forEach(n=>{if(n.badge){const b=document.getElementById('adm-b-'+n.id);if(b)b.textContent=n.badge();}});
@@ -1726,33 +1903,34 @@ function renderAdmin(section){
   else if(section==='settings')el.innerHTML=adminSettingsHTML();
 }
 function adminOverviewHTML(){
+  const totalGMV=ORDERS.filter(o=>o.status!=='cancelled').reduce((a,o)=>a+o.total,0);
+  const totalComm=ORDERS.filter(o=>o.status!=='cancelled').reduce((a,o)=>a+o.commission,0);
+  const escrowHeld=ORDERS.filter(o=>o.escrow==='held').reduce((a,o)=>a+o.total,0);
   return `<div class="admin-page-hdr"><div class="admin-page-title">Platform Overview</div><div style="font-size:12px;color:var(--ink3);">${new Date().toLocaleDateString('en-RW',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</div></div>
   <div class="admin-content">
     <div class="comm-card">
-      <div class="comm-lbl">Platform Revenue (4% Total: 2% buyer + 2% seller)</div>
-      <div class="comm-val">96,240 <span style="font-size:15px;color:rgba(255,255,255,.35);">RWF</span></div>
-      <div style="font-size:12px;color:rgba(255,255,255,.35);">↑ 18% this month · From 4,812,000 RWF total transactions</div>
+      <div class="comm-lbl">Platform Revenue (4% Total: 2% buyer + 2% seller — internal only)</div>
+      <div class="comm-val">${fmt(totalComm)} <span style="font-size:15px;color:rgba(255,255,255,.35);">RWF</span></div>
+      <div style="font-size:12px;color:rgba(255,255,255,.35);">From ${fmt(totalGMV)} RWF total transactions</div>
       <div class="comm-grid">
-        <div class="comm-item"><div class="comm-item-val" style="color:#00D68F;">4,812,000</div><div class="comm-item-lbl">Total GMV (RWF)</div></div>
-        <div class="comm-item"><div class="comm-item-val" style="color:var(--or);">320,000</div><div class="comm-item-lbl">In Escrow (RWF)</div></div>
+        <div class="comm-item"><div class="comm-item-val" style="color:#00D68F;">${fmt(totalGMV)}</div><div class="comm-item-lbl">Total GMV (RWF)</div></div>
+        <div class="comm-item"><div class="comm-item-val" style="color:var(--or);">${fmt(escrowHeld)}</div><div class="comm-item-lbl">In Escrow (RWF)</div></div>
         <div class="comm-item"><div class="comm-item-val">4%</div><div class="comm-item-lbl">Total Rate (internal)</div></div>
       </div>
     </div>
     <div class="admin-metrics">
-      <div class="admin-metric"><div class="am-lbl">Total Orders</div><div class="am-val">${ORDERS.length}</div><div class="am-sub am-up">↑ 7 today</div></div>
+      <div class="admin-metric"><div class="am-lbl">Total Orders</div><div class="am-val">${ORDERS.length}</div><div class="am-sub am-up">live</div></div>
       <div class="admin-metric"><div class="am-lbl">Active Sellers</div><div class="am-val">${USERS.filter(u=>u.role==='seller'&&u.verified).length}</div><div class="am-sub">KYC verified</div></div>
-      <div class="admin-metric"><div class="am-lbl">Buyers</div><div class="am-val">${USERS.filter(u=>u.role==='buyer').length}</div><div class="am-sub am-up">↑ 12 this week</div></div>
+      <div class="admin-metric"><div class="am-lbl">Buyers</div><div class="am-val">${USERS.filter(u=>u.role==='buyer').length}</div><div class="am-sub">registered</div></div>
       <div class="admin-metric"><div class="am-lbl">Products Live</div><div class="am-val">${PRODUCTS.length}</div><div class="am-sub">in catalog</div></div>
       <div class="admin-metric"><div class="am-lbl">Pending Payouts</div><div class="am-val am-or">${PAYOUTS.filter(p=>p.status==='pending').length}</div><div class="am-sub">sellers waiting</div></div>
-      <div class="admin-metric"><div class="am-lbl">Escrow Held</div><div class="am-val" style="color:var(--b);">320K</div><div class="am-sub">RWF secured</div></div>
+      <div class="admin-metric"><div class="am-lbl">Open Disputes</div><div class="am-val" style="color:var(--r);">${DISPUTES.filter(d=>d.status==='open').length}</div><div class="am-sub">needs review</div></div>
     </div>
     <div class="tbl-wrap"><div class="tbl-hdr"><div class="tbl-hdr-title">Recent Orders</div></div>
-    <div class="tbl-scroll"><table><thead><tr><th>Order ID</th><th>Buyer</th><th>Product</th><th>Total</th><th>Payment</th><th>Escrow</th><th>Status</th><th>Action</th></tr></thead>
+    <div class="tbl-scroll"><table><thead><tr><th>Order ID</th><th>Buyer</th><th>Product</th><th>Total</th><th>Platform Fee</th><th>Escrow</th><th>Status</th><th>Action</th></tr></thead>
     <tbody>${ORDERS.slice(0,6).map(o=>`<tr>
-      <td style="font-family:monospace;font-weight:700;">${o.id}</td>
-      <td>${o.buyer}</td><td>${o.product.slice(0,20)}…</td>
-      <td style="font-weight:700;">RWF ${fmt(o.total)}</td>
-      <td>${o.payment}</td>
+      <td style="font-family:monospace;font-weight:700;">${o.id}</td><td>${o.buyer}</td><td>${o.product.slice(0,18)}…</td>
+      <td style="font-weight:700;">RWF ${fmt(o.total)}</td><td style="color:var(--r);">RWF ${fmt(o.commission)}</td>
       <td><span class="ep ${o.escrow==='held'?'ep-held':o.escrow==='released'?'ep-rel':'ep-frz'}">🔒 ${o.escrow}</span></td>
       <td><span class="pill ${o.status==='delivered'?'pill-g':o.status==='shipped'?'pill-b':o.status==='cancelled'?'pill-r':'pill-a'}">${o.status}</span></td>
       <td><button class="bx bx-b" onclick="openOrderModal('${o.id}')">Update</button></td>
@@ -1761,46 +1939,41 @@ function adminOverviewHTML(){
 }
 function adminEscrowHTML(){
   const eo=ORDERS.filter(o=>o.escrow==='held'||o.escrow==='frozen');
-  return `<div class="admin-page-hdr"><div class="admin-page-title">🔒 Escrow Management</div><span class="pill pill-a">320,000 RWF Held</span></div>
+  const totalHeld=eo.reduce((a,o)=>a+o.total,0);
+  return `<div class="admin-page-hdr"><div class="admin-page-title">🔒 Escrow Management</div><span class="pill pill-a">RWF ${fmt(totalHeld)} Held</span></div>
   <div class="admin-content">
-    <div class="ef-card">
-      <div class="ef-title">💰 Money Flow — How Escrow Works</div>
+    <div class="ef-card"><div class="ef-title">💰 Money Flow</div>
       <div class="ef-steps">
         <div class="ef-step"><div class="ef-icon done">💳</div><div class="ef-lbl">Buyer Pays</div></div><div class="ef-conn done"></div>
         <div class="ef-step"><div class="ef-icon done">🔒</div><div class="ef-lbl">Escrow Hold</div></div><div class="ef-conn done"></div>
         <div class="ef-step"><div class="ef-icon active">🚚</div><div class="ef-lbl">Delivery</div></div><div class="ef-conn"></div>
         <div class="ef-step"><div class="ef-icon inactive">✅</div><div class="ef-lbl">Buyer Confirms</div></div><div class="ef-conn"></div>
-        <div class="ef-step"><div class="ef-icon inactive">💸</div><div class="ef-lbl">98% → Seller</div></div><div class="ef-conn"></div>
-        <div class="ef-step"><div class="ef-icon inactive">💰</div><div class="ef-lbl">2% → Platform</div></div>
+        <div class="ef-step"><div class="ef-icon inactive">💸</div><div class="ef-lbl">96% → Seller</div></div><div class="ef-conn"></div>
+        <div class="ef-step"><div class="ef-icon inactive">💰</div><div class="ef-lbl">4% → Platform</div></div>
       </div>
     </div>
     <div class="tbl-wrap"><div class="tbl-hdr"><div class="tbl-hdr-title">Active Escrow Orders</div><span class="pill pill-a">${eo.length} in escrow</span></div>
-    <div class="tbl-scroll"><table><thead><tr><th>Order ID</th><th>Buyer</th><th>Seller</th><th>Amount</th><th>Platform Fee (4% total)</th><th>Seller Receives</th><th>Status</th><th>Actions</th></tr></thead>
+    <div class="tbl-scroll"><table><thead><tr><th>Order ID</th><th>Buyer</th><th>Seller</th><th>Amount</th><th>Platform Fee (4%)</th><th>Seller Receives</th><th>Status</th><th>Actions</th></tr></thead>
     <tbody>${eo.map(o=>`<tr>
-      <td style="font-family:monospace;font-weight:700;">${o.id}</td>
-      <td>${o.buyer}</td><td>${o.seller}</td>
-      <td style="font-weight:700;">RWF ${fmt(o.total)}</td>
-      <td style="color:var(--r);">-RWF ${fmt(o.commission)}</td>
+      <td style="font-family:monospace;font-weight:700;">${o.id}</td><td>${o.buyer}</td><td>${o.seller}</td>
+      <td style="font-weight:700;">RWF ${fmt(o.total)}</td><td style="color:var(--r);">RWF ${fmt(o.commission)}</td>
       <td style="color:var(--gd);font-weight:700;">RWF ${fmt(o.sellerNet)}</td>
       <td><span class="ep ${o.escrow==='held'?'ep-held':'ep-frz'}">🔒 ${o.escrow}</span></td>
-      <td style="display:flex;gap:5px;">
-        <button class="bx bx-g" onclick="releaseEscrow('${o.id}')">✓ Release</button>
-        <button class="bx bx-r" onclick="refundEscrow('${o.id}')">↩ Refund</button>
-      </td>
+      <td style="display:flex;gap:5px;"><button class="bx bx-g" onclick="releaseEscrow('${o.id}')">✓ Release</button><button class="bx bx-r" onclick="refundEscrow('${o.id}')">↩ Refund</button></td>
     </tr>`).join('')}</tbody></table></div></div>
   </div>`;
 }
 function adminPayoutsHTML(){
+  const totalPending=PAYOUTS.filter(p=>p.status==='pending').reduce((a,p)=>a+p.amount,0);
   return `<div class="admin-page-hdr"><div class="admin-page-title">💸 Seller Payouts</div><span class="pill pill-a">${PAYOUTS.filter(p=>p.status==='pending').length} Pending</span></div>
   <div class="admin-content">
     <div style="background:linear-gradient(135deg,#131921,#0a1f0a);border-radius:var(--r8);padding:20px;color:#fff;margin-bottom:18px;">
       <div style="font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.4);margin-bottom:5px;">Total Pending Payouts</div>
-      <div style="font-family:var(--font2);font-size:30px;font-weight:800;">534,700 <span style="font-size:14px;color:rgba(255,255,255,.35);">RWF</span></div>
+      <div style="font-family:var(--font2);font-size:30px;font-weight:800;">${fmt(totalPending)} <span style="font-size:14px;color:rgba(255,255,255,.35);">RWF</span></div>
       <div style="font-size:12px;color:rgba(255,255,255,.4);margin-top:6px;">⚠️ No auto-withdrawal — Admin manually transfers via MoMo or bank.</div>
     </div>
     ${PAYOUTS.map(p=>`<div class="payout-card">
-      <div class="payout-row">
-        <div class="payout-avatar">${p.seller[0]}</div>
+      <div class="payout-row"><div class="payout-avatar">${p.seller[0]}</div>
         <div style="flex:1;"><div style="font-weight:700;font-size:14px;">${p.seller}</div><div style="font-size:12px;color:var(--ink3);">${p.phone} · ${p.ordersCount} orders · ${p.method}</div></div>
         <span class="pill ${p.status==='pending'?'pill-a':'pill-g'}">${p.status==='pending'?'⏳ Pending':'✅ Paid'}</span>
       </div>
@@ -1813,18 +1986,15 @@ function adminPayoutsHTML(){
 }
 function adminKYCHTML(){
   return `<div class="admin-page-hdr"><div class="admin-page-title">KYC Verification</div><span class="pill pill-a">${KYC.filter(k=>k.status==='pending').length} Pending</span></div>
-  <div class="admin-content">
-    <div class="tbl-wrap"><div class="tbl-scroll"><table><thead><tr><th>Applicant</th><th>Phone</th><th>ID Number</th><th>ID Photo</th><th>Submitted</th><th>Status</th><th>Actions</th></tr></thead>
-    <tbody>${KYC.map(k=>`<tr>
-      <td style="font-weight:700;">${k.name}</td>
-      <td>${k.phone}</td>
-      <td style="font-family:monospace;font-size:12px;">${k.idNum}</td>
-      <td>${k.idImage?`<img src="${k.idImage}" style="width:50px;height:36px;object-fit:cover;border-radius:3px;cursor:pointer;" onclick="window.open('${k.idImage}')"/>`:'<div style="width:50px;height:36px;background:var(--bg2);border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:20px;">🪪</div>'}</td>
-      <td style="color:var(--ink3);">${k.date}</td>
-      <td><span class="pill ${k.status==='approved'?'pill-g':k.status==='rejected'?'pill-r':'pill-a'}">${k.status}</span></td>
-      <td style="display:flex;gap:5px;">${k.status==='pending'?`<button class="bx bx-g" onclick="approveKYC('${k.id}')">✓ Approve</button><button class="bx bx-r" onclick="rejectKYC('${k.id}')">✕ Reject</button>`:k.status==='approved'?'<span style="color:var(--g);font-size:12px;font-weight:600;">✓ Approved</span>':'<span style="color:var(--r);font-size:12px;font-weight:600;">✕ Rejected</span>'}</td>
-    </tr>`).join('')}</tbody></table></div></div>
-  </div>`;
+  <div class="admin-content"><div class="tbl-wrap"><div class="tbl-scroll"><table><thead><tr><th>Applicant</th><th>Phone</th><th>ID Number</th><th>ID Photo</th><th>Submitted</th><th>Status</th><th>Actions</th></tr></thead>
+  <tbody>${KYC.map(k=>`<tr>
+    <td style="font-weight:700;">${k.name}</td><td>${k.phone}</td>
+    <td style="font-family:monospace;font-size:12px;">${k.idNum}</td>
+    <td>${k.idImage?`<img src="${k.idImage}" style="width:50px;height:36px;object-fit:cover;border-radius:3px;cursor:pointer;" onclick="window.open('${k.idImage}')"/>`:'<div style="width:50px;height:36px;background:var(--bg2);border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:20px;">🪪</div>'}</td>
+    <td style="color:var(--ink3);">${k.date}</td>
+    <td><span class="pill ${k.status==='approved'?'pill-g':k.status==='rejected'?'pill-r':'pill-a'}">${k.status}</span></td>
+    <td style="display:flex;gap:5px;">${k.status==='pending'?`<button class="bx bx-g" onclick="approveKYC('${k.id}')">✓ Approve</button><button class="bx bx-r" onclick="rejectKYC('${k.id}')">✕ Reject</button>`:k.status==='approved'?'<span style="color:var(--g);font-size:12px;font-weight:600;">✓ Approved</span>':'<span style="color:var(--r);font-size:12px;font-weight:600;">✕ Rejected</span>'}</td>
+  </tr>`).join('')}</tbody></table></div></div></div>`;
 }
 function adminUsersHTML(){
   return `<div class="admin-page-hdr"><div class="admin-page-title">All Users</div><input class="fld-inp" style="width:200px;" placeholder="Search users…" oninput="filterAdminUsers(this.value)"/></div>
@@ -1832,7 +2002,7 @@ function adminUsersHTML(){
 }
 function filterAdminUsers(q){const f=q?USERS.filter(u=>u.name.toLowerCase().includes(q.toLowerCase())||u.phone.includes(q)):USERS;const w=document.getElementById('users-tbl-wrap');if(w)w.innerHTML=usersTableHTML(f);}
 function usersTableHTML(list){
-  return `<div class="tbl-scroll"><table><thead><tr><th>Name</th><th>Phone</th><th>Role</th><th>Verified</th><th>Joined</th><th>Status</th><th>Earnings</th><th>Actions</th></tr></thead>
+  return `<div class="tbl-scroll"><table><thead><tr><th>Name</th><th>Phone</th><th>Role</th><th>Verified</th><th>Joined</th><th>Status</th><th>Pending Payout</th><th>Actions</th></tr></thead>
   <tbody>${list.map(u=>`<tr>
     <td style="font-weight:700;color:var(--b);cursor:pointer;" onclick="openUserDetail('${u.phone}')">${u.name}</td>
     <td>${u.phone}</td>
@@ -1840,22 +2010,17 @@ function usersTableHTML(list){
     <td>${u.verified?'<span class="pill pill-g">✓ Yes</span>':'<span class="pill pill-a">No</span>'}</td>
     <td style="color:var(--ink3);">${u.joined}</td>
     <td><span class="pill ${u.status==='active'?'pill-g':u.status==='pending'?'pill-a':'pill-r'}">${u.status}</span></td>
-    <td style="font-weight:700;color:var(--gd);">${u.pendingPayout?`RWF ${fmt(u.pendingPayout)}`:'-'}</td>
-    <td style="display:flex;gap:4px;">
-      <button class="bx bx-r" onclick="banUser('${u.phone}')">🚫 Ban</button>
-      ${(u.pendingPayout||0)>0?`<button class="bx bx-p" onclick="toast('Processing payout…')">💸 Pay</button>`:''}
-    </td>
+    <td style="font-weight:700;color:var(--gd);">${u.pendingPayout?`RWF ${fmt(u.pendingPayout)}`:'—'}</td>
+    <td><button class="bx bx-r" onclick="banUser('${u.phone}')">🚫 Ban</button></td>
   </tr>`).join('')}</tbody></table></div>`;
 }
 function adminProductsHTML(){
-  return `<div class="admin-page-hdr"><div class="admin-page-title">All Products</div></div>
-  <div class="admin-content"><div class="tbl-wrap"><div class="tbl-scroll"><table><thead><tr><th>Image</th><th>Product</th><th>Seller</th><th>Category</th><th>Price (RWF)</th><th>Stock</th><th>Status</th><th>Action</th></tr></thead>
+  return `<div class="admin-page-hdr"><div class="admin-page-title">All Products (${PRODUCTS.length})</div></div>
+  <div class="admin-content"><div class="tbl-wrap"><div class="tbl-scroll"><table><thead><tr><th>Image</th><th>Product</th><th>Seller</th><th>Category</th><th>Price</th><th>Stock</th><th>Status</th><th>Action</th></tr></thead>
   <tbody>${PRODUCTS.map(p=>`<tr>
     <td><div style="width:44px;height:44px;background:var(--bg2);border-radius:var(--r4);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:24px;">${(p.images&&p.images.length)?`<img src="${p.images[0]}" style="width:100%;height:100%;object-fit:cover;"/>`:p.emoji}</div></td>
-    <td style="font-weight:600;">${p.name.slice(0,28)}…</td>
-    <td>${p.seller}</td><td>${getCat(p.cat)}</td>
-    <td style="font-weight:700;">${fmt(p.price)}</td>
-    <td>${p.stock}</td>
+    <td style="font-weight:600;">${p.name.slice(0,26)}…</td><td>${p.seller}</td><td>${getCat(p.cat)}</td>
+    <td style="font-weight:700;">${fmt(p.price)}</td><td>${p.stock}</td>
     <td><span class="pill ${p.stock>5?'pill-g':p.stock>0?'pill-a':'pill-r'}">${p.stock>5?'In stock':p.stock>0?'Low':'Out'}</span></td>
     <td><button class="bx bx-r" onclick="removeProduct(${p.id})">Remove</button></td>
   </tr>`).join('')}</tbody></table></div></div></div>`;
@@ -1870,10 +2035,8 @@ function renderOrdersFiltered(f){const list=f?ORDERS.filter(o=>o.status===f):ORD
 function ordersTableHTML(list){
   return `<div class="tbl-scroll"><table><thead><tr><th>Order ID</th><th>Buyer</th><th>Seller</th><th>Total</th><th>Platform Fee</th><th>Seller Net</th><th>Escrow</th><th>Status</th><th>Action</th></tr></thead>
   <tbody>${list.map(o=>`<tr>
-    <td style="font-family:monospace;font-weight:700;">${o.id}</td>
-    <td>${o.buyer}</td><td>${o.seller}</td>
-    <td style="font-weight:700;">RWF ${fmt(o.total)}</td>
-    <td style="color:var(--r);">-RWF ${fmt(o.commission)}</td>
+    <td style="font-family:monospace;font-weight:700;">${o.id}</td><td>${o.buyer}</td><td>${o.seller}</td>
+    <td style="font-weight:700;">RWF ${fmt(o.total)}</td><td style="color:var(--r);">RWF ${fmt(o.commission)}</td>
     <td style="color:var(--gd);font-weight:700;">RWF ${fmt(o.sellerNet)}</td>
     <td><span class="ep ${o.escrow==='held'?'ep-held':o.escrow==='released'?'ep-rel':'ep-frz'}">🔒 ${o.escrow}</span></td>
     <td><span class="pill ${o.status==='delivered'?'pill-g':o.status==='shipped'?'pill-b':o.status==='cancelled'?'pill-r':'pill-a'}">${o.status}</span></td>
@@ -1885,7 +2048,7 @@ function adminDisputesHTML(){
   <div class="admin-content">
     ${DISPUTES.map(d=>`<div class="dispute-card">
       <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
-        <div><strong style="color:var(--b);cursor:pointer;" onclick="openDisputeDetail('${d.id}')">${d.id}</strong> <span class="pill ${d.status==='open'?'pill-r':'pill-g'}" style="margin-left:8px;">${d.status}</span></div>
+        <div><strong style="color:var(--b);cursor:pointer;" onclick="openDisputeDetail('${d.id}')">${d.id}</strong><span class="pill ${d.status==='open'?'pill-r':'pill-g'}" style="margin-left:8px;">${d.status}</span></div>
         <span style="font-size:12px;color:var(--ink4);">${d.date}</span>
       </div>
       <div style="background:var(--abg);border:1px solid var(--ab);border-radius:3px;padding:6px 10px;font-size:11px;font-weight:700;color:#8B5E00;margin-bottom:8px;">🔒 Escrow: ${d.escrowAction}</div>
@@ -1895,66 +2058,71 @@ function adminDisputesHTML(){
       ${d.status==='open'?`<div style="display:flex;gap:8px;flex-wrap:wrap;">
         <button class="bx bx-g" onclick="resolveDispute('${d.id}','refund')">↩️ Refund Buyer</button>
         <button class="bx bx-b" onclick="resolveDispute('${d.id}','release')">✓ Release to Seller</button>
-        <button class="bx bx-o" onclick="toast('📞 Contact flow')">📞 Contact Parties</button>
+        <button class="bx bx-o" onclick="toast('📞 Contact both parties')">📞 Contact Parties</button>
       </div>`:`<span style="font-size:12px;color:var(--g);font-weight:600;">✓ Resolved — ${d.escrowAction}</span>`}
     </div>`).join('')}
   </div>`;
 }
 function adminSettingsHTML(){
   return `<div class="admin-page-hdr"><div class="admin-page-title">Platform Settings</div></div>
-  <div class="admin-content">
-    <div class="settings-grid">
-      <div class="settings-card"><div class="settings-card-title">🏪 Platform Info</div>
-        <div class="fld"><label class="fld-lbl">Platform Name</label><input class="fld-inp" value="SOKO Marketplace"/></div>
-        <div class="fld"><label class="fld-lbl">Admin Email</label><input class="fld-inp" value="admin@soko.rw"/></div>
-        <div class="fld"><label class="fld-lbl">Support Phone</label><input class="fld-inp" value="+250 788 000 000"/></div>
-        <button class="bx bx-g" style="padding:8px 16px;" onclick="toast('✓ Saved','g')">Save</button>
-      </div>
-      <div class="settings-card"><div class="settings-card-title">💰 Commission & Payouts</div>
-        <div class="fld"><label class="fld-lbl">Commission Rate (%)</label><input class="fld-inp" id="commission-rate-input" value="4" type="number" min="0" max="20" oninput="previewCommission(this.value)"/><div style="font-size:11px;color:var(--ink3);margin-top:4px;">Internal only — 2% charged to buyer as service fee + 2% deducted from seller payout = 4% total revenue</div><div id="commission-preview" style="font-size:12px;color:var(--gd);margin-top:5px;background:var(--gbg);padding:8px 10px;border-radius:4px;border:1px solid var(--gb);">Example: 20,000 RWF sale → Seller gets <strong id="comm-seller-ex">19,600</strong> RWF · SOKO gets <strong id="comm-platform-ex">400</strong> RWF</div></div>
-        <div class="fld"><label class="fld-lbl">Payout Cycle</label><select class="fld-sel"><option>Weekly (every Monday)</option><option>Bi-weekly</option><option>Monthly</option><option>Manual only</option></select></div>
-        <div class="fld"><label class="fld-lbl">Auto-confirm delivery (days)</label><input class="fld-inp" value="7" type="number"/></div>
-        <button class="bx bx-g" style="padding:8px 16px;" onclick="saveCommissionRate()">Save & Apply</button>
-      </div>
-      <div class="settings-card"><div class="settings-card-title">📲 Payment Gateways</div>
-        <div class="fld"><label class="fld-lbl">MTN MoMo API Key</label><input class="fld-inp" type="password" placeholder="sk_live_…"/></div>
-        <div class="fld"><label class="fld-lbl">Airtel Money API Key</label><input class="fld-inp" type="password" placeholder="airtel_key_…"/></div>
-        <div class="fld"><label class="fld-lbl">Flutterwave Key</label><input class="fld-inp" type="password" placeholder="FLWSECK_…"/></div>
-        <button class="bx bx-g" style="padding:8px 16px;" onclick="toast('✓ Saved','g')">Save</button>
-      </div>
-      <div class="settings-card"><div class="settings-card-title">🛡️ Escrow Rules</div>
-        ${['Escrow on all orders','Auto-release after 7 days','Freeze funds on dispute','Admin can override release'].map(r=>`<label style="display:flex;align-items:center;gap:10px;font-size:13px;margin-bottom:10px;"><input type="checkbox" checked style="accent-color:var(--or);"/> ${r}</label>`).join('')}
-        <button class="bx bx-g" style="padding:8px 16px;margin-top:4px;" onclick="toast('✓ Saved','g')">Save</button>
-      </div>
-      <div class="settings-card"><div class="settings-card-title">🌍 Languages</div>
-        ${['🇷🇼 Kinyarwanda','🇬🇧 English','🇫🇷 French'].map(l=>`<label style="display:flex;align-items:center;gap:10px;font-size:14px;margin-bottom:10px;"><input type="checkbox" checked style="accent-color:var(--or);"/> ${l}</label>`).join('')}
-        <button class="bx bx-g" style="padding:8px 16px;margin-top:4px;" onclick="toast('✓ Saved','g')">Save</button>
-      </div>
-      <div class="settings-card"><div class="settings-card-title">🚫 Ban & Freeze Controls</div>
-        ${['Freeze seller earnings on ban','Refund buyer if seller banned','Auto-cancel pending orders'].map((r,i)=>`<label style="display:flex;align-items:center;gap:10px;font-size:13px;margin-bottom:10px;"><input type="checkbox" ${i<2?'checked':''} style="accent-color:var(--or);"/> ${r}</label>`).join('')}
-        <button class="bx bx-g" style="padding:8px 16px;margin-top:4px;" onclick="toast('✓ Saved','g')">Save</button>
-      </div>
+  <div class="admin-content"><div class="settings-grid">
+    <div class="settings-card"><div class="settings-card-title">🏪 Platform Info</div>
+      <div class="fld"><label class="fld-lbl">Platform Name</label><input class="fld-inp" value="SOKO Marketplace"/></div>
+      <div class="fld"><label class="fld-lbl">Admin Email</label><input class="fld-inp" value="admin@soko.rw"/></div>
+      <div class="fld"><label class="fld-lbl">Support Phone</label><input class="fld-inp" value="+250 788 000 000"/></div>
+      <button class="bx bx-g" style="padding:8px 16px;" onclick="toast('✓ Saved','g')">Save</button>
     </div>
-  </div>`;
+    <div class="settings-card"><div class="settings-card-title">💰 Commission & Payouts</div>
+      <div class="fld"><label class="fld-lbl">Commission Rate (%)</label>
+        <input class="fld-inp" id="commission-rate-input" value="${commissionRate}" type="number" min="0" max="20" oninput="previewCommission(this.value)"/>
+        <div style="font-size:11px;color:var(--ink3);margin-top:4px;">Internal only — 2% from buyer + 2% from seller = 4% total</div>
+        <div id="commission-preview" style="font-size:12px;color:var(--gd);margin-top:5px;background:var(--gbg);padding:8px 10px;border-radius:4px;border:1px solid var(--gb);">
+          Example: 20,000 RWF → Seller gets <strong id="comm-seller-ex">${fmt(Math.round(20000*(100-commissionRate)/100))}</strong> RWF · SOKO gets <strong id="comm-platform-ex">${fmt(Math.round(20000*commissionRate/100))}</strong> RWF
+        </div>
+      </div>
+      <div class="fld"><label class="fld-lbl">Payout Cycle</label><select class="fld-sel"><option>Weekly (every Monday)</option><option>Bi-weekly</option><option>Monthly</option><option>Manual only</option></select></div>
+      <div class="fld"><label class="fld-lbl">Auto-confirm delivery (days)</label><input class="fld-inp" value="7" type="number"/></div>
+      <button class="bx bx-g" style="padding:8px 16px;" onclick="saveCommissionRate()">Save & Apply</button>
+    </div>
+    <div class="settings-card"><div class="settings-card-title">📲 Payment Gateways</div>
+      <div class="fld"><label class="fld-lbl">MTN MoMo API Key</label><input class="fld-inp" type="password" placeholder="sk_live_…"/></div>
+      <div class="fld"><label class="fld-lbl">Airtel Money API Key</label><input class="fld-inp" type="password" placeholder="airtel_key_…"/></div>
+      <div class="fld"><label class="fld-lbl">Flutterwave Key</label><input class="fld-inp" type="password" placeholder="FLWSECK_…"/></div>
+      <button class="bx bx-g" style="padding:8px 16px;" onclick="toast('✓ Saved','g')">Save</button>
+    </div>
+    <div class="settings-card"><div class="settings-card-title">🛡️ Escrow Rules</div>
+      ${['Escrow on all orders','Auto-release after 7 days','Freeze funds on dispute','Admin can override release'].map(r=>`<label style="display:flex;align-items:center;gap:10px;font-size:13px;margin-bottom:10px;"><input type="checkbox" checked style="accent-color:var(--or);"/> ${r}</label>`).join('')}
+      <button class="bx bx-g" style="padding:8px 16px;margin-top:4px;" onclick="toast('✓ Saved','g')">Save</button>
+    </div>
+    <div class="settings-card"><div class="settings-card-title">🌍 Languages</div>
+      ${['🇷🇼 Kinyarwanda','🇬🇧 English','🇫🇷 French'].map(l=>`<label style="display:flex;align-items:center;gap:10px;font-size:14px;margin-bottom:10px;"><input type="checkbox" checked style="accent-color:var(--or);"/> ${l}</label>`).join('')}
+      <button class="bx bx-g" style="padding:8px 16px;margin-top:4px;" onclick="toast('✓ Saved','g')">Save</button>
+    </div>
+    <div class="settings-card"><div class="settings-card-title">🚫 Ban & Freeze Controls</div>
+      ${['Freeze seller earnings on ban','Refund buyer if seller banned','Auto-cancel pending orders'].map((r,i)=>`<label style="display:flex;align-items:center;gap:10px;font-size:13px;margin-bottom:10px;"><input type="checkbox" ${i<2?'checked':''} style="accent-color:var(--or);"/> ${r}</label>`).join('')}
+      <button class="bx bx-g" style="padding:8px 16px;margin-top:4px;" onclick="toast('✓ Saved','g')">Save</button>
+    </div>
+  </div></div>`;
 }
 
 // ADMIN ACTIONS
 function releaseEscrow(id){const o=ORDERS.find(x=>x.id===id);if(o){o.escrow='released';o.status='delivered';renderAdmin('escrow');toast('✅ Escrow released — RWF '+fmt(o.sellerNet)+' to seller','g');}}
 function refundEscrow(id){const o=ORDERS.find(x=>x.id===id);if(o){o.escrow='refunded';o.status='cancelled';renderAdmin('escrow');toast('↩ Refund issued to buyer','g');}}
-function approveKYC(id){const k=KYC.find(x=>x.id===id);if(k){k.status='approved';const u=USERS.find(x=>x.phone===k.phone);if(u){u.verified=true;u.status='active';}renderAdmin('kyc');toast('✓ Seller approved!','g');}}
+function approveKYC(id){const k=KYC.find(x=>x.id===id);if(k){k.status='approved';const u=USERS.find(x=>x.phone===k.phone);if(u){u.verified=true;u.status='active';}renderAdmin('kyc');toast('✓ Seller '+k.name+' approved!','g');}}
 function rejectKYC(id){const k=KYC.find(x=>x.id===id);if(k){k.status='rejected';renderAdmin('kyc');toast('KYC rejected');}}
 function banUser(phone){const u=USERS.find(x=>x.phone===phone);if(u){u.status='banned';ORDERS.filter(o=>o.seller===u.name&&o.escrow==='held').forEach(o=>o.escrow='frozen');renderAdmin('users');toast('🚫 User banned & escrow frozen','r');}}
+function unbanUser(phone){const u=USERS.find(x=>x.phone===phone);if(u){u.status='active';closeModal('modal-user-detail');renderAdmin('users');toast('✓ User unbanned','g');}}
 function removeProduct(id){if(!confirm('Remove this product?'))return;PRODUCTS=PRODUCTS.filter(p=>p.id!==id);renderAdmin('products');toast('Product removed');}
 function resolveDispute(id,action){
   const d=DISPUTES.find(x=>x.id===id);if(!d)return;
   d.status='resolved';d.escrowAction=action==='refund'?'refunded':'released';
-  const o=ORDERS.find(x=>x.id===d.orderId);if(o){o.escrow=action==='refund'?'refunded':'released';if(action==='release')o.status='delivered';}
+  const o=ORDERS.find(x=>x.id===d.orderId);if(o){o.escrow=action==='refund'?'refunded':'released';if(action==='release')o.status='delivered';if(action==='refund')o.status='cancelled';}
   renderAdmin('disputes');toast(action==='refund'?'↩ Refund issued to buyer':'✅ Funds released to seller','g');
 }
 function openOrderModal(id){
   editingOrderId=id;const o=ORDERS.find(x=>x.id===id);if(!o)return;
   document.getElementById('order-modal-info').innerHTML=`<strong>${o.id}</strong> · ${o.buyer} · RWF ${fmt(o.total)}`;
-  document.getElementById('order-escrow-info').innerHTML=`<div style="background:var(--abg);border:1px solid var(--ab);border-radius:var(--r4);padding:10px;font-size:12px;"><div style="font-weight:700;color:#8B5E00;margin-bottom:4px;">🔒 Escrow: ${o.escrow}</div><div style="color:var(--ink3);">Commission: RWF ${fmt(o.commission)} (2%) · Seller gets: RWF ${fmt(o.sellerNet)} (98%)</div></div>`;
+  document.getElementById('order-escrow-info').innerHTML=`<div style="background:var(--abg);border:1px solid var(--ab);border-radius:var(--r4);padding:10px;font-size:12px;"><div style="font-weight:700;color:#8B5E00;margin-bottom:4px;">🔒 Escrow: ${o.escrow}</div><div style="color:var(--ink3);">Platform fee: RWF ${fmt(o.commission)} · Seller gets: RWF ${fmt(o.sellerNet)}</div></div>`;
   document.getElementById('order-new-status').value=o.status;
   openModal('modal-order-status');
 }
@@ -1979,8 +2147,8 @@ function openDisputeDetail(id){
   const d=DISPUTES.find(x=>x.id===id);if(!d)return;
   const o=ORDERS.find(x=>x.id===d.orderId);
   document.getElementById('dispute-detail-body').innerHTML=`
-    <div style="display:flex;justify-content:space-between;margin-bottom:14px;"><div><strong style="font-size:16px;">${d.id}</strong> <span class="pill ${d.status==='open'?'pill-r':'pill-g'}" style="margin-left:8px;">${d.status}</span></div><span style="font-size:12px;color:var(--ink4);">${d.date}</span></div>
-    <div style="background:var(--abg);border:1px solid var(--ab);border-radius:3px;padding:8px 12px;font-size:12px;font-weight:700;color:#8B5E00;margin-bottom:12px;">🔒 Escrow status: ${d.escrowAction}</div>
+    <div style="display:flex;justify-content:space-between;margin-bottom:14px;"><div><strong style="font-size:16px;">${d.id}</strong><span class="pill ${d.status==='open'?'pill-r':'pill-g'}" style="margin-left:8px;">${d.status}</span></div><span style="font-size:12px;color:var(--ink4);">${d.date}</span></div>
+    <div style="background:var(--abg);border:1px solid var(--ab);border-radius:3px;padding:8px 12px;font-size:12px;font-weight:700;color:#8B5E00;margin-bottom:12px;">🔒 Escrow: ${d.escrowAction}</div>
     <div style="margin-bottom:10px;"><div style="font-size:11px;color:var(--ink4);text-transform:uppercase;font-weight:700;">Issue Type</div><div style="font-size:14px;font-weight:700;margin-top:3px;">🛡️ ${d.type}</div></div>
     <div style="margin-bottom:10px;"><div style="font-size:11px;color:var(--ink4);text-transform:uppercase;font-weight:700;">Order</div><div style="font-size:14px;margin-top:3px;"><strong>${d.orderId}</strong>${o?' · RWF '+fmt(o.total):''}</div></div>
     <div style="margin-bottom:10px;"><div style="font-size:11px;color:var(--ink4);text-transform:uppercase;font-weight:700;">Buyer</div><div style="font-size:14px;margin-top:3px;">${d.buyer}</div></div>
@@ -2003,46 +2171,30 @@ function openUserDetail(phone){
     <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px;">
       <div style="background:var(--bg2);border-radius:8px;padding:12px;text-align:center;"><div style="font-size:11px;color:var(--ink4);text-transform:uppercase;margin-bottom:4px;">Joined</div><div style="font-weight:700;font-size:12px;">${u.joined}</div></div>
       <div style="background:var(--bg2);border-radius:8px;padding:12px;text-align:center;"><div style="font-size:11px;color:var(--ink4);text-transform:uppercase;margin-bottom:4px;">Verified</div><div style="font-weight:700;">${u.verified?'✓ Yes':'No'}</div></div>
-      <div style="background:var(--bg2);border-radius:8px;padding:12px;text-align:center;"><div style="font-size:11px;color:var(--ink4);text-transform:uppercase;margin-bottom:4px;">Pending Payout</div><div style="font-weight:700;color:var(--gd);">${u.pendingPayout?'RWF '+fmt(u.pendingPayout):'-'}</div></div>
+      <div style="background:var(--bg2);border-radius:8px;padding:12px;text-align:center;"><div style="font-size:11px;color:var(--ink4);text-transform:uppercase;margin-bottom:4px;">Pending Payout</div><div style="font-weight:700;color:var(--gd);">${u.pendingPayout?'RWF '+fmt(u.pendingPayout):'—'}</div></div>
     </div>
-    ${uo.length?`<div style="font-weight:700;margin-bottom:8px;">Orders (${uo.length})</div>${uo.slice(0,5).map(o=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:var(--border2);font-size:13px;"><span>${o.id} — ${o.product.slice(0,20)}</span><span class="pill ${o.status==='delivered'?'pill-g':o.status==='cancelled'?'pill-r':'pill-a'}">${o.status}</span></div>`).join('')}`:'<div style="color:var(--ink3);text-align:center;padding:20px;">No orders yet</div>'}
+    ${uo.length?`<div style="font-weight:700;margin-bottom:8px;">Orders (${uo.length})</div>${uo.slice(0,5).map(o=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:var(--border2);font-size:13px;"><span>${o.id} — ${o.product.slice(0,18)}</span><span class="pill ${o.status==='delivered'?'pill-g':o.status==='cancelled'?'pill-r':'pill-a'}">${o.status}</span></div>`).join('')}`:'<div style="color:var(--ink3);text-align:center;padding:20px;">No orders yet</div>'}
     <div style="display:flex;gap:8px;margin-top:16px;padding-top:14px;border-top:var(--border);">
       ${u.status!=='banned'?`<button class="bx bx-r" onclick="banUser('${u.phone}');closeModal('modal-user-detail');renderAdmin('users')">🚫 Ban User</button>`:`<button class="bx bx-g" onclick="unbanUser('${u.phone}')">✓ Unban</button>`}
       <button class="bx bx-ghost" onclick="closeModal('modal-user-detail')">Close</button>
     </div>`;
   openModal('modal-user-detail');
 }
-function unbanUser(phone){const u=USERS.find(x=>x.phone===phone);if(u){u.status='active';closeModal('modal-user-detail');renderAdmin('users');toast('✓ User unbanned','g');}}
 
-// COMMISSION RATE — live update
+// COMMISSION
 function previewCommission(val){
-  const rate=parseFloat(val)||4;
-  const example=20000;
-  const sellerGets=Math.round(example*((100-rate)/100));
-  const sokoGets=Math.round(example*(rate/100));
-  const s=document.getElementById('comm-seller-ex');
-  const p=document.getElementById('comm-platform-ex');
-  if(s)s.textContent=sellerGets.toLocaleString();
-  if(p)p.textContent=sokoGets.toLocaleString();
+  const rate=parseFloat(val)||4,ex=20000;
+  const s=document.getElementById('comm-seller-ex'),p=document.getElementById('comm-platform-ex');
+  if(s)s.textContent=fmt(Math.round(ex*(100-rate)/100));
+  if(p)p.textContent=fmt(Math.round(ex*rate/100));
 }
-
 function saveCommissionRate(){
   const inp=document.getElementById('commission-rate-input');
   const newRate=parseFloat(inp?.value);
-  if(isNaN(newRate)||newRate<0||newRate>50){toast('Commission must be between 0 and 50%','r');return;}
+  if(isNaN(newRate)||newRate<0||newRate>50){toast('Rate must be between 0 and 50%','r');return;}
   commissionRate=newRate;
-  // Recalculate all existing orders
-  ORDERS.forEach(o=>{
-    const rate=commissionRate/100;
-    o.commission=Math.round(o.total*rate);
-    o.sellerNet=o.total-o.commission;
-  });
-  // Update all displayed commission labels
-  const labels=document.querySelectorAll('[data-comm-label]');
-  labels.forEach(el=>el.textContent=commissionRate+'%');
-  // Re-render current admin section
+  ORDERS.forEach(o=>{o.commission=Math.round(o.total*commissionRate/100);o.sellerNet=o.total-o.commission;});
   renderAdmin('settings');
-  // Show confirmation with impact
   toast('✓ Commission updated to '+commissionRate+'% — all orders recalculated','g');
 }
 
