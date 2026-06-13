@@ -996,7 +996,7 @@ tr:hover td{background:var(--bg);}
       <select style="padding:5px;background:rgba(255,255,255,.1);border:none;color:#fff;border-radius:3px;font-size:12px;outline:none;" onchange="applyLang(this.value)">
         <option value="en">EN</option><option value="fr">FR</option><option value="rw">RW</option>
       </select>
-      <button style="padding:6px 14px;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);border-radius:3px;color:#fff;font-size:12px;cursor:pointer;" onclick="doLogout()">Sign Out</button>
+      <button style="padding:8px 18px;background:var(--r);border:none;border-radius:4px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;" onclick="doLogout()">🚪 Sign Out</button>
     </div>
   </div>
   <div class="seller-layout" style="flex:1;">
@@ -1233,6 +1233,52 @@ tr:hover td{background:var(--bg);}
   </div>
 </div>
 
+
+<!-- WITHDRAWAL REQUEST MODAL -->
+<div class="modal-bg" id="modal-withdraw">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-title">💸 Request Payout</div>
+      <button class="modal-close" onclick="closeModal('modal-withdraw')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="background:var(--gbg);border:1px solid var(--gb);border-radius:var(--r8);padding:16px;margin-bottom:16px;text-align:center;">
+        <div style="font-size:11px;color:var(--gd);text-transform:uppercase;font-weight:700;margin-bottom:6px;">Available for Payout</div>
+        <div style="font-family:var(--font2);font-size:32px;font-weight:800;color:var(--gd);" id="withdraw-available">0 RWF</div>
+        <div style="font-size:11px;color:var(--ink3);margin-top:4px;">Funds held in escrow are not yet withdrawable</div>
+      </div>
+      <div class="fld">
+        <label class="fld-lbl">Amount to withdraw (RWF)</label>
+        <input class="fld-inp" id="withdraw-amount" type="number" placeholder="e.g. 50000" oninput="validateWithdrawAmount(this.value)"/>
+        <div id="withdraw-amount-hint" style="font-size:11px;color:var(--ink3);margin-top:4px;"></div>
+      </div>
+      <div class="fld">
+        <label class="fld-lbl">Payout method</label>
+        <select class="fld-sel" id="withdraw-method">
+          <option value="MTN MoMo">📲 MTN Mobile Money</option>
+          <option value="Airtel Money">📱 Airtel Money</option>
+          <option value="Bank Transfer">🏦 Bank Transfer</option>
+        </select>
+      </div>
+      <div class="fld">
+        <label class="fld-lbl">Phone / Account number</label>
+        <input class="fld-inp" id="withdraw-phone" placeholder="+250 7XX XXX XXX"/>
+      </div>
+      <div class="fld">
+        <label class="fld-lbl">Note (optional)</label>
+        <input class="fld-inp" id="withdraw-note" placeholder="e.g. Weekly payout request"/>
+      </div>
+      <div style="background:var(--abg);border:1px solid var(--ab);border-radius:var(--r4);padding:10px 12px;font-size:12px;color:#8B5E00;">
+        ⏱️ Payout requests are processed by the SOKO admin within <strong>1–2 business days</strong>. You will receive an SMS confirmation once sent.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="bx bx-ghost" onclick="closeModal('modal-withdraw')">Cancel</button>
+      <button style="padding:10px 24px;background:var(--g);border:none;border-radius:var(--r4);color:#fff;font-size:14px;font-weight:700;cursor:pointer;" onclick="submitWithdrawModal()">Submit Request →</button>
+    </div>
+  </div>
+</div>
+
 <!-- ═══ END PART 3 — continue with Part 4 (all JavaScript) ═══ -->
 <script>
 // SUPABASE
@@ -1451,13 +1497,22 @@ function quickLogin(role){
   signupData=accounts[role];signupData._ctx='login';loginSuccess();
 }
 async function doLogout(){
-  if(sb)await sb.auth.signOut();
-  currentUser=null;cart=[];
-  ['view-buyer','view-seller','view-admin'].forEach(id=>document.getElementById(id).classList.remove('active'));
+  if(sb){try{await sb.auth.signOut();}catch(e){console.log('signout:',e);}}
+  currentUser=null;cart=[];signupData={};
+  // Clear all views
+  ['view-buyer','view-seller','view-admin'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.classList.remove('active');
+  });
+  // Reset auth screen
   document.getElementById('view-auth').classList.add('active');
   authTab('login');
+  // Clear OTP inputs
   ['otp1','otp2','otp3','otp4'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
-  closeAll();toast('You have signed out');
+  // Clear login fields
+  ['login-email','login-phone','login-pass'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  closeAll();
+  toast('You have signed out');
 }
 async function restoreSession(){
   if(!sb)return;
@@ -1476,33 +1531,7 @@ async function forgotPassword(){
   if(error){toast(error.message,'r');return;}
   toast('✓ Password reset link sent to '+email,'g');
 }
-async function loadProducts(){
-  if(!sb) return;
-  try {
-    const {data, error} = await sb.from('products').select('*');
-    if(error) throw error;
-    if(data && data.length) {
-      PRODUCTS = data.map(p => ({
-        id: p.id,
-        name: p.name,
-        cat: p.category || p.cat,
-        price: p.price,
-        stock: p.stock,
-        emoji: p.emoji || '📦',
-        images: p.images || [],
-        rating: p.rating || 5.0,
-        reviews: p.reviews_count || p.reviews || 0,
-        seller: p.seller_name || p.seller,
-        sellerPhone: p.seller_phone || '+250788000000',
-        desc: p.description || '',
-        badge: (p.badge && p.badge !== 'EMPTY') ? p.badge : '',
-      }));
-      currentShopList = [...PRODUCTS];
-    }
-  } catch(e) {
-    console.error('Failed to load products from Supabase:', e);
-  }
-}
+
 // BUYER HOME
 function buildBuyerHome(){
   renderPromos();renderCats();
@@ -1598,7 +1627,7 @@ function showProduct(id){
           <div class="escrow-box-title">🔒 Payment is Escrow-Protected</div>
           <div class="escrow-step"><div class="escrow-dot">1</div><span>You pay RWF ${fmt(p.price)} → SOKO holds it safely</span></div>
           <div class="escrow-step"><div class="escrow-dot">2</div><span>Seller ships · You confirm delivery</span></div>
-          <div class="escrow-step"><div class="escrow-dot">3</div><span>Payment released · 2% service fee covers protection</span></div>
+         <div class="escrow-step"><div class="escrow-dot">3</div><span>Payment released · 2% platform fee deducted · seller receives 98%</span></div> 
         </div>
         ${p.stock===0?'<div style="padding:14px;background:var(--rbg);border-radius:var(--r4);color:var(--r);font-weight:700;text-align:center;margin-top:12px;">Out of Stock</div>':''}
       </div>
@@ -1771,7 +1800,7 @@ function buildSellerNav(){
   nav.innerHTML=SELLER_NAV.map((n,i)=>`<div class="snav-item ${i===0?'active':''}" onclick="sellerNavClick(this,'${n.id}')"><span style="font-size:16px;width:20px;text-align:center;">${n.icon}</span>${n.label}</div>`).join('')+
   `<div class="snav-item" style="margin-top:20px;border-top:1px solid rgba(255,255,255,.07);padding-top:12px;" onclick="doLogout()"><span style="font-size:16px;width:20px;text-align:center;">🚪</span>Sign Out</div>`;
   const bnav=document.getElementById('seller-bnav');
-  if(bnav)bnav.innerHTML=SELLER_NAV.map((n,i)=>`<button class="bnav-item ${i===0?'active':''}" onclick="bnavSet(this);renderSeller('${n.id}')"><span class="bnav-ico">${n.icon}</span>${n.label}</button>`).join('');
+  if(bnav)bnav.innerHTML=SELLER_NAV.map((n,i)=>`<button class="bnav-item ${i===0?'active':''}" onclick="bnavSet(this);renderSeller('${n.id}')"><span class="bnav-ico">${n.icon}</span>${n.label}</button>`).join('')+`<button class="bnav-item" onclick="doLogout()"><span class="bnav-ico">🚪</span>Sign Out</button>`;
 }
 function sellerNavClick(btn,id){document.querySelectorAll('.snav-item').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderSeller(id);}
 function renderSeller(section){
@@ -1833,9 +1862,18 @@ function sellerEarnHTML(){
       <div style="font-size:12px;color:rgba(255,255,255,.4);">After platform fee deduction</div>
       <div class="earn-grid">
         <div class="earn-item"><div class="earn-item-lbl">In Escrow</div><div class="earn-item-val o">45,000 RWF</div></div>
-        <div class="earn-item"><div class="earn-item-lbl">Ready for Payout</div><div class="earn-item-val g">94,300 RWF</div></div>
+        <div class="earn-item" style="cursor:pointer;" onclick="openWithdrawModal()">
+  <div class="earn-item-lbl">Ready for Payout</div>
+  <div class="earn-item-val g">94,300 RWF</div>
+  <div style="font-size:10px;color:rgba(255,255,255,.5);margin-top:4px;">Tap to withdraw →</div>
+</div>
       </div>
-      <div style="background:rgba(0,150,80,.1);border:1px solid rgba(0,150,80,.2);border-radius:var(--r4);padding:10px 14px;margin-top:14px;font-size:12px;color:rgba(255,255,255,.65);">💳 SOKO settles weekly via MTN MoMo or bank. Funds release after buyer confirms delivery.</div>
+      <div style="background:rgba(0,150,80,.1);border:1px solid rgba(0,150,80,.2);border-radius:var(--r4);padding:10px 14px;margin-top:14px;font-size:12px;color:rgba(255,255,255,.65);">💳 SOKO settles weekly via MTN MoMo or bank. Funds release after buyer confirms delivery.
+      </div>
+      <button onclick="openWithdrawModal()" style="width:100%;margin-top:14px;padding:13px;background:linear-gradient(to bottom,#00C878,#00A85E);border:none;border-radius:var(--r4);color:#fff;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(0,168,94,.3);">
+        💸 Request Payout
+      </button>
+      <div style="display:none;"></div>
     </div>
     <div class="tbl-wrap"><div class="tbl-hdr"><div class="tbl-hdr-title">Earnings History</div></div>
     <div class="tbl-scroll"><table><thead><tr><th>Order ID</th><th>Product</th><th>Date</th><th>Gross</th><th>Platform Fee</th><th>You Receive</th><th>Escrow</th></tr></thead>
@@ -2197,7 +2235,83 @@ function saveCommissionRate(){
   renderAdmin('settings');
   toast('✓ Commission updated to '+commissionRate+'% — all orders recalculated','g');
 }
+function openWithdrawModal(){
+  const available=94300;
+  const el=document.getElementById('withdraw-available');
+  if(el)el.textContent=fmt(available)+' RWF';
+  document.getElementById('withdraw-amount').value='';
+  document.getElementById('withdraw-amount-hint').textContent='Enter amount between 1,000 and '+fmt(available)+' RWF';
+  document.getElementById('withdraw-phone').value='';
+  document.getElementById('withdraw-note').value='';
+  openModal('modal-withdraw');
+}
 
+function validateWithdrawAmount(val){
+  const hint=document.getElementById('withdraw-amount-hint');
+  if(!hint)return;
+  const n=parseInt(val);
+  if(!val)hint.textContent='Enter amount between 1,000 and 94,300 RWF';
+  else if(n<1000)hint.textContent='⚠️ Minimum withdrawal is 1,000 RWF';
+  else if(n>94300)hint.textContent='⚠️ Exceeds available balance';
+  else hint.textContent='✓ Amount looks good';
+}
+
+function submitWithdrawModal(){
+  const amount=parseInt(document.getElementById('withdraw-amount').value);
+  const phone=document.getElementById('withdraw-phone').value.trim();
+  const method=document.getElementById('withdraw-method').value;
+  const note=document.getElementById('withdraw-note').value.trim();
+  if(!amount||amount<1000){toast('Enter a valid amount (min 1,000 RWF)','r');return;}
+  if(amount>94300){toast('Amount exceeds available balance','r');return;}
+  if(!phone){toast('Enter your Mobile Money number','r');return;}
+  PAYOUTS.unshift({id:'PAY-'+(PAYOUTS.length+1).toString().padStart(3,'0'),seller:currentUser?.name||'Seller',phone,amount,ordersCount:0,method,status:'pending',date:new Date().toISOString().slice(0,10)});
+  closeModal('modal-withdraw');
+  toast('✓ Withdrawal request submitted. Admin will process within 24–48hrs.','g');
+}
 </script>
+
+<div class="modal-bg" id="modal-withdraw">
+  <div class="modal" style="max-width:420px;">
+    <div class="modal-hd">
+      <div class="modal-title">💸 Request Withdrawal</div>
+      <button class="modal-close" onclick="closeModal('modal-withdraw')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="background:var(--gbg);border:1px solid var(--gb);border-radius:var(--r8);padding:16px;text-align:center;margin-bottom:16px;">
+        <div style="font-size:11px;color:var(--gd);text-transform:uppercase;font-weight:700;margin-bottom:6px;">Available for Withdrawal</div>
+        <div style="font-family:var(--font2);font-size:32px;font-weight:900;color:var(--gd);" id="withdraw-available">94,300 RWF</div>
+        <div style="font-size:11px;color:var(--ink3);margin-top:4px;">Escrow funds not included — only released orders</div>
+      </div>
+      <div class="fld">
+        <label class="fld-lbl">Amount to withdraw (RWF)</label>
+        <input class="fld-inp" id="withdraw-amount" type="number" placeholder="e.g. 50000" oninput="validateWithdrawAmount(this.value)"/>
+        <div id="withdraw-amount-hint" style="font-size:12px;color:var(--ink3);margin-top:4px;">Enter amount between 1,000 and 94,300 RWF</div>
+      </div>
+      <div class="fld">
+        <label class="fld-lbl">Payout method</label>
+        <select class="fld-sel" id="withdraw-method">
+          <option value="mtn">📲 MTN Mobile Money</option>
+          <option value="airtel">📱 Airtel Money</option>
+          <option value="bank">🏦 Bank Transfer</option>
+        </select>
+      </div>
+      <div class="fld">
+        <label class="fld-lbl">Mobile Money Number / Account</label>
+        <input class="fld-inp" id="withdraw-number" placeholder="+250 7XX XXX XXX"/>
+      </div>
+      <div class="fld">
+        <label class="fld-lbl">Note (optional)</label>
+        <input class="fld-inp" id="withdraw-note" placeholder="e.g. May week 1 payout"/>
+      </div>
+      <div style="background:var(--abg);border:1px solid var(--ab);border-radius:var(--r4);padding:10px 12px;font-size:12px;color:#8B5E00;">
+        ⚠️ Withdrawals are reviewed by admin and processed within 24–48 hours on business days.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="bx bx-ghost" onclick="closeModal('modal-withdraw')">Cancel</button>
+      <button style="padding:10px 24px;background:linear-gradient(to bottom,#00C878,#00A85E);border:none;border-radius:var(--r4);color:#fff;font-size:14px;font-weight:700;cursor:pointer;" onclick="submitWithdrawal()">Submit Request →</button>
+    </div>
+  </div>
+</div>
 </body>
 </html>
