@@ -1483,7 +1483,7 @@ function loginSuccess(){
   currentUser={...signupData};
   document.getElementById('view-auth').classList.remove('active');
   if(currentUser.role==='admin'){document.getElementById('view-admin').classList.add('active');buildAdminNav();renderAdmin('overview');}
-  else if(currentUser.role==='seller'){document.getElementById('view-seller').classList.add('active');buildSellerNav();loadProductsFromSupabase().then(()=>renderSeller('dashboard'));}else if(currentUser.role==='seller'){document.getElementById('view-seller').classList.add('active');buildSellerNav();renderSeller('dashboard');}
+  else if(currentUser.role==='seller'){document.getElementById('view-seller').classList.add('active');buildSellerNav();loadProductsFromSupabase().then(()=>renderSeller('dashboard'));}
   else{
     document.getElementById('view-buyer').classList.add('active');
     document.getElementById('buyer-name-nav').textContent=currentUser.name.split(' ')[0];
@@ -2313,49 +2313,5 @@ function submitWithdrawModal(){
   toast('✓ Withdrawal request submitted. Admin will process within 24–48hrs.','g');
 }
 </script>
-
-<div class="modal-bg" id="modal-withdraw">
-  <div class="modal" style="max-width:420px;">
-    <div class="modal-hd">
-      <div class="modal-title">💸 Request Withdrawal</div>
-      <button class="modal-close" onclick="closeModal('modal-withdraw')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div style="background:var(--gbg);border:1px solid var(--gb);border-radius:var(--r8);padding:16px;text-align:center;margin-bottom:16px;">
-        <div style="font-size:11px;color:var(--gd);text-transform:uppercase;font-weight:700;margin-bottom:6px;">Available for Withdrawal</div>
-        <div style="font-family:var(--font2);font-size:32px;font-weight:900;color:var(--gd);" id="withdraw-available">94,300 RWF</div>
-        <div style="font-size:11px;color:var(--ink3);margin-top:4px;">Escrow funds not included — only released orders</div>
-      </div>
-      <div class="fld">
-        <label class="fld-lbl">Amount to withdraw (RWF)</label>
-        <input class="fld-inp" id="withdraw-amount" type="number" placeholder="e.g. 50000" oninput="validateWithdrawAmount(this.value)"/>
-        <div id="withdraw-amount-hint" style="font-size:12px;color:var(--ink3);margin-top:4px;">Enter amount between 1,000 and 94,300 RWF</div>
-      </div>
-      <div class="fld">
-        <label class="fld-lbl">Payout method</label>
-        <select class="fld-sel" id="withdraw-method">
-          <option value="mtn">📲 MTN Mobile Money</option>
-          <option value="airtel">📱 Airtel Money</option>
-          <option value="bank">🏦 Bank Transfer</option>
-        </select>
-      </div>
-      <div class="fld">
-        <label class="fld-lbl">Mobile Money Number / Account</label>
-        <input class="fld-inp" id="withdraw-number" placeholder="+250 7XX XXX XXX"/>
-      </div>
-      <div class="fld">
-        <label class="fld-lbl">Note (optional)</label>
-        <input class="fld-inp" id="withdraw-note" placeholder="e.g. May week 1 payout"/>
-      </div>
-      <div style="background:var(--abg);border:1px solid var(--ab);border-radius:var(--r4);padding:10px 12px;font-size:12px;color:#8B5E00;">
-        ⚠️ Withdrawals are reviewed by admin and processed within 24–48 hours on business days.
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="bx bx-ghost" onclick="closeModal('modal-withdraw')">Cancel</button>
-      <button style="padding:10px 24px;background:linear-gradient(to bottom,#00C878,#00A85E);border:none;border-radius:var(--r4);color:#fff;font-size:14px;font-weight:700;cursor:pointer;" onclick="submitWithdrawal()">Submit Request →</button>
-    </div>
-  </div>
-</div>
 </body>
 </html>
