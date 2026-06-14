@@ -482,6 +482,30 @@ tr:hover td{background:var(--bg);}
 @media(max-width:480px){.prod-grid{grid-template-columns:1fr 1fr;}.promo-grid{grid-template-columns:1fr;}.tnav-loc{display:none;}}
 ::-webkit-scrollbar{width:4px;height:4px;}
 ::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:2px;}
+/* ── AI FEATURES ──────────────────────── */
+.ai-search-bar{background:linear-gradient(135deg,rgba(19,25,33,.97),rgba(29,52,97,.97));border-bottom:1px solid rgba(255,153,0,.2);padding:8px 16px;display:flex;gap:8px;align-items:center;}
+.ai-search-inp{flex:1;height:36px;border:1px solid rgba(255,153,0,.3);border-radius:4px;padding:0 12px;font-size:13px;background:rgba(255,255,255,.08);color:#fff;outline:none;}
+.ai-search-inp::placeholder{color:rgba(255,255,255,.4);}
+.ai-search-inp:focus{border-color:#FF9900;}
+.ai-search-btn{height:36px;padding:0 14px;background:#FF9900;border:none;border-radius:4px;font-size:13px;font-weight:700;cursor:pointer;}
+#ai-chat-btn{position:fixed;bottom:86px;right:20px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#131921,#1d3461);border:2px solid #FF9900;color:#fff;font-size:24px;cursor:pointer;box-shadow:0 8px 32px rgba(0,0,0,.2);z-index:500;display:none;align-items:center;justify-content:center;}
+#ai-chat-btn.visible{display:flex;}
+#ai-chat-panel{position:fixed;bottom:155px;right:20px;width:320px;background:#fff;border:1px solid #DDD;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.2);z-index:500;display:none;flex-direction:column;max-height:420px;}
+#ai-chat-panel.open{display:flex;}
+.ai-chat-hdr{background:linear-gradient(135deg,#131921,#1d3461);padding:12px 16px;border-radius:12px 12px 0 0;display:flex;align-items:center;justify-content:space-between;}
+.ai-chat-hdr-title{color:#fff;font-weight:700;font-size:14px;}
+.ai-chat-close{background:none;border:none;color:rgba(255,255,255,.6);font-size:18px;cursor:pointer;}
+.ai-chat-msgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;background:#F3F3F3;}
+.ai-msg{padding:9px 12px;border-radius:8px;font-size:13px;line-height:1.5;max-width:90%;}
+.ai-msg.bot{background:#fff;border:1px solid #DDD;align-self:flex-start;}
+.ai-msg.user{background:#FF9900;color:#0F1111;align-self:flex-end;}
+.ai-msg.typing{color:#767676;font-style:italic;}
+.ai-chat-inp{display:flex;padding:10px;border-top:1px solid #DDD;gap:6px;background:#fff;border-radius:0 0 12px 12px;}
+.ai-chat-inp input{flex:1;padding:8px 10px;border:1px solid #E3E6E6;border-radius:4px;font-size:13px;outline:none;}
+.ai-chat-inp input:focus{border-color:#FF9900;}
+.ai-chat-inp button{padding:8px 12px;background:#FF9900;border:none;border-radius:4px;font-size:13px;font-weight:700;cursor:pointer;}
+.ai-gen-btn{padding:8px 14px;background:linear-gradient(135deg,#131921,#1d3461);color:#FF9900;border:1px solid #FF9900;border-radius:4px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px;width:100%;display:flex;align-items:center;justify-content:center;gap:6px;}
+.ai-gen-btn:disabled{opacity:.5;cursor:not-allowed;}
 </style>
 </head>
 <body>
@@ -494,6 +518,28 @@ tr:hover td{background:var(--bg);}
 </div>
 
 <div id="toast"></div>
+<!-- AI CHATBOT BUTTON -->
+<button id="ai-chat-btn" onclick="toggleAIChat()">✨</button>
+<div id="ai-chat-panel">
+  <div class="ai-chat-hdr">
+    <div class="ai-chat-hdr-title">✨ SOKO AI Support</div>
+    <button class="ai-chat-close" onclick="toggleAIChat()">✕</button>
+  </div>
+  <div class="ai-chat-msgs" id="ai-chat-msgs">
+    <div class="ai-msg bot">👋 Hi! Ask me anything about orders, delivery, escrow, or payments — in English, Français, or Ikinyarwanda!</div>
+  </div>
+  <div style="padding:6px 10px;background:#F3F3F3;display:flex;gap:5px;flex-wrap:wrap;border-top:1px solid #EEE;">
+    <button style="font-size:10px;padding:3px 8px;border:1px solid #DDD;border-radius:20px;background:#fff;cursor:pointer;" onclick="aiQuick('How does escrow work?')">Escrow?</button>
+    <button style="font-size:10px;padding:3px 8px;border:1px solid #DDD;border-radius:20px;background:#fff;cursor:pointer;" onclick="aiQuick('How do I pay with MoMo?')">MoMo?</button>
+    <button style="font-size:10px;padding:3px 8px;border:1px solid #DDD;border-radius:20px;background:#fff;cursor:pointer;" onclick="aiQuick('Track my order')">Track?</button>
+    <button style="font-size:10px;padding:3px 8px;border:1px solid #DDD;border-radius:20px;background:#fff;cursor:pointer;" onclick="aiQuick('How do I return an item?')">Return?</button>
+  </div>
+  <div class="ai-chat-inp">
+    <input id="ai-chat-input" placeholder="Ask anything…" onkeydown="if(event.key==='Enter')sendAIChat()"/>
+    <button onclick="sendAIChat()">Send</button>
+  </div>
+</div>
+<!-- AI SEARCH BAR (paste right after the subnav closing tag) -->
 
 <!-- ══════════════════════ AUTH VIEW ════════════════════════ -->
 <div class="view active" id="view-auth">
@@ -628,6 +674,12 @@ tr:hover td{background:var(--bg);}
         <option value="rw">RW</option>
       </select>
     </div>
+    <div class="ai-search-bar">
+  <span style="font-size:16px;">✨</span>
+  <span style="font-size:11px;color:rgba(255,255,255,.5);white-space:nowrap;">AI Search:</span>
+  <input class="ai-search-inp" id="ai-search-inp" placeholder="Describe what you need… e.g. 'something for cooking dinner'" onkeydown="if(event.key==='Enter')doAISearch()"/>
+  <button class="ai-search-btn" onclick="doAISearch()">Search with AI</button>
+</div>
   </div>
 
   <!-- ACCOUNT DROPDOWN -->
@@ -1077,7 +1129,9 @@ tr:hover td{background:var(--bg);}
         <div class="fld"><label class="fld-lbl">Stock quantity</label><input class="fld-inp" id="mp-stock" type="number" placeholder="10"/></div>
         <div class="fld"><label class="fld-lbl">Emoji fallback</label><input class="fld-inp" id="mp-emoji" placeholder="🍎"/></div>
       </div>
-      <div class="fld"><label class="fld-lbl">Description</label><textarea class="fld-inp fld-ta" id="mp-desc" placeholder="Describe your product…"></textarea></div>
+      <div class="fld"><label class="fld-lbl">Description</label><textarea class="fld-inp fld-ta" id="mp-desc" placeholder="Describe your product…"></textarea></div><button class="ai-gen-btn" id="ai-gen-desc-btn" onclick="aiGenerateDesc()">
+  <span>✨</span><span id="ai-gen-label">Generate description with AI</span>
+</button>
       <div style="background:var(--gbg);border:1px solid var(--gb);border-radius:var(--r4);padding:10px 12px;font-size:12px;color:var(--gd);">
         💡 You receive your earnings after a small platform fee. Payments are escrow-protected.
       </div>
