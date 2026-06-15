@@ -2366,6 +2366,61 @@ function submitWithdrawModal(){
   closeModal('modal-withdraw');
   toast('✓ Withdrawal request submitted. Admin will process within 24–48hrs.','g');
 }
+// AI CHAT
+function toggleAIChat(){
+  const popup=document.getElementById('ai-popup');
+  const isOpen=popup.style.display==='flex';
+  popup.style.display=isOpen?'none':'flex';
+  if(!isOpen)document.getElementById('ai-input').focus();
+}
+async function sendAIMessage(){
+  const input=document.getElementById('ai-input');
+  const msg=input.value.trim();
+  if(!msg)return;
+  input.value='';
+  const box=document.getElementById('ai-messages');
+  box.innerHTML+=`<div style="background:#FF9900;border-radius:8px;padding:10px 12px;font-size:13px;color:#0F1111;box-shadow:0 1px 4px rgba(0,0,0,.08);max-width:85%;align-self:flex-end;">${msg}</div>`;
+  box.innerHTML+=`<div id="ai-typing" style="background:#fff;border-radius:8px;padding:10px 12px;font-size:13px;color:#767676;max-width:85%;">Thinking…</div>`;
+  box.scrollTop=box.scrollHeight;
+  try{
+    const response=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({
+        model:'claude-sonnet-4-6',
+        max_tokens:1000,
+        system:'You are a helpful assistant for SOKO, Rwanda\'s #1 marketplace. Help users with products, orders, selling, payments (MTN MoMo, Airtel Money), delivery, and escrow. Keep answers short and friendly. Always respond in the same language the user writes in (English, French, or Kinyarwanda).',
+        messages:[{role:'user',content:msg}]
+      })
+    });
+    const data=await response.json();
+    const reply=data.content?.[0]?.text||'Sorry, I could not get a response.';
+    document.getElementById('ai-typing').remove();
+    box.innerHTML+=`<div style="background:#fff;border-radius:8px;padding:10px 12px;font-size:13px;color:#333;box-shadow:0 1px 4px rgba(0,0,0,.08);max-width:85%;">${reply}</div>`;
+    box.scrollTop=box.scrollHeight;
+  }catch(e){
+    document.getElementById('ai-typing').remove();
+    box.innerHTML+=`<div style="background:#fff;border-radius:8px;padding:10px 12px;font-size:13px;color:#CC0C39;max-width:85%;">Something went wrong. Please try again.</div>`;
+    box.scrollTop=box.scrollHeight;
+  }
+}
 </script>
+<!-- AI CHAT BUTTON -->
+<div id="ai-fab" onclick="toggleAIChat()" style="position:fixed;bottom:24px;left:24px;z-index:9999;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#131921,#067D62);box-shadow:0 4px 16px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:22px;" title="Ask AI">🤖</div>
+
+<!-- AI CHAT POPUP -->
+<div id="ai-popup" style="display:none;position:fixed;bottom:88px;left:24px;z-index:9998;width:320px;background:#fff;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.2);overflow:hidden;flex-direction:column;">
+  <div style="background:linear-gradient(135deg,#131921,#067D62);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">
+    <div style="color:#fff;font-weight:700;font-size:14px;">🤖 SOKO AI Assistant</div>
+    <button onclick="toggleAIChat()" style="background:none;border:none;color:rgba(255,255,255,.7);font-size:18px;cursor:pointer;line-height:1;">✕</button>
+  </div>
+  <div id="ai-messages" style="height:280px;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;background:#F3F3F3;">
+    <div style="background:#fff;border-radius:8px;padding:10px 12px;font-size:13px;color:#333;box-shadow:0 1px 4px rgba(0,0,0,.08);max-width:85%;">👋 Hi! I'm your SOKO assistant. Ask me anything about products, orders, or selling on SOKO!</div>
+  </div>
+  <div style="padding:10px;background:#fff;border-top:1px solid #EEE;display:flex;gap:8px;">
+    <input id="ai-input" placeholder="Ask something…" onkeydown="if(event.key==='Enter')sendAIMessage()" style="flex:1;padding:9px 12px;border:2px solid #E3E6E6;border-radius:20px;font-size:13px;outline:none;font-family:inherit;"/>
+    <button onclick="sendAIMessage()" style="width:36px;height:36px;border-radius:50%;background:#FF9900;border:none;font-size:16px;cursor:pointer;flex-shrink:0;">→</button>
+  </div>
+</div>
 </body>
 </html>
