@@ -2422,12 +2422,7 @@ async function sendAIMessage(){
     const response=await fetch('/.netlify/functions/ai',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
-      body:JSON.stringify({
-        model:'claude-sonnet-4-6',
-        max_tokens:1000,
-        system:'You are a helpful assistant for SOKO, Rwanda\'s #1 marketplace. Help users with products, orders, selling, payments (MTN MoMo, Airtel Money), delivery, and escrow. Keep answers short and friendly. Always respond in the same language the user writes in (English, French, or Kinyarwanda).',
-        messages:[{role:'user',content:msg}]
-      })
+      body:JSON.stringify({message:msg})
     });
     const data=await response.json();
     const reply=data.content?.[0]?.text||'Sorry, I could not get a response.';

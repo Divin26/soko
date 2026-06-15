@@ -6,7 +6,7 @@ exports.handler = async (event) => {
     console.log('Received body:',JSON.stringify(body));
     const message=body.message||body.msg||'hello';
     console.log('Message:',message);
-    const response=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-1.5-flash:generateContent?key=${process.env.GEMINI_API_KEY}`,{
+    const response=await fetch(`https://generativelanguage.googleapis.com/v1beta/models/gemini-pro:generateContent?key=${process.env.GEMINI_API_KEY}`,{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
