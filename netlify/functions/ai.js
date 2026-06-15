@@ -18,8 +18,8 @@ Always respond in the same language the user writes in (English, French, or Kiny
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({
-        contents:[{parts:[{text:message}]}],
-        systemInstruction:{parts:[{text:systemPrompt}]}
+        contents:[{role:'user',parts:[{text:message}]}],
+        systemInstruction:{role:'system',parts:[{text:systemPrompt}]}
       })
     });
     const data=await response.json();
