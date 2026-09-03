@@ -583,14 +583,12 @@ tr:hover td{background:var(--bg);}
       </div>
       <!-- LOGIN -->
       <div class="apanel" id="apanel-login">
-        <div class="fg"><label class="fl">Email address</label><input class="fi" id="login-email" type="email" placeholder="you@email.com" onkeydown="if(event.key==='Enter')doLogin()"/></div>
-        <div class="fg"><label class="fl">Phone <span style="font-weight:400;text-transform:none;font-size:11px;">(optional)</span></label><input class="fi" id="login-phone" type="tel" placeholder="+250 7XX XXX XXX"/></div>
+        <div class="fg"><label class="fl">Email or phone number</label><input class="fi" id="login-identifier" type="text" placeholder="you@email.com or +250 7XX XXX XXX" onkeydown="if(event.key==='Enter')doLogin()"/></div>
         <div class="fg"><label class="fl">Password</label><input class="fi" id="login-pass" type="password" placeholder="At least 6 characters" onkeydown="if(event.key==='Enter')doLogin()"/></div>
         <button class="btn-or btn-or-dk" style="margin-bottom:8px;" onclick="doLogin()">Sign in →</button>
         <div style="text-align:right;margin-bottom:12px;"><span onclick="forgotPassword()" style="font-size:12px;color:var(--b);cursor:pointer;text-decoration:underline;">Forgot password?</span></div>
         <div style="font-size:11px;color:var(--ink3);margin-bottom:12px;">By signing in you agree to SOKO's Conditions of Use and Privacy Notice.</div>
-        <div class="auth-div">or demo access</div>
-        <div class="demo-box">Sign in as: <span class="dl" onclick="quickLogin('buyer')">🛍️ Buyer</span> · <span class="dl" onclick="quickLogin('seller')">🏪 Seller</span> · <span class="dl" onclick="quickLogin('admin')">⚙️ Admin</span></div>
+        <div style="font-size:11px;color:var(--ink3);text-align:center;">Don't have an account? <span class="dl" onclick="authTab('signup')">Create one</span></div>
       </div>
       <!-- SIGNUP -->
       <div class="apanel" id="apanel-signup" style="display:none;">
@@ -608,21 +606,6 @@ tr:hover td{background:var(--bg);}
         <div class="fg"><label class="fl">Password</label><input class="fi" id="su-pass" type="password" placeholder="At least 6 characters"/></div>
         <button class="btn-or" style="margin-bottom:12px;" onclick="doSignup()">Create your SOKO account →</button>
         <div style="font-size:11px;color:var(--ink3);">By creating an account you agree to SOKO's Conditions of Use and Privacy Notice.</div>
-      </div>
-      <!-- OTP -->
-      <div class="apanel" id="apanel-otp" style="display:none;">
-        <div style="text-align:center;padding:14px 0;">
-          <div style="font-size:36px;margin-bottom:10px;">📱</div>
-          <div style="font-size:17px;font-weight:700;margin-bottom:5px;">Verify your phone</div>
-          <div style="font-size:13px;color:var(--ink3);">Enter the 4-digit code sent to your number</div>
-          <div class="otp-row">
-            <input class="otp-inp" maxlength="1" id="otp1" oninput="otpNext(this,'otp2')"/>
-            <input class="otp-inp" maxlength="1" id="otp2" oninput="otpNext(this,'otp3')"/>
-            <input class="otp-inp" maxlength="1" id="otp3" oninput="otpNext(this,'otp4')"/>
-            <input class="otp-inp" maxlength="1" id="otp4" oninput="otpSubmit()"/>
-          </div>
-          <div style="font-size:12px;color:var(--g);font-weight:600;">Demo code: 1234</div>
-        </div>
       </div>
       <!-- KYC -->
       <div class="apanel" id="apanel-kyc" style="display:none;">
@@ -1472,7 +1455,7 @@ function applyLang(l){
 // AUTH
 function authTab(t){
   ['login','signup'].forEach(x=>{document.getElementById('atab-'+x).classList.toggle('active',x===t);document.getElementById('apanel-'+x).style.display=x===t?'block':'none';});
-  ['apanel-otp','apanel-kyc'].forEach(id=>document.getElementById(id).style.display='none');
+  document.getElementById('apanel-kyc').style.display='none';
 }
 function selectRole(r){
   selectedRole=r;
@@ -1481,25 +1464,25 @@ function selectRole(r){
   document.getElementById('seller-kyc-note').style.display=r==='seller'?'block':'none';
 }
 async function doLogin(){
-  const email=document.getElementById('login-email').value.trim();
-  const phone=document.getElementById('login-phone').value.trim();
+  const identifier=document.getElementById('login-identifier').value.trim();
   const pw=document.getElementById('login-pass').value;
-  if(!email||!pw){toast('Please sign in with your email address (phone-only login isn\'t set up yet)','r');return;}
-  if(sb){
-    toast('Signing in…');
-    const identifier=email||phone;
-    const{data,error}=await sb.auth.signInWithPassword({email:identifier,password:pw});
-    if(error){toast(error.message,'r');return;}
-    let{data:profile}=await sb.from('users').select('*').eq('email',identifier).single();
-    if(!profile){
-      const{data:np}=await sb.from('users').insert([{name:identifier.split('@')[0],email:identifier,auth_id:data.user.id,role:'buyer',verified:false,status:'active'}]).select().single();
-      profile=np;
-    }
-    if(profile){signupData={name:profile.name,email:profile.email,phone:profile.phone||phone,role:profile.role,_ctx:'login'};loginSuccess();}
-    return;
+  if(!identifier||!pw){toast('Please enter your email/phone and password','r');return;}
+  if(!sb){toast('Backend unavailable — try again shortly','r');return;}
+  toast('Signing in…');
+  let email=identifier;
+  if(!identifier.includes('@')){
+    const{data:match,error:lookupErr}=await sb.from('users').select('email').eq('phone',identifier).single();
+    if(lookupErr||!match){toast('No account found with that phone number','r');return;}
+    email=match.email;
   }
-  signupData={email,phone,name:email?email.split('@')[0]:'User',role:'buyer',_ctx:'login'};
-  showOtp();
+  const{data,error}=await sb.auth.signInWithPassword({email,password:pw});
+  if(error){toast(error.message,'r');return;}
+  let{data:profile}=await sb.from('users').select('*').eq('email',email).single();
+  if(!profile){
+    const{data:np}=await sb.from('users').insert([{name:email.split('@')[0],email,auth_id:data.user.id,role:'buyer',verified:false,status:'active'}]).select().single();
+    profile=np;
+  }
+  if(profile){signupData={name:profile.name,email:profile.email,phone:profile.phone||'',role:profile.role,_ctx:'login'};loginSuccess();}
 }
 async function doSignup(){
   const fn=document.getElementById('su-fname').value.trim(),ln=document.getElementById('su-lname').value.trim();
@@ -1514,25 +1497,14 @@ async function doSignup(){
     const{data:profile,error:profileError}=await sb.from('users').insert([{name:fn+' '+ln,email,phone:phone||null,role:selectedRole,auth_id:data.user.id,verified:false,status:selectedRole==='seller'?'pending':'active'}]).select().single();
     if(profileError){toast('Account creation failed: '+profileError.message,'r');console.error('profile insert error:',profileError);return;}
     signupData={name:profile.name,email:profile.email,phone:profile.phone||'',role:profile.role,_ctx:'signup'};
-    if(selectedRole==='seller')showOtp();else loginSuccess();
+    if(selectedRole==='seller'){['apanel-login','apanel-signup'].forEach(id=>document.getElementById(id).style.display='none');document.getElementById('apanel-kyc').style.display='block';}
+    else loginSuccess();
     return;
   }
   signupData={name:fn+' '+ln,email,phone,role:selectedRole,_ctx:'signup'};
   USERS.push({name:signupData.name,phone,email,role:selectedRole,verified:false,joined:new Date().toISOString().slice(0,10),status:selectedRole==='seller'?'pending':'active',earnings:0,pendingPayout:0});
-  showOtp();
-}
-function showOtp(){
-  ['apanel-login','apanel-signup','apanel-kyc'].forEach(id=>document.getElementById(id).style.display='none');
-  document.getElementById('apanel-otp').style.display='block';
-  setTimeout(()=>toast('📱 Demo code: 1234','o'),400);
-}
-function otpNext(el,nid){if(el.value.length===1)document.getElementById(nid)?.focus();}
-function otpSubmit(){
-  const code=['otp1','otp2','otp3','otp4'].map(id=>document.getElementById(id).value).join('');
-  if(code==='1234'){
-    if(signupData.role==='seller'&&signupData._ctx==='signup'){document.getElementById('apanel-otp').style.display='none';document.getElementById('apanel-kyc').style.display='block';}
-    else loginSuccess();
-  }else toast('Incorrect code — try 1234','r');
+  if(selectedRole==='seller'){['apanel-login','apanel-signup'].forEach(id=>document.getElementById(id).style.display='none');document.getElementById('apanel-kyc').style.display='block';}
+  else loginSuccess();
 }
 function handleKycUpload(file){
   if(!file)return;
@@ -1559,10 +1531,6 @@ function loginSuccess(){
     buildBuyerHome();
   }
   toast('Welcome, '+currentUser.name.split(' ')[0]+'! 👋','g');
-}
-function quickLogin(role){
-  const accounts={buyer:{name:'Jean Mutoni',phone:'+250788001',email:'jean@soko.rw',role:'buyer'},seller:{name:'Alice Uwimana',phone:'+250788002',email:'alice@soko.rw',role:'seller'},admin:{name:'System Admin',phone:'+250788000',email:'admin@soko.rw',role:'admin'}};
-  signupData=accounts[role];signupData._ctx='login';loginSuccess();
 }
 async function doLogout(){
   if(sb){try{await sb.auth.signOut();}catch(e){console.log('signout:',e);}}
@@ -1591,10 +1559,31 @@ async function restoreSession(){
     if(profile){signupData={name:profile.name,email:profile.email,phone:profile.phone||'',role:profile.role,_ctx:'login'};loginSuccess();}
   }catch(e){console.log('Session restore:',e);}
 }
-async function forgotPassword(){
-  const email=document.getElementById('login-email').value.trim();
-  if(!email){toast('Enter your email address first','r');return;}
+async function changeAdminPassword(){
+  const p1=document.getElementById('admin-new-pass').value;
+  const p2=document.getElementById('admin-new-pass2').value;
+  if(!p1||p1.length<6){toast('Password must be at least 6 characters','r');return;}
+  if(p1!==p2){toast('Passwords do not match','r');return;}
   if(!sb){toast('Supabase not configured','r');return;}
+  const{error}=await sb.auth.updateUser({password:p1});
+  if(error){toast(error.message,'r');return;}
+  document.getElementById('admin-new-pass').value='';document.getElementById('admin-new-pass2').value='';
+  toast('✓ Password updated','g');
+}
+async function forgotPassword(){
+  const identifier=document.getElementById('login-identifier').value.trim();
+  if(!identifier){toast('Enter your email or phone first','r');return;}
+  if(!sb){toast('Supabase not configured','r');return;}
+  let email=identifier;
+  if(!identifier.includes('@')){
+    const{data:match}=await sb.from('users').select('email,role').eq('phone',identifier).single();
+    if(!match){toast('No account found with that phone number','r');return;}
+    if(match.role==='admin'){toast('Admin passwords can only be changed from inside the Admin panel','r');return;}
+    email=match.email;
+  }else{
+    const{data:match}=await sb.from('users').select('role').eq('email',email).single();
+    if(match&&match.role==='admin'){toast('Admin passwords can only be changed from inside the Admin panel','r');return;}
+  }
   const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin});
   if(error){toast(error.message,'r');return;}
   toast('✓ Password reset link sent to '+email,'g');
@@ -2204,6 +2193,11 @@ function adminDisputesHTML(){
 function adminSettingsHTML(){
   return `<div class="admin-page-hdr"><div class="admin-page-title">Platform Settings</div></div>
   <div class="admin-content"><div class="settings-grid">
+    <div class="settings-card"><div class="settings-card-title">🔑 Change My Password</div>
+      <div class="fld"><label class="fld-lbl">New password</label><input class="fld-inp" id="admin-new-pass" type="password" placeholder="At least 6 characters"/></div>
+      <div class="fld"><label class="fld-lbl">Confirm new password</label><input class="fld-inp" id="admin-new-pass2" type="password" placeholder="Repeat password"/></div>
+      <button class="bx bx-g" style="padding:8px 16px;" onclick="changeAdminPassword()">Update Password</button>
+    </div>
     <div class="settings-card"><div class="settings-card-title">🏪 Platform Info</div>
       <div class="fld"><label class="fld-lbl">Platform Name</label><input class="fld-inp" value="SOKO Marketplace"/></div>
       <div class="fld"><label class="fld-lbl">Admin Email</label><input class="fld-inp" value="admin@soko.rw"/></div>
