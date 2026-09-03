@@ -559,28 +559,6 @@ tr:hover td{background:var(--bg);}
 </div>
 
 <div id="toast"></div>
-<!-- AI CHATBOT BUTTON -->
-<button id="ai-chat-btn" onclick="toggleAIChat()">✨</button>
-<div id="ai-chat-panel">
-  <div class="ai-chat-hdr">
-    <div class="ai-chat-hdr-title">✨ SOKO AI Support</div>
-    <button class="ai-chat-close" onclick="toggleAIChat()">✕</button>
-  </div>
-  <div class="ai-chat-msgs" id="ai-chat-msgs">
-    <div class="ai-msg bot">👋 Hi! Ask me anything about orders, delivery, escrow, or payments — in English, Français, or Ikinyarwanda!</div>
-  </div>
-  <div style="padding:6px 10px;background:#F3F3F3;display:flex;gap:5px;flex-wrap:wrap;border-top:1px solid #EEE;">
-    <button style="font-size:10px;padding:3px 8px;border:1px solid #DDD;border-radius:20px;background:#fff;cursor:pointer;" onclick="aiQuick('How does escrow work?')">Escrow?</button>
-    <button style="font-size:10px;padding:3px 8px;border:1px solid #DDD;border-radius:20px;background:#fff;cursor:pointer;" onclick="aiQuick('How do I pay with MoMo?')">MoMo?</button>
-    <button style="font-size:10px;padding:3px 8px;border:1px solid #DDD;border-radius:20px;background:#fff;cursor:pointer;" onclick="aiQuick('Track my order')">Track?</button>
-    <button style="font-size:10px;padding:3px 8px;border:1px solid #DDD;border-radius:20px;background:#fff;cursor:pointer;" onclick="aiQuick('How do I return an item?')">Return?</button>
-  </div>
-  <div class="ai-chat-inp">
-    <input id="ai-chat-input" placeholder="Ask anything…" onkeydown="if(event.key==='Enter')sendAIChat()"/>
-    <button onclick="sendAIChat()">Send</button>
-  </div>
-</div>
-<!-- AI SEARCH BAR (paste right after the subnav closing tag) -->
 
 <!-- ══════════════════════ AUTH VIEW ════════════════════════ -->
 <div class="view active" id="view-auth">
@@ -1506,7 +1484,7 @@ async function doLogin(){
   const email=document.getElementById('login-email').value.trim();
   const phone=document.getElementById('login-phone').value.trim();
   const pw=document.getElementById('login-pass').value;
-  if((!email&&!phone)||!pw){toast('Please enter your email/phone and password','r');return;}
+  if(!email||!pw){toast('Please sign in with your email address (phone-only login isn\'t set up yet)','r');return;}
   if(sb){
     toast('Signing in…');
     const identifier=email||phone;
@@ -1534,7 +1512,7 @@ async function doSignup(){
     const{data,error}=await sb.auth.signUp({email,password:pw});
     if(error){toast(error.message,'r');return;}
     const{data:profile,error:profileError}=await sb.from('users').insert([{name:fn+' '+ln,email,phone:phone||null,role:selectedRole,auth_id:data.user.id,verified:false,status:selectedRole==='seller'?'pending':'active'}]).select().single();
-    if(profileError){toast('Account created! Please sign in.','g');authTab('login');return;}
+    if(profileError){toast('Account creation failed: '+profileError.message,'r');console.error('profile insert error:',profileError);return;}
     signupData={name:profile.name,email:profile.email,phone:profile.phone||'',role:profile.role,_ctx:'signup'};
     if(selectedRole==='seller')showOtp();else loginSuccess();
     return;
@@ -2408,6 +2386,22 @@ function toggleAIChat(){
   const isOpen=popup.style.display==='flex';
   popup.style.display=isOpen?'none':'flex';
   if(!isOpen)document.getElementById('ai-input').focus();
+}
+async function aiGenerateDesc(){
+  const name=document.getElementById('mp-name').value.trim();
+  const cat=document.getElementById('mp-cat').value;
+  if(!name){toast('Enter a product name first','r');return;}
+  const btn=document.getElementById('ai-gen-desc-btn'),label=document.getElementById('ai-gen-label');
+  btn.disabled=true;if(label)label.textContent='Generating…';
+  try{
+    const res=await fetch('/.netlify/functions/ai',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({message:`Write a short, appealing 2-3 sentence product description for a Rwanda marketplace listing. Product name: "${name}". Category: ${cat}. No markdown, no quotes, just the description text.`})});
+    const data=await res.json();
+    const desc=data.content?.[0]?.text?.trim();
+    if(desc)document.getElementById('mp-desc').value=desc;
+    else toast('No description generated — try again','r');
+  }catch(e){toast('AI generation failed','r');}
+  btn.disabled=false;if(label)label.textContent='Generate description with AI';
 }
 async function sendAIMessage(){
   const input=document.getElementById('ai-input');
