@@ -561,7 +561,7 @@ tr:hover td{background:var(--bg);}
 <div id="toast"></div>
 
 <!-- ══════════════════════ AUTH VIEW ════════════════════════ -->
-<div class="view active" id="view-auth">
+<div class="view" id="view-auth">
 <div class="auth-page">
   <div class="auth-hdr">
     <div class="auth-logo">SO<span>KO</span></div>
@@ -592,11 +592,6 @@ tr:hover td{background:var(--bg);}
       </div>
       <!-- SIGNUP -->
       <div class="apanel" id="apanel-signup" style="display:none;">
-        <div class="role-sel">
-          <div class="role-opt active" id="role-buyer" onclick="selectRole('buyer')"><div class="role-opt-icon">🛍️</div><div style="font-size:13px;font-weight:700;">Buy</div><div style="font-size:11px;color:var(--ink3);">Browse & buy</div></div>
-          <div class="role-opt" id="role-seller" onclick="selectRole('seller')"><div class="role-opt-icon">🏪</div><div style="font-size:13px;font-weight:700;">Sell</div><div style="font-size:11px;color:var(--ink3);">List & sell</div></div>
-        </div>
-        <div class="kyc-note" id="seller-kyc-note" style="display:none;">⚠️ Sellers must complete ID verification and await admin approval before listing products.</div>
         <div class="fg2">
           <div class="fg"><label class="fl">First name</label><input class="fi" id="su-fname" placeholder="Jean"/></div>
           <div class="fg"><label class="fl">Last name</label><input class="fi" id="su-lname" placeholder="Mutoni"/></div>
@@ -632,7 +627,7 @@ tr:hover td{background:var(--bg);}
      ═══════════════════════════════════════════════════════════ -->
 
 <!-- ══════════════════════ BUYER VIEW ════════════════════════ -->
-<div class="view" id="view-buyer">
+<div class="view active" id="view-buyer">
   <!-- TOPNAV -->
   <div class="topnav">
     <div class="tnav-logo" onclick="buyerHome()">SO<span>KO</span></div>
@@ -689,6 +684,7 @@ tr:hover td{background:var(--bg);}
     <div class="acct-dd-item" onclick="buyerShowView('review');closeAll()">⭐ Write a Review</div>
     <div class="acct-dd-item" onclick="buyerShowView('dispute');closeAll()">🛡️ Report a Problem</div>
     <div class="acct-dd-item" onclick="buyerShowView('become-seller');closeAll()">🏪 Sell on SOKO</div>
+    <div class="acct-dd-item" id="acct-dd-seller-switch" style="display:none;border-top:var(--border);color:var(--g);font-weight:600;" onclick="switchToSeller();closeAll()">📊 Go to Seller Dashboard</div>
     <div class="acct-dd-item" onclick="toggleNotif();closeAcctDD()">🔔 Notifications</div>
     <div class="acct-dd-item red" onclick="doLogout()">🚪 Sign Out</div>
   </div>
@@ -953,12 +949,32 @@ tr:hover td{background:var(--bg);}
         <div class="breadcrumb">Sell on SOKO</div>
       </div>
       <div style="max-width:680px;margin:0 auto;padding:24px;">
-        <div class="sec" style="text-align:center;padding:32px;">
+        <!-- KYC FORM (shown when logged in) -->
+        <div id="become-seller-kyc" style="display:none;">
+          <div style="font-size:20px;font-weight:700;margin-bottom:20px;">Complete Your ID Verification</div>
+          <p style="color:var(--ink3);margin-bottom:20px;">Upload a clear photo of your national ID to start selling. We'll review and approve within 4 hours.</p>
+          <div class="fld"><label class="fld-lbl">Full Name</label><input class="fld-inp" id="kyc-name" placeholder="Your full name"/></div>
+          <div class="fld"><label class="fld-lbl">ID Number</label><input class="fld-inp" id="kyc-id" placeholder="Your national ID number"/></div>
+          <div class="fld"><label class="fld-lbl">Upload ID Photo</label>
+            <div style="border:2px dashed var(--border);border-radius:var(--r8);padding:32px;text-align:center;cursor:pointer;background:var(--bg2);" ondrop="handleKycDrop(event)" ondragover="event.preventDefault()" onclick="document.getElementById('kyc-file-inp').click()">
+              <div style="font-size:32px;margin-bottom:8px;">📸</div>
+              <div style="font-size:14px;color:var(--ink3);">Drag & drop or click to upload</div>
+              <input type="file" id="kyc-file-inp" style="display:none;" accept="image/*" onchange="handleKycUpload(this.files[0])"/>
+            </div>
+            <div id="kyc-preview-area" style="margin-top:12px;"></div>
+          </div>
+          <button class="btn-or btn-or-dk" style="width:100%;padding:12px;" onclick="submitKYC()">Submit for Verification</button>
+        </div>
+        <!-- LOGIN PROMPT (shown for guests) -->
+        <div id="become-seller-login" style="display:none;text-align:center;padding:32px;">
           <div style="font-size:56px;margin-bottom:14px;">🏪</div>
           <h1 style="font-family:var(--font2);font-size:26px;font-weight:800;margin-bottom:10px;">Start Selling on SOKO</h1>
           <p style="color:var(--ink3);font-size:14px;max-width:460px;margin:0 auto 24px;">Join verified Rwanda sellers. Upload real product photos, receive escrow-protected payments, weekly payouts to your Mobile Money.</p>
-          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;text-align:left;margin-bottom:24px;" id="become-steps"></div>
-          <button class="btn-or btn-or-dk" style="width:auto;padding:12px 28px;" onclick="authTab('signup');selectRole('seller');document.getElementById('view-auth').classList.add('active');document.getElementById('view-buyer').classList.remove('active');">Start Selling →</button>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;text-align:left;margin-bottom:24px;">
+            <div style="padding:12px;background:var(--gbg);border-radius:var(--r4);"><div style="font-size:12px;font-weight:600;color:var(--g);">✓ Escrow Protected</div><div style="font-size:11px;color:var(--ink3);margin-top:4px;">Your money is safe</div></div>
+            <div style="padding:12px;background:var(--gbg);border-radius:var(--r4);"><div style="font-size:12px;font-weight:600;color:var(--g);">✓ ID Verified</div><div style="font-size:11px;color:var(--ink3);margin-top:4px;">4-hour approval</div></div>
+          </div>
+          <button class="btn-or btn-or-dk" style="width:auto;padding:12px 28px;" onclick="document.getElementById('view-auth').classList.add('active');document.getElementById('view-buyer').classList.remove('active');authTab('login');">Sign In to Sell →</button>
         </div>
       </div>
     </div>
@@ -1457,12 +1473,6 @@ function authTab(t){
   ['login','signup'].forEach(x=>{document.getElementById('atab-'+x).classList.toggle('active',x===t);document.getElementById('apanel-'+x).style.display=x===t?'block':'none';});
   document.getElementById('apanel-kyc').style.display='none';
 }
-function selectRole(r){
-  selectedRole=r;
-  document.getElementById('role-buyer').classList.toggle('active',r==='buyer');
-  document.getElementById('role-seller').classList.toggle('active',r==='seller');
-  document.getElementById('seller-kyc-note').style.display=r==='seller'?'block':'none';
-}
 async function doLogin(){
   const identifier=document.getElementById('login-identifier').value.trim();
   const pw=document.getElementById('login-pass').value;
@@ -1494,17 +1504,15 @@ async function doSignup(){
     toast('Creating your account…');
     const{data,error}=await sb.auth.signUp({email,password:pw});
     if(error){toast(error.message,'r');return;}
-    const{data:profile,error:profileError}=await sb.from('users').insert([{name:fn+' '+ln,email,phone:phone||null,role:selectedRole,auth_id:data.user.id,verified:false,status:selectedRole==='seller'?'pending':'active'}]).select().single();
+    const{data:profile,error:profileError}=await sb.from('users').insert([{name:fn+' '+ln,email,phone:phone||null,role:'buyer',auth_id:data.user.id,verified:false,status:'active'}]).select().single();
     if(profileError){toast('Account creation failed: '+profileError.message,'r');console.error('profile insert error:',profileError);return;}
     signupData={name:profile.name,email:profile.email,phone:profile.phone||'',role:profile.role,_ctx:'signup'};
-    if(selectedRole==='seller'){['apanel-login','apanel-signup'].forEach(id=>document.getElementById(id).style.display='none');document.getElementById('apanel-kyc').style.display='block';}
-    else loginSuccess();
+    loginSuccess();
     return;
   }
-  signupData={name:fn+' '+ln,email,phone,role:selectedRole,_ctx:'signup'};
-  USERS.push({name:signupData.name,phone,email,role:selectedRole,verified:false,joined:new Date().toISOString().slice(0,10),status:selectedRole==='seller'?'pending':'active',earnings:0,pendingPayout:0});
-  if(selectedRole==='seller'){['apanel-login','apanel-signup'].forEach(id=>document.getElementById(id).style.display='none');document.getElementById('apanel-kyc').style.display='block';}
-  else loginSuccess();
+  signupData={name:fn+' '+ln,email,phone,role:'buyer',_ctx:'signup'};
+  USERS.push({name:signupData.name,phone,email,role:'buyer',verified:false,joined:new Date().toISOString().slice(0,10),status:'active',earnings:0,pendingPayout:0});
+  loginSuccess();
 }
 function handleKycUpload(file){
   if(!file)return;
@@ -1513,24 +1521,57 @@ function handleKycUpload(file){
   r.readAsDataURL(file);
 }
 function handleKycDrop(e){e.preventDefault();const f=e.dataTransfer.files[0];if(f)handleKycUpload(f);}
-function submitKYC(){
+async function submitKYC(){
   const n=document.getElementById('kyc-name').value.trim(),i=document.getElementById('kyc-id').value.trim();
   if(!n||!i){toast('Please fill all KYC fields','r');return;}
-  KYC.push({id:'kyc-'+(KYC.length+1),name:n,phone:signupData.phone||signupData.email,idNum:i,date:new Date().toISOString().slice(0,10),status:'pending',idImage:kycImageData});
-  signupData.kycSubmitted=true;loginSuccess();
+  if(!kycImageData){toast('Please upload an ID photo','r');return;}
+  if(!currentUser||!currentUser.email){toast('Please log in first','r');return;}
+  toast('Submitting KYC…');
+  if(sb){
+    const{data,error}=await sb.from('kyc_submissions').insert([{user_id:currentUser.email,name:n,id_number:i,id_image:kycImageData,submitted_at:new Date().toISOString(),status:'pending'}]).select().single();
+    if(error){toast('KYC submission failed: '+error.message,'r');console.error(error);return;}
+    const{error:updateError}=await sb.from('users').update({role:'seller',status:'pending'}).eq('email',currentUser.email);
+    if(updateError){toast('Account upgrade failed: '+updateError.message,'r');return;}
+    currentUser.role='seller';
+    document.getElementById('become-seller-kyc').style.display='none';
+    document.getElementById('view-buyer').classList.remove('active');
+    document.getElementById('view-seller').classList.add('active');
+    buildSellerNav();
+    loadProductsFromSupabase().then(()=>renderSeller('dashboard'));
+    toast('✓ KYC submitted! You\'re now a seller. Approval within 4 hours.','g');
+    return;
+  }
+  KYC.push({id:'kyc-'+(KYC.length+1),name:n,idNum:i,date:new Date().toISOString().slice(0,10),status:'pending',idImage:kycImageData});
+  currentUser.role='seller';
+  document.getElementById('view-buyer').classList.remove('active');
+  document.getElementById('view-seller').classList.add('active');
+  buildSellerNav();
+  renderSeller('dashboard');
+  toast('✓ KYC submitted! Approval within 4 hours.','g');
 }
 function loginSuccess(){
   currentUser={...signupData};
   document.getElementById('view-auth').classList.remove('active');
   if(currentUser.role==='admin'){document.getElementById('view-admin').classList.add('active');buildAdminNav();renderAdmin('overview');}
-  else if(currentUser.role==='seller'){document.getElementById('view-seller').classList.add('active');buildSellerNav();loadProductsFromSupabase().then(()=>renderSeller('dashboard'));}
+  else if(currentUser.role==='seller'){document.getElementById('view-seller').classList.add('active');document.getElementById('acct-dd-seller-switch').style.display='none';buildSellerNav();loadProductsFromSupabase().then(()=>renderSeller('dashboard'));}
   else{
     document.getElementById('view-buyer').classList.add('active');
     document.getElementById('buyer-name-nav').textContent=currentUser.name.split(' ')[0];
     document.getElementById('acct-dd-name').textContent=currentUser.name;
+    document.getElementById('acct-dd-seller-switch').style.display='block';
     buildBuyerHome();
   }
   toast('Welcome, '+currentUser.name.split(' ')[0]+'! 👋','g');
+}
+function switchToSeller(){
+  if(currentUser.role==='seller'){
+    document.getElementById('view-buyer').classList.remove('active');
+    document.getElementById('view-seller').classList.add('active');
+    buildSellerNav();
+    loadProductsFromSupabase().then(()=>renderSeller('dashboard'));
+  }else{
+    toast('Your seller account is still pending approval','o');
+  }
 }
 async function doLogout(){
   if(sb){try{await sb.auth.signOut();}catch(e){console.log('signout:',e);}}
@@ -1638,6 +1679,15 @@ function buyerShowView(v){
   if(v==='orders')renderOrders();
   if(v==='checkout'){if(!cart.length){buyerShowView('cart');return;}renderCoSummary();}
   if(v==='shop')renderShopPage(currentShopList,'All Products');
+  if(v==='become-seller'){
+    if(currentUser&&currentUser.email){
+      document.getElementById('become-seller-kyc').style.display='block';
+      document.getElementById('become-seller-login').style.display='none';
+    }else{
+      document.getElementById('become-seller-kyc').style.display='none';
+      document.getElementById('become-seller-login').style.display='block';
+    }
+  }
   closeAll();
 }
 function showBuyerSec(id){document.querySelectorAll('#buyer-main > div').forEach(d=>d.style.display='none');const el=document.getElementById(id);if(el)el.style.display='block';}
@@ -1766,6 +1816,13 @@ function renderCoSummary(){
 function selPay(el){document.querySelectorAll('.checkout-sec .pay-opt').forEach(o=>{o.classList.remove('sel');const r=o.querySelector('input');if(r)r.checked=false;});el.classList.add('sel');const r=el.querySelector('input');if(r)r.checked=true;}
 function selDel(el){document.querySelectorAll('.checkout-sec .del-opt').forEach(o=>o.classList.remove('sel'));el.classList.add('sel');}
 function placeOrder(){
+  if(!currentUser||!currentUser.email){
+    toast('Please sign in to complete your order','r');
+    document.getElementById('view-buyer').classList.remove('active');
+    document.getElementById('view-auth').classList.add('active');
+    authTab('login');
+    return;
+  }
   const name=document.getElementById('co-name')?.value.trim(),phone=document.getElementById('co-phone')?.value.trim(),addr=document.getElementById('co-addr')?.value.trim();
   if(!name||!phone||!addr){toast('Please fill all delivery details','r');return;}
   const sub=cart.reduce((a,c)=>a+c.price*c.qty,0),total=sub+1000,comm=Math.round(total*(commissionRate/100));
