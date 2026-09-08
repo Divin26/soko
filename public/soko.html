@@ -1691,7 +1691,13 @@ function buyerShowView(v){
   closeAll();
 }
 function showBuyerSec(id){document.querySelectorAll('#buyer-main > div').forEach(d=>d.style.display='none');const el=document.getElementById(id);if(el)el.style.display='block';}
-function goBack(){buyerShowView(prevBuyerView||'home');}
+function goBack(){
+  if(prevBuyerView && prevBuyerView !== currentBuyerView){
+    buyerShowView(prevBuyerView);
+  }else{
+    buyerShowView('home');
+  }
+}
 function focusSearch(){document.getElementById('search-inp')?.focus();}
 function bnavSet(btn){document.querySelectorAll('.bnav-item').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
 function toggleAcctDD(){document.getElementById('acct-dd').classList.toggle('open');document.getElementById('notif-panel').classList.remove('open');}
@@ -2297,8 +2303,32 @@ function adminSettingsHTML(){
 // ADMIN ACTIONS
 function releaseEscrow(id){const o=ORDERS.find(x=>x.id===id);if(o){o.escrow='released';o.status='delivered';renderAdmin('escrow');toast('✅ Escrow released — RWF '+fmt(o.sellerNet)+' to seller','g');}}
 function refundEscrow(id){const o=ORDERS.find(x=>x.id===id);if(o){o.escrow='refunded';o.status='cancelled';renderAdmin('escrow');toast('↩ Refund issued to buyer','g');}}
-function approveKYC(id){const k=KYC.find(x=>x.id===id);if(k){k.status='approved';const u=USERS.find(x=>x.phone===k.phone);if(u){u.verified=true;u.status='active';}renderAdmin('kyc');toast('✓ Seller '+k.name+' approved!','g');}}
-function rejectKYC(id){const k=KYC.find(x=>x.id===id);if(k){k.status='rejected';renderAdmin('kyc');toast('KYC rejected');}}
+async function approveKYC(id){
+  const k=KYC.find(x=>x.id===id);
+  if(!k)return;
+  if(sb){
+    const{error:kycErr}=await sb.from('kyc_submissions').update({status:'approved',approved_at:new Date().toISOString()}).eq('id',id);
+    if(kycErr){toast('KYC approval failed: '+kycErr.message,'r');return;}
+    const{error:userErr}=await sb.from('users').update({role:'seller',status:'active',verified:true}).eq('email',k.user_id);
+    if(userErr){toast('User upgrade failed: '+userErr.message,'r');return;}
+  }
+  k.status='approved';
+  const u=USERS.find(x=>x.phone===k.phone);
+  if(u){u.verified=true;u.status='active';u.role='seller';}
+  renderAdmin('kyc');
+  toast('✓ Seller '+k.name+' approved!','g');
+}
+async function rejectKYC(id){
+  const k=KYC.find(x=>x.id===id);
+  if(!k)return;
+  if(sb){
+    const{error}=await sb.from('kyc_submissions').update({status:'rejected'}).eq('id',id);
+    if(error){toast('KYC rejection failed: '+error.message,'r');return;}
+  }
+  k.status='rejected';
+  renderAdmin('kyc');
+  toast('✕ KYC rejected','r');
+}
 function banUser(phone){const u=USERS.find(x=>x.phone===phone);if(u){u.status='banned';ORDERS.filter(o=>o.seller===u.name&&o.escrow==='held').forEach(o=>o.escrow='frozen');renderAdmin('users');toast('🚫 User banned & escrow frozen','r');}}
 function unbanUser(phone){const u=USERS.find(x=>x.phone===phone);if(u){u.status='active';closeModal('modal-user-detail');renderAdmin('users');toast('✓ User unbanned','g');}}
 function removeProduct(id){if(!confirm('Remove this product?'))return;PRODUCTS=PRODUCTS.filter(p=>p.id!==id);renderAdmin('products');toast('Product removed');}
