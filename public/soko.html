@@ -1517,7 +1517,14 @@ async function doSignup(){
 function handleKycUpload(file){
   if(!file)return;
   const r=new FileReader();
-  r.onload=e=>{kycImageData=e.target.result;document.getElementById('kyc-preview-area').innerHTML=`<img src="${e.target.result}" style="max-height:80px;border-radius:6px;margin:0 auto;display:block;"/>`;};
+  r.onload=e=>{
+    kycImageData=e.target.result;
+    const preview=document.getElementById('kyc-preview-area');
+    if(preview){
+      preview.innerHTML=`<div style="text-align:center;"><img src="${e.target.result}" style="max-height:120px;border-radius:6px;margin-top:8px;"/><div style="font-size:12px;color:var(--g);margin-top:6px;">✓ Photo uploaded</div></div>`;
+    }
+    toast('✓ ID photo ready','g');
+  };
   r.readAsDataURL(file);
 }
 function handleKycDrop(e){e.preventDefault();const f=e.dataTransfer.files[0];if(f)handleKycUpload(f);}
