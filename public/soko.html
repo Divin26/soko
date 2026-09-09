@@ -602,6 +602,20 @@ tr:hover td{background:var(--bg);}
         <button class="btn-or" style="margin-bottom:12px;" onclick="doSignup()">Create your SOKO account →</button>
         <div style="font-size:11px;color:var(--ink3);">By creating an account you agree to SOKO's Conditions of Use and Privacy Notice.</div>
       </div>
+      <!-- KYC -->
+      <div class="apanel" id="apanel-kyc" style="display:none;">
+        <div style="background:var(--abg);border:1px solid var(--ab);border-radius:var(--r4);padding:12px;margin-bottom:14px;font-size:13px;color:#8B5E00;">📋 <strong>Identity Verification Required</strong><br/>Submit your National ID to become a verified seller.</div>
+        <div class="fg"><label class="fl">Full name (as on ID)</label><input class="fi" id="kyc-name" placeholder="Jean Paul Mutoni"/></div>
+        <div class="fg"><label class="fl">National ID Number</label><input class="fi" id="kyc-id" placeholder="1199XXXXXXXXX XX XXX X"/></div>
+        <div class="fg">
+          <label class="fl">Upload ID photo</label>
+          <div class="img-drop" id="kyc-drop" onclick="document.getElementById('kyc-file').click()" ondragover="event.preventDefault();this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="handleKycDrop(event)">
+            <div id="kyc-preview-area"><div style="font-size:28px;margin-bottom:6px;">📷</div><div style="font-size:13px;color:var(--ink3);">Click to upload your ID image</div><div style="font-size:11px;color:var(--ink4);margin-top:3px;">JPEG, PNG — max 5MB</div></div>
+            <input type="file" id="kyc-file" accept="image/*" style="display:none;" onchange="handleKycUpload(this.files[0])"/>
+          </div>
+        </div>
+        <button class="btn-or btn-or-dk" onclick="submitKYC()">Submit for review →</button>
+      </div>
     </div>
   </div>
 </div>
@@ -1332,58 +1346,12 @@ tr:hover td{background:var(--bg);}
   </div>
 </div>
 
-<!-- RESET PASSWORD (from email link) -->
-<div class="modal-bg" id="modal-reset-password">
-  <div class="modal" style="max-width:400px;">
-    <div class="modal-hd">
-      <div class="modal-title">🔑 Set a New Password</div>
-    </div>
-    <div class="modal-body">
-      <p style="font-size:13px;color:var(--ink3);margin-bottom:14px;">You're resetting your password via the link from your email. Choose a new password below.</p>
-      <div class="fld"><label class="fld-lbl">New password</label><input class="fld-inp" id="reset-new-pass" type="password" placeholder="At least 6 characters"/></div>
-      <div class="fld"><label class="fld-lbl">Confirm new password</label><input class="fld-inp" id="reset-new-pass2" type="password" placeholder="Repeat password" onkeydown="if(event.key==='Enter')submitNewPassword()"/></div>
-    </div>
-    <div class="modal-footer">
-      <button class="bx bx-g" style="padding:8px 18px;" onclick="submitNewPassword()">Update Password</button>
-    </div>
-  </div>
-</div>
-
 <!-- ═══ END PART 3 — continue with Part 4 (all JavaScript) ═══ -->
 <script>
 // SUPABASE
 const SUPABASE_URL = 'https://rjimbkxhrrreaiesdzjr.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJqaW1ia3hocnJyZWFpZXNkempyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NDQ1MTUsImV4cCI6MjA5MjQyMDUxNX0.0Dra6oFMdef7oU0_XB7HQYfPKVgRqXXXVIoqzjeA78Y';
 const sb = (typeof supabase !== 'undefined') ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
-
-// PASSWORD RECOVERY LISTENER
-if(sb){
-  sb.auth.onAuthStateChange((event, session) => {
-    if (event === 'PASSWORD_RECOVERY') {
-      openModal('modal-reset-password');
-    }
-  });
-}
-function checkPasswordRecoveryHash(){
-  const hash = window.location.hash;
-  if (hash && hash.includes('type=recovery')) {
-    openModal('modal-reset-password');
-  }
-}
-async function submitNewPassword(){
-  const p1 = document.getElementById('reset-new-pass').value;
-  const p2 = document.getElementById('reset-new-pass2').value;
-  if(!p1 || p1.length < 6){ toast('Password must be at least 6 characters','r'); return; }
-  if(p1 !== p2){ toast('Passwords do not match','r'); return; }
-  if(!sb){ toast('Backend unavailable','r'); return; }
-  const { error } = await sb.auth.updateUser({ password: p1 });
-  if(error){ toast(error.message,'r'); return; }
-  document.getElementById('reset-new-pass').value='';
-  document.getElementById('reset-new-pass2').value='';
-  closeModal('modal-reset-password');
-  toast('✓ Password updated — please sign in','g');
-  doLogout();
-}
 
 // DATA
 const CATS=[
@@ -1482,7 +1450,6 @@ document.addEventListener('click',e=>{
 window.addEventListener('DOMContentLoaded',()=>{
   setTimeout(()=>{const ls=document.getElementById('loading-screen');if(ls)ls.classList.add('hidden');},1500);
   restoreSession();
-  checkPasswordRecoveryHash();
 });
 
 // LANGUAGE
@@ -1504,6 +1471,7 @@ function applyLang(l){
 // AUTH
 function authTab(t){
   ['login','signup'].forEach(x=>{document.getElementById('atab-'+x).classList.toggle('active',x===t);document.getElementById('apanel-'+x).style.display=x===t?'block':'none';});
+  document.getElementById('apanel-kyc').style.display='none';
 }
 async function doLogin(){
   const identifier=document.getElementById('login-identifier').value.trim();
@@ -1549,7 +1517,14 @@ async function doSignup(){
 function handleKycUpload(file){
   if(!file)return;
   const r=new FileReader();
-  r.onload=e=>{kycImageData=e.target.result;document.getElementById('kyc-preview-area').innerHTML=`<img src="${e.target.result}" style="max-height:80px;border-radius:6px;margin:0 auto;display:block;"/>`;};
+  r.onload=e=>{
+    kycImageData=e.target.result;
+    const preview=document.getElementById('kyc-preview-area');
+    if(preview){
+      preview.innerHTML=`<div style="text-align:center;"><img src="${e.target.result}" style="max-height:120px;border-radius:6px;margin-top:8px;"/><div style="font-size:12px;color:var(--g);margin-top:6px;">✓ Photo uploaded</div></div>`;
+    }
+    toast('✓ ID photo ready','g');
+  };
   r.readAsDataURL(file);
 }
 function handleKycDrop(e){e.preventDefault();const f=e.dataTransfer.files[0];if(f)handleKycUpload(f);}
