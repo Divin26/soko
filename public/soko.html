@@ -602,20 +602,6 @@ tr:hover td{background:var(--bg);}
         <button class="btn-or" style="margin-bottom:12px;" onclick="doSignup()">Create your SOKO account →</button>
         <div style="font-size:11px;color:var(--ink3);">By creating an account you agree to SOKO's Conditions of Use and Privacy Notice.</div>
       </div>
-      <!-- KYC -->
-      <div class="apanel" id="apanel-kyc" style="display:none;">
-        <div style="background:var(--abg);border:1px solid var(--ab);border-radius:var(--r4);padding:12px;margin-bottom:14px;font-size:13px;color:#8B5E00;">📋 <strong>Identity Verification Required</strong><br/>Submit your National ID to become a verified seller.</div>
-        <div class="fg"><label class="fl">Full name (as on ID)</label><input class="fi" id="kyc-name" placeholder="Jean Paul Mutoni"/></div>
-        <div class="fg"><label class="fl">National ID Number</label><input class="fi" id="kyc-id" placeholder="1199XXXXXXXXX XX XXX X"/></div>
-        <div class="fg">
-          <label class="fl">Upload ID photo</label>
-          <div class="img-drop" id="kyc-drop" onclick="document.getElementById('kyc-file').click()" ondragover="event.preventDefault();this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="handleKycDrop(event)">
-            <div id="kyc-preview-area"><div style="font-size:28px;margin-bottom:6px;">📷</div><div style="font-size:13px;color:var(--ink3);">Click to upload your ID image</div><div style="font-size:11px;color:var(--ink4);margin-top:3px;">JPEG, PNG — max 5MB</div></div>
-            <input type="file" id="kyc-file" accept="image/*" style="display:none;" onchange="handleKycUpload(this.files[0])"/>
-          </div>
-        </div>
-        <button class="btn-or btn-or-dk" onclick="submitKYC()">Submit for review →</button>
-      </div>
     </div>
   </div>
 </div>
@@ -1346,12 +1332,58 @@ tr:hover td{background:var(--bg);}
   </div>
 </div>
 
+<!-- RESET PASSWORD (from email link) -->
+<div class="modal-bg" id="modal-reset-password">
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-hd">
+      <div class="modal-title">🔑 Set a New Password</div>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--ink3);margin-bottom:14px;">You're resetting your password via the link from your email. Choose a new password below.</p>
+      <div class="fld"><label class="fld-lbl">New password</label><input class="fld-inp" id="reset-new-pass" type="password" placeholder="At least 6 characters"/></div>
+      <div class="fld"><label class="fld-lbl">Confirm new password</label><input class="fld-inp" id="reset-new-pass2" type="password" placeholder="Repeat password" onkeydown="if(event.key==='Enter')submitNewPassword()"/></div>
+    </div>
+    <div class="modal-footer">
+      <button class="bx bx-g" style="padding:8px 18px;" onclick="submitNewPassword()">Update Password</button>
+    </div>
+  </div>
+</div>
+
 <!-- ═══ END PART 3 — continue with Part 4 (all JavaScript) ═══ -->
 <script>
 // SUPABASE
 const SUPABASE_URL = 'https://rjimbkxhrrreaiesdzjr.supabase.co';
 const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJqaW1ia3hocnJyZWFpZXNkempyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NDQ1MTUsImV4cCI6MjA5MjQyMDUxNX0.0Dra6oFMdef7oU0_XB7HQYfPKVgRqXXXVIoqzjeA78Y';
 const sb = (typeof supabase !== 'undefined') ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+// PASSWORD RECOVERY LISTENER
+if(sb){
+  sb.auth.onAuthStateChange((event, session) => {
+    if (event === 'PASSWORD_RECOVERY') {
+      openModal('modal-reset-password');
+    }
+  });
+}
+function checkPasswordRecoveryHash(){
+  const hash = window.location.hash;
+  if (hash && hash.includes('type=recovery')) {
+    openModal('modal-reset-password');
+  }
+}
+async function submitNewPassword(){
+  const p1 = document.getElementById('reset-new-pass').value;
+  const p2 = document.getElementById('reset-new-pass2').value;
+  if(!p1 || p1.length < 6){ toast('Password must be at least 6 characters','r'); return; }
+  if(p1 !== p2){ toast('Passwords do not match','r'); return; }
+  if(!sb){ toast('Backend unavailable','r'); return; }
+  const { error } = await sb.auth.updateUser({ password: p1 });
+  if(error){ toast(error.message,'r'); return; }
+  document.getElementById('reset-new-pass').value='';
+  document.getElementById('reset-new-pass2').value='';
+  closeModal('modal-reset-password');
+  toast('✓ Password updated — please sign in','g');
+  doLogout();
+}
 
 // DATA
 const CATS=[
@@ -1450,6 +1482,7 @@ document.addEventListener('click',e=>{
 window.addEventListener('DOMContentLoaded',()=>{
   setTimeout(()=>{const ls=document.getElementById('loading-screen');if(ls)ls.classList.add('hidden');},1500);
   restoreSession();
+  checkPasswordRecoveryHash();
 });
 
 // LANGUAGE
@@ -1471,7 +1504,6 @@ function applyLang(l){
 // AUTH
 function authTab(t){
   ['login','signup'].forEach(x=>{document.getElementById('atab-'+x).classList.toggle('active',x===t);document.getElementById('apanel-'+x).style.display=x===t?'block':'none';});
-  document.getElementById('apanel-kyc').style.display='none';
 }
 async function doLogin(){
   const identifier=document.getElementById('login-identifier').value.trim();
@@ -1517,14 +1549,7 @@ async function doSignup(){
 function handleKycUpload(file){
   if(!file)return;
   const r=new FileReader();
-  r.onload=e=>{
-    kycImageData=e.target.result;
-    const preview=document.getElementById('kyc-preview-area');
-    if(preview){
-      preview.innerHTML=`<div style="text-align:center;"><img src="${e.target.result}" style="max-height:120px;border-radius:6px;margin-top:8px;"/><div style="font-size:12px;color:var(--g);margin-top:6px;">✓ Photo uploaded</div></div>`;
-    }
-    toast('✓ ID photo ready','g');
-  };
+  r.onload=e=>{kycImageData=e.target.result;document.getElementById('kyc-preview-area').innerHTML=`<img src="${e.target.result}" style="max-height:80px;border-radius:6px;margin:0 auto;display:block;"/>`;};
   r.readAsDataURL(file);
 }
 function handleKycDrop(e){e.preventDefault();const f=e.dataTransfer.files[0];if(f)handleKycUpload(f);}
@@ -2400,6 +2425,2518 @@ function openUserDetail(phone){
       <div style="background:var(--bg2);border-radius:8px;padding:12px;text-align:center;"><div style="font-size:11px;color:var(--ink4);text-transform:uppercase;margin-bottom:4px;">Pending Payout</div><div style="font-weight:700;color:var(--gd);">${u.pendingPayout?'RWF '+fmt(u.pendingPayout):'—'}</div></div>
     </div>
     ${uo.length?`<div style="font-weight:700;margin-bottom:8px;">Orders (${uo.length})</div>${uo.slice(0,5).map(o=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:var(--border2);font-size:13px;"><span>${o.id} — ${o.product.slice(0,18)}</span><span class="pill ${o.status==='delivered'?'pill-g':o.status==='cancelled'?'pill-r':'pill-a'}">${o.status}</span></div>`).join('')}`:'<div style="color:var(--ink3);text-align:center;padding:20px;">No orders yet</div>'}
+    <div style="display:flex;gap:8px;margin-top:16px;padding-top:14px;border-top:var(--border);">
+      ${u.status!=='banned'?`<button class="bx bx-r" onclick="banUser('${u.phone}');closeModal('modal-user-detail');renderAdmin('users')">🚫 Ban User</button>`:`<button class="bx bx-g" onclick="unbanUser('${u.phone}')">✓ Unban</button>`}
+      <button class="bx bx-ghost" onclick="closeModal('modal-user-detail')">Close</button>
+    </div>`;
+  openModal('modal-user-detail');
+}
+
+// COMMISSION
+function previewCommission(val){
+  const rate=parseFloat(val)||4,ex=20000;
+  const s=document.getElementById('comm-seller-ex'),p=document.getElementById('comm-platform-ex');
+  if(s)s.textContent=fmt(Math.round(ex*(100-rate)/100));
+  if(p)p.textContent=fmt(Math.round(ex*rate/100));
+}
+async function loadProductsFromSupabase(){
+  if(!sb)return;
+  const{data,error}=await sb.from('products').select('*').eq('active',true).order('created_at',{ascending:false});
+  if(error){console.log('Products load error:',error);return;}
+  if(!data||!data.length)return;
+  PRODUCTS=data.map(p=>({
+    id:p.id,name:p.name,cat:p.cat||p.category,price:p.price,stock:p.stock,
+    emoji:p.emoji||'📦',images:p.images||[],rating:p.rating||5.0,
+    reviews:p.reviews_count||p.reviews||0,seller:p.seller_name||p.seller||'Seller',
+    sellerPhone:p.seller_phone||'',desc:p.description||'',badge:p.badge||'',
+  }));
+}
+function saveCommissionRate(){
+  const inp=document.getElementById('commission-rate-input');
+  const newRate=parseFloat(inp?.value);
+  if(isNaN(newRate)||newRate<0||newRate>50){toast('Rate must be between 0 and 50%','r');return;}
+  commissionRate=newRate;
+  ORDERS.forEach(o=>{o.commission=Math.round(o.total*commissionRate/100);o.sellerNet=o.total-o.commission;});
+  renderAdmin('settings');
+  toast('✓ Commission updated to '+commissionRate+'% — all orders recalculated','g');
+}
+function openWithdrawModal(){
+  const available=94300;
+  const el=document.getElementById('withdraw-available');
+  if(el)el.textContent=fmt(available)+' RWF';
+  document.getElementById('withdraw-amount').value='';
+  document.getElementById('withdraw-amount-hint').textContent='Enter amount between 1,000 and '+fmt(available)+' RWF';
+  document.getElementById('withdraw-phone').value='';
+  document.getElementById('withdraw-note').value='';
+  openModal('modal-withdraw');
+}
+
+function validateWithdrawAmount(val){
+  const hint=document.getElementById('withdraw-amount-hint');
+  if(!hint)return;
+  const n=parseInt(val);
+  if(!val)hint.textContent='Enter amount between 1,000 and 94,300 RWF';
+  else if(n<1000)hint.textContent='⚠️ Minimum withdrawal is 1,000 RWF';
+  else if(n>94300)hint.textContent='⚠️ Exceeds available balance';
+  else hint.textContent='✓ Amount looks good';
+}
+
+function submitWithdrawModal(){
+  const amount=parseInt(document.getElementById('withdraw-amount').value);
+  const phone=document.getElementById('withdraw-phone').value.trim();
+  const method=document.getElementById('withdraw-method').value;
+  const note=document.getElementById('withdraw-note').value.trim();
+  if(!amount||amount<1000){toast('Enter a valid amount (min 1,000 RWF)','r');return;}
+  if(amount>94300){toast('Amount exceeds available balance','r');return;}
+  if(!phone){toast('Enter your Mobile Money number','r');return;}
+  PAYOUTS.unshift({id:'PAY-'+(PAYOUTS.length+1).toString().padStart(3,'0'),seller:currentUser?.name||'Seller',phone,amount,ordersCount:0,method,status:'pending',date:new Date().toISOString().slice(0,10)});
+  closeModal('modal-withdraw');
+  toast('✓ Withdrawal request submitted. Admin will process within 24–48hrs.','g');
+}
+// AI CHAT
+function toggleAIChat(){
+  const popup=document.getElementById('ai-popup');
+  const isOpen=popup.style.display==='flex';
+  popup.style.display=isOpen?'none':'flex';
+  if(!isOpen)document.getElementById('ai-input').focus();
+}
+async function aiGenerateDesc(){
+  const name=document.getElementById('mp-name').value.trim();
+  const cat=document.getElementById('mp-cat').value;
+  if(!name){toast('Enter a product name first','r');return;}
+  const btn=document.getElementById('ai-gen-desc-btn'),label=document.getElementById('ai-gen-label');
+  btn.disabled=true;if(label)label.textContent='Generating…';
+  try{
+    const res=await fetch('/.netlify/functions/ai',{method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({message:`Write a short, appealing 2-3 sentence product description for a Rwanda marketplace listing. Product name: "${name}". Category: ${cat}. No markdown, no quotes, just the description text.`})});
+    const data=await res.json();
+    const desc=data.content?.[0]?.text?.trim();
+    if(desc)document.getElementById('mp-desc').value=desc;
+    else toast('No description generated — try again','r');
+  }catch(e){toast('AI generation failed','r');}
+  btn.disabled=false;if(label)label.textContent='Generate description with AI';
+}
+async function sendAIMessage(){
+  const input=document.getElementById('ai-input');
+  const msg=input.value.trim();
+  if(!msg)return;
+  input.value='';
+  const box=document.getElementById('ai-messages');
+  box.innerHTML+=`<div style="background:#FF9900;border-radius:8px;padding:10px 12px;font-size:13px;color:#0F1111;box-shadow:0 1px 4px rgba(0,0,0,.08);max-width:85%;align-self:flex-end;">${msg}</div>`;
+  box.innerHTML+=`<div id="ai-typing" style="background:#fff;border-radius:8px;padding:10px 12px;font-size:13px;color:#767676;max-width:85%;">Thinking…</div>`;
+  box.scrollTop=box.scrollHeight;
+  try{
+    const response=await fetch('/.netlify/functions/ai',{
+      method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({message:msg})
+    });
+    const data=await response.json();
+    const reply=data.content?.[0]?.text||'Sorry, I could not get a response.';
+    document.getElementById('ai-typing').remove();
+    box.innerHTML+=`<div style="background:#fff;border-radius:8px;padding:10px 12px;font-size:13px;color:#333;box-shadow:0 1px 4px rgba(0,0,0,.08);max-width:85%;">${reply}</div>`;
+    box.scrollTop=box.scrollHeight;
+  }catch(e){
+    document.getElementById('ai-typing').remove();
+    box.innerHTML+=`<div style="background:#fff;border-radius:8px;padding:10px 12px;font-size:13px;color:#CC0C39;max-width:85%;">Something went wrong. Please try again.</div>`;
+    box.scrollTop=box.scrollHeight;
+  }
+}
+</script>
+<!-- AI CHAT BUTTON -->
+<div id="ai-fab" onclick="toggleAIChat()" style="position:fixed;bottom:24px;left:24px;z-index:9999;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#131921,#067D62);box-shadow:0 4px 16px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:22px;" title="Ask AI">🤖</div>
+
+<!-- AI CHAT POPUP -->
+<div id="ai-popup" style="display:none;position:fixed;bottom:88px;left:24px;z-index:9998;width:320px;background:#fff;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.2);overflow:hidden;flex-direction:column;">
+  <div style="background:linear-gradient(135deg,#131921,#067D62);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">
+    <div style="color:#fff;font-weight:700;font-size:14px;">🤖 SOKO AI Assistant</div>
+    <button onclick="toggleAIChat()" style="background:none;border:none;color:rgba(255,255,255,.7);font-size:18px;cursor:pointer;line-height:1;">✕</button>
+  </div>
+  <div id="ai-messages" style="height:280px;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;background:#F3F3F3;">
+    <div style="background:#fff;border-radius:8px;padding:10px 12px;font-size:13px;color:#333;box-shadow:0 1px 4px rgba(0,0,0,.08);max-width:85%;">👋 Hi! I'm your SOKO assistant. Ask me anything about products, orders, or selling on SOKO!</div>
+  </div>
+  <div style="padding:10px;background:#fff;border-top:1px solid #EEE;display:flex;gap:8px;">
+    <input id="ai-input" placeholder="Ask something…" onkeydown="if(event.key==='Enter')sendAIMessage()" style="flex:1;padding:9px 12px;border:2px solid #E3E6E6;border-radius:20px;font-size:13px;outline:none;font-family:inherit;"/>
+    <button onclick="sendAIMessage()" style="width:36px;height:36px;border-radius:50%;background:#FF9900;border:none;font-size:16px;cursor:pointer;flex-shrink:0;">→</button>
+  </div>
+</div>
+</body>
+</html> rgba(255,153,0,.12);}
+.fg{margin-bottom:12px;}
+.fg2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
+.btn-or{width:100%;padding:11px;border-radius:var(--r4);border:1px solid var(--ordk);background:linear-gradient(to bottom,#FFD814,#F7CA00);color:var(--ink);font-size:14px;font-weight:700;cursor:pointer;}
+.btn-or:hover{background:linear-gradient(to bottom,#F7CA00,#EEB901);}
+.btn-or-dk{background:linear-gradient(to bottom,#F0C14B,#E47911);border-color:#B35A00;}
+.auth-div{text-align:center;font-size:12px;color:var(--ink4);margin:12px 0;position:relative;}
+.auth-div::before,.auth-div::after{content:'';position:absolute;top:50%;width:41%;height:1px;background:var(--bg3);}
+.auth-div::before{left:0;}.auth-div::after{right:0;}
+.demo-box{background:var(--bg2);border:var(--border);border-radius:var(--r4);padding:10px 12px;font-size:13px;text-align:center;}
+.dl{color:var(--b);font-weight:600;cursor:pointer;text-decoration:underline;}
+.role-sel{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;}
+.role-opt{border:2px solid var(--bg3);border-radius:var(--r8);padding:12px;cursor:pointer;text-align:center;transition:all .15s;}
+.role-opt.active,.role-opt:hover{border-color:var(--or);background:var(--abg);}
+.role-opt-icon{font-size:22px;margin-bottom:4px;}
+.otp-row{display:flex;gap:10px;justify-content:center;margin:14px 0;}
+.otp-inp{width:52px;height:52px;text-align:center;font-size:22px;font-weight:700;border:2px solid #888;border-radius:var(--r4);outline:none;}
+.otp-inp:focus{border-color:var(--or);}
+.kyc-note{background:var(--abg);border:1px solid var(--ab);border-radius:var(--r4);padding:10px 12px;font-size:12px;color:#8B5E00;margin-bottom:12px;}
+
+/* ── TOPNAV ───────────────────────────────────────────────── */
+.topnav{background:var(--nv);display:flex;align-items:center;height:60px;padding:0 16px;gap:8px;position:sticky;top:0;z-index:200;}
+.tnav-logo{font-family:var(--font2);font-size:24px;font-weight:900;color:#fff;padding:4px 8px;border:2px solid transparent;border-radius:var(--r4);cursor:pointer;transition:border-color .15s;flex-shrink:0;}
+.tnav-logo span{color:var(--or);}
+.tnav-logo:hover{border-color:#fff;}
+.tnav-loc{padding:4px 8px;border:2px solid transparent;border-radius:var(--r4);cursor:pointer;transition:border-color .15s;}
+.tnav-loc:hover{border-color:#fff;}
+.tnav-loc-top{font-size:10px;color:rgba(255,255,255,.7);}
+.tnav-loc-bot{font-size:12px;color:#fff;font-weight:700;}
+.tnav-search{flex:1;display:flex;max-width:680px;}
+.tnav-scat{background:var(--bg3);border:none;border-radius:4px 0 0 4px;padding:0 8px;font-size:12px;color:var(--ink);outline:none;height:40px;}
+.tnav-sinp{flex:1;height:40px;border:none;padding:0 12px;font-size:14px;outline:none;}
+.tnav-sbtn{width:44px;height:40px;background:var(--or);border:none;border-radius:0 4px 4px 0;cursor:pointer;font-size:18px;}
+.tnav-sbtn:hover{background:var(--ordk);}
+.tnav-right{display:flex;align-items:center;gap:4px;margin-left:auto;}
+.tnav-link{padding:5px 8px;border:2px solid transparent;border-radius:var(--r4);cursor:pointer;color:#fff;white-space:nowrap;transition:border-color .15s;}
+.tnav-link:hover{border-color:#fff;}
+.tnav-link-top{font-size:11px;color:rgba(255,255,255,.8);}
+.tnav-link-bot{font-size:13px;font-weight:700;}
+.tnav-cart{display:flex;align-items:center;gap:4px;padding:4px 8px;border:2px solid transparent;border-radius:var(--r4);cursor:pointer;transition:border-color .15s;}
+.tnav-cart:hover{border-color:#fff;}
+.tnav-lang{padding:5px;border:1px solid rgba(255,255,255,.2);border-radius:var(--r4);background:rgba(255,255,255,.07);color:#fff;font-size:12px;font-weight:600;outline:none;}
+.tnav-lang option{background:var(--nv);}
+
+/* ── DROPDOWNS ────────────────────────────────────────────── */
+.acct-dd{display:none;position:fixed;top:62px;right:60px;width:220px;background:var(--w);border:var(--border);border-radius:var(--r8);box-shadow:var(--shl);z-index:400;}
+.acct-dd.open{display:block;}
+.acct-dd-hdr{background:var(--nv);padding:12px 16px;border-radius:var(--r8) var(--r8) 0 0;}
+.acct-dd-name{font-size:14px;font-weight:700;color:#fff;}
+.acct-dd-role{font-size:11px;color:rgba(255,255,255,.5);margin-top:1px;}
+.acct-dd-item{padding:11px 16px;cursor:pointer;display:flex;align-items:center;gap:10px;font-size:14px;border-bottom:var(--border2);transition:background .15s;}
+.acct-dd-item:hover{background:var(--bg2);}
+.acct-dd-item:last-child{border-bottom:none;}
+.acct-dd-item.red{color:var(--r);}
+.notif-panel{display:none;position:fixed;right:0;top:60px;width:320px;background:var(--w);border:var(--border);box-shadow:var(--shl);z-index:400;border-radius:0 0 var(--r8) var(--r8);max-height:80vh;overflow-y:auto;}
+.notif-panel.open{display:block;}
+.notif-hdr{background:var(--nv);padding:12px 16px;display:flex;justify-content:space-between;align-items:center;}
+.notif-item{padding:12px 16px;border-bottom:var(--border2);display:flex;gap:10px;transition:background .15s;}
+.notif-item:hover{background:var(--bg2);}
+.notif-item.unread{background:#F0FBF8;}
+.all-drawer{display:none;position:fixed;top:98px;left:0;width:270px;background:var(--nv);color:#fff;z-index:400;box-shadow:var(--shl);border-radius:0 var(--r12) var(--r12) 0;padding:6px 0;max-height:80vh;overflow-y:auto;}
+.all-drawer.open{display:block;}
+.adw-title{padding:12px 18px;font-weight:800;font-size:15px;border-bottom:1px solid rgba(255,255,255,.1);}
+.adw-item{padding:9px 18px;cursor:pointer;display:flex;gap:10px;align-items:center;font-size:14px;transition:background .15s;}
+.adw-item:hover{background:rgba(255,255,255,.08);}
+.adw-item.red{color:#FF6B6B;}
+.adw-sep{border-top:1px solid rgba(255,255,255,.1);margin:6px 0;}
+
+/* ── SUBNAV ───────────────────────────────────────────────── */
+.subnav{background:var(--nv2);display:flex;align-items:center;padding:0 16px;height:38px;gap:0;overflow-x:auto;scrollbar-width:none;}
+.subnav::-webkit-scrollbar{display:none;}
+.snav{padding:6px 12px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;border:2px solid transparent;border-radius:var(--r4);transition:border-color .15s;}
+.snav:hover{border-color:#fff;}
+
+/* ── HERO ─────────────────────────────────────────────────── */
+.hero{background:linear-gradient(135deg,#131921 0%,#1d3461 50%,#0a1f0a 100%);padding:44px 24px 36px;color:#fff;position:relative;overflow:hidden;}
+.hero::after{content:'🛍️';position:absolute;right:-20px;bottom:-30px;font-size:200px;opacity:.05;}
+.hero-inner{position:relative;z-index:1;max-width:520px;}
+.hero-eye{display:inline-block;background:rgba(255,153,0,.18);border:1px solid rgba(255,153,0,.3);color:var(--or2);padding:5px 14px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.06em;margin-bottom:12px;}
+.hero-title{font-family:var(--font2);font-size:clamp(26px,4.5vw,48px);font-weight:900;line-height:1.1;margin-bottom:10px;}
+.hero-title em{font-style:normal;color:var(--or);}
+.hero-desc{font-size:14px;color:rgba(255,255,255,.65);margin-bottom:22px;line-height:1.7;max-width:420px;}
+.hero-btns{display:flex;gap:12px;flex-wrap:wrap;}
+.btn-hero{padding:12px 24px;border-radius:var(--r4);font-size:14px;font-weight:700;cursor:pointer;border:none;}
+.btn-hero-p{background:var(--or);color:var(--ink);}
+.btn-hero-s{background:rgba(255,255,255,.1);color:#fff;border:1px solid rgba(255,255,255,.25);}
+.hero-stats{display:flex;gap:28px;margin-top:26px;padding-top:20px;border-top:1px solid rgba(255,255,255,.12);}
+.hstat-v{font-family:var(--font2);font-size:22px;font-weight:800;}
+.hstat-l{font-size:11px;color:rgba(255,255,255,.45);margin-top:1px;}
+
+/* ── TRUST / SECTIONS ─────────────────────────────────────── */
+.trust-bar{background:var(--w);border-bottom:var(--border);display:flex;justify-content:center;flex-wrap:wrap;}
+.trust-item{display:flex;align-items:center;gap:7px;padding:9px 18px;border-right:var(--border2);}
+.trust-item:last-child{border-right:none;}
+.sec{background:var(--w);margin:16px 20px;border-radius:var(--r12);padding:18px;box-shadow:var(--sh);}
+.sec-title{font-family:var(--font2);font-size:19px;font-weight:700;margin-bottom:14px;}
+.sec-sa{float:right;font-size:13px;color:var(--b);cursor:pointer;}
+.sec-sa:hover{color:var(--or);text-decoration:underline;}
+
+/* ── PROMO ────────────────────────────────────────────────── */
+.promo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;}
+.promo-tile{border-radius:var(--r12);padding:20px;min-height:128px;position:relative;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between;}
+.promo-tile::after{content:attr(data-emoji);position:absolute;right:-5px;bottom:-10px;font-size:76px;opacity:.12;}
+.pt1{background:linear-gradient(135deg,#131921,#1d3461);}
+.pt2{background:linear-gradient(135deg,#1a0a05,#7B1818);}
+.pt3{background:linear-gradient(135deg,#0a1f0a,#1a4a1a);}
+.pt4{background:linear-gradient(135deg,#1a1005,#4a3000);}
+.promo-lbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.07em;color:rgba(255,255,255,.5);margin-bottom:4px;}
+.promo-title{font-family:var(--font2);font-size:16px;font-weight:800;color:#fff;margin-bottom:8px;}
+.promo-cta{font-size:12px;color:var(--or2);font-weight:600;}
+
+/* ── CATEGORIES / PRODUCTS ────────────────────────────────── */
+.cat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(108px,1fr));gap:10px;}
+.cat-card{background:var(--bg2);border:var(--border);border-radius:var(--r8);padding:14px 10px;cursor:pointer;text-align:center;transition:all .2s;}
+.cat-card:hover{border-color:var(--or);box-shadow:var(--sh);}
+.prod-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(185px,1fr));gap:16px;}
+.prod-card{background:var(--w);border:var(--border);border-radius:var(--r8);overflow:hidden;cursor:pointer;transition:all .2s;}
+.prod-card:hover{border-color:#E77600;box-shadow:0 0 0 2px rgba(231,118,0,.25),var(--sh);}
+.prod-thumb{width:100%;aspect-ratio:1;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-size:64px;position:relative;overflow:hidden;}
+.prod-thumb img{width:100%;height:100%;object-fit:cover;}
+.prod-badge{position:absolute;top:8px;left:8px;background:var(--r);color:#fff;padding:2px 7px;border-radius:2px;font-size:11px;font-weight:700;}
+.prod-badge.new{background:var(--g);}
+.prod-badge.sale{background:var(--or);}
+.prod-info{padding:10px 12px 0;}
+.prod-brand{font-size:12px;color:var(--ink3);margin-bottom:2px;}
+.prod-name{font-size:14px;color:var(--b);line-height:1.3;margin-bottom:4px;display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;}
+.prod-stars{color:var(--or);font-size:12px;}
+.prod-rc{font-size:12px;color:var(--b);margin-left:3px;}
+.prod-price{font-size:18px;font-weight:700;color:var(--r);margin-top:5px;}
+.btn-atc{width:100%;padding:8px;margin:10px 0 0;background:linear-gradient(to bottom,#FFD814,#F7CA00);border:1px solid var(--ordk);border-radius:var(--r4);font-size:13px;font-weight:600;cursor:pointer;}
+.btn-atc:hover{background:linear-gradient(to bottom,#F7CA00,#EEB901);}
+
+/* ── SHOP / FILTER ────────────────────────────────────────── */
+.shop-wrap{display:flex;gap:16px;margin:16px 20px;}
+.filter-col{width:210px;flex-shrink:0;}
+.filter-box{background:var(--w);border:var(--border);border-radius:var(--r8);padding:14px;margin-bottom:12px;box-shadow:var(--sh);}
+.filter-box-title{font-size:15px;font-weight:700;margin-bottom:10px;padding-bottom:8px;border-bottom:var(--border);}
+.filter-sec{font-size:12px;font-weight:700;margin:10px 0 6px;color:var(--ink2);}
+.fopt{display:flex;align-items:center;gap:7px;margin-bottom:5px;cursor:pointer;font-size:13px;}
+.fopt input{accent-color:var(--or);}
+.shop-col{flex:1;}
+.shop-topbar{background:var(--w);border:var(--border);border-radius:var(--r8);padding:11px 16px;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;box-shadow:var(--sh);}
+
+/* ── PAGE HEADER ──────────────────────────────────────────── */
+.page-hdr{background:var(--w);border-bottom:var(--border);padding:10px 20px;display:flex;align-items:center;gap:10px;}
+.back-btn{padding:7px 12px;border:var(--border);border-radius:var(--r4);background:var(--bg2);font-size:13px;cursor:pointer;}
+.back-btn:hover{background:var(--bg3);}
+.breadcrumb{font-size:13px;color:var(--ink3);}
+.breadcrumb a{color:var(--b);cursor:pointer;}
+.breadcrumb a:hover{text-decoration:underline;}
+
+/* ── PRODUCT DETAIL ───────────────────────────────────────── */
+.detail-wrap{display:flex;gap:24px;padding:20px;background:var(--w);margin:16px 20px;border-radius:var(--r8);border:var(--border);box-shadow:var(--sh);}
+.detail-gallery{width:360px;flex-shrink:0;}
+.detail-main-img{width:100%;aspect-ratio:1;background:var(--bg2);border:var(--border);border-radius:var(--r8);display:flex;align-items:center;justify-content:center;font-size:130px;overflow:hidden;margin-bottom:8px;}
+.detail-main-img img{width:100%;height:100%;object-fit:contain;}
+.detail-thumbs{display:flex;gap:7px;}
+.detail-thumb{width:52px;height:52px;border:2px solid var(--bg3);border-radius:var(--r4);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;overflow:hidden;}
+.detail-thumb:hover,.detail-thumb.active{border-color:var(--or);}
+.detail-thumb img{width:100%;height:100%;object-fit:cover;}
+.detail-info{flex:1;min-width:0;}
+.detail-title{font-size:22px;font-weight:400;line-height:1.3;margin-bottom:6px;}
+.detail-brand{font-size:14px;color:var(--b);margin-bottom:10px;}
+.detail-rating-row{display:flex;align-items:center;gap:8px;margin-bottom:12px;padding-bottom:12px;border-bottom:var(--border);}
+.detail-price{font-size:28px;color:var(--r);font-weight:400;}
+.detail-desc{font-size:14px;color:var(--ink2);line-height:1.7;margin:14px 0;}
+.escrow-box{background:var(--gbg);border:1px solid var(--gb);border-radius:var(--r4);padding:12px 14px;margin:12px 0;}
+.escrow-box-title{font-weight:700;color:var(--gd);font-size:13px;margin-bottom:6px;}
+.escrow-step{display:flex;gap:8px;align-items:center;font-size:12px;color:var(--ink2);margin-bottom:4px;}
+.escrow-dot{width:16px;height:16px;border-radius:50%;background:var(--g);color:#fff;display:flex;align-items:center;justify-content:center;font-size:8px;font-weight:700;flex-shrink:0;}
+.buy-box{width:260px;flex-shrink:0;border:var(--border);border-radius:var(--r8);padding:16px;box-shadow:var(--sh);align-self:flex-start;}
+.buy-box-price{font-size:26px;color:var(--r);margin-bottom:4px;}
+.buy-box-stock{font-size:15px;color:var(--g);font-weight:600;margin-bottom:10px;}
+.qty-ctrl{display:flex;align-items:center;border:var(--border);border-radius:var(--r4);width:fit-content;margin-bottom:12px;}
+.qty-btn{width:32px;height:32px;border:none;background:var(--bg2);font-size:16px;cursor:pointer;}
+.qty-btn:hover{background:var(--bg3);}
+.qty-num{width:40px;text-align:center;font-size:14px;font-weight:700;}
+.btn-atcr{width:100%;padding:11px;border-radius:24px;background:linear-gradient(to bottom,#FFD814,#F7CA00);border:1px solid var(--ordk);font-size:14px;font-weight:600;cursor:pointer;margin-bottom:8px;}
+.btn-buynow{width:100%;padding:11px;border-radius:24px;background:linear-gradient(to bottom,#FFA41C,#FF8F00);border:1px solid #B35A00;font-size:14px;font-weight:600;cursor:pointer;margin-bottom:12px;}
+.buy-box-seller{font-size:13px;margin-top:10px;padding-top:10px;border-top:var(--border);}
+.buy-box-seller span{color:var(--b);}
+.contact-btns{display:flex;gap:8px;margin-top:8px;}
+.btn-contact{flex:1;text-align:center;padding:8px;border:var(--border);border-radius:var(--r4);font-size:12px;font-weight:600;color:var(--b);cursor:pointer;}
+.btn-contact:hover{border-color:var(--or);}
+.reviews-sec{background:var(--w);border:var(--border);border-radius:var(--r8);padding:20px;margin:0 20px 20px;box-shadow:var(--sh);}
+.rev-card{padding:14px 0;border-bottom:var(--border2);}
+.rev-card:last-child{border-bottom:none;}
+.rev-hdr{display:flex;align-items:center;gap:10px;margin-bottom:6px;}
+.rev-avatar{width:32px;height:32px;border-radius:50%;background:var(--bg2);display:flex;align-items:center;justify-content:center;font-weight:700;font-size:13px;}
+
+/* ── CART ─────────────────────────────────────────────────── */
+.cart-wrap{display:flex;gap:16px;padding:20px;align-items:flex-start;}
+.cart-main{flex:1;}
+.cart-panel{background:var(--w);border:var(--border);border-radius:var(--r8);padding:16px;box-shadow:var(--sh);margin-bottom:12px;}
+.cart-title{font-size:24px;font-weight:400;padding-bottom:12px;border-bottom:var(--border);margin-bottom:12px;}
+.cart-item{display:flex;gap:14px;padding:14px 0;border-bottom:var(--border);}
+.cart-item:last-child{border-bottom:none;}
+.cart-item-img{width:100px;height:100px;background:var(--bg2);border:var(--border);border-radius:var(--r4);display:flex;align-items:center;justify-content:center;font-size:48px;flex-shrink:0;overflow:hidden;}
+.cart-item-img img{width:100%;height:100%;object-fit:cover;}
+.cart-sidebar{width:280px;background:var(--w);border:var(--border);border-radius:var(--r8);padding:16px;box-shadow:var(--sh);}
+.cart-escrow-note{background:var(--gbg);border:1px solid var(--gb);border-radius:var(--r4);padding:8px 10px;font-size:12px;color:var(--gd);margin-bottom:14px;}
+.btn-checkout{width:100%;padding:12px;border-radius:24px;background:linear-gradient(to bottom,#FFD814,#F7CA00);border:1px solid var(--ordk);font-size:15px;font-weight:700;cursor:pointer;margin-bottom:8px;}
+
+/* ── CHECKOUT ─────────────────────────────────────────────── */
+.checkout-wrap{display:flex;gap:16px;padding:20px;align-items:flex-start;}
+.checkout-main{flex:1;}
+.checkout-sec{background:var(--w);border:var(--border);border-radius:var(--r8);padding:18px 20px;margin-bottom:12px;box-shadow:var(--sh);}
+.checkout-sec-title{font-size:16px;font-weight:700;margin-bottom:14px;padding-bottom:10px;border-bottom:var(--border);}
+.pay-opt{display:flex;align-items:center;gap:12px;padding:12px;border:2px solid var(--bg3);border-radius:var(--r8);cursor:pointer;margin-bottom:8px;transition:all .15s;}
+.pay-opt:hover,.pay-opt.sel{border-color:var(--or);background:var(--abg);}
+.del-opt{display:flex;align-items:center;gap:12px;padding:10px;border:2px solid var(--bg3);border-radius:var(--r8);cursor:pointer;margin-bottom:8px;transition:all .15s;}
+.del-opt.sel{border-color:var(--or);background:var(--abg);}
+.checkout-sidebar{width:280px;background:var(--w);border:var(--border);border-radius:var(--r8);padding:16px;box-shadow:var(--sh);}
+.co-row{display:flex;justify-content:space-between;font-size:14px;padding:6px 0;color:var(--ink3);}
+.co-row.total{font-weight:700;color:var(--ink);font-size:16px;border-top:var(--border);padding-top:10px;margin-top:4px;}
+.btn-place{width:100%;padding:14px;border-radius:24px;background:linear-gradient(to bottom,#FFD814,#F7CA00);border:1px solid var(--ordk);font-size:15px;font-weight:800;cursor:pointer;margin-top:12px;}
+
+/* ── SUCCESS / ORDERS ─────────────────────────────────────── */
+.success-wrap{display:flex;flex-direction:column;align-items:center;padding:40px 20px;text-align:center;}
+.success-icon{width:72px;height:72px;background:var(--g);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:32px;color:#fff;margin:0 auto 20px;animation:pop .4s ease;}
+@keyframes pop{0%{transform:scale(0)}80%{transform:scale(1.1)}100%{transform:scale(1)}}
+.success-title{font-family:var(--font2);font-size:28px;font-weight:800;margin-bottom:8px;}
+.success-ref{background:var(--gbg);border:2px solid var(--gb);border-radius:var(--r8);padding:14px 28px;font-family:var(--font2);font-size:24px;font-weight:800;color:var(--gd);letter-spacing:2px;margin:16px 0;}
+.tracker{background:var(--w);border:var(--border);border-radius:var(--r8);padding:18px;max-width:380px;width:100%;text-align:left;box-shadow:var(--sh);}
+.tracker-step{display:flex;gap:12px;margin-bottom:12px;}
+.tracker-step:last-child{margin-bottom:0;}
+.td{width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:700;flex-shrink:0;margin-top:1px;}
+.td.done{background:var(--gbg);border:2px solid var(--g);color:var(--gd);}
+.td.active{background:var(--abg);border:2px solid var(--a);color:#8B5E00;}
+.td.pending{background:var(--bg2);border:2px solid var(--bg3);color:var(--ink4);}
+.btn-confirm-del{padding:14px 32px;border-radius:24px;background:linear-gradient(to bottom,#00C878,#00A85E);border:none;font-size:15px;font-weight:700;cursor:pointer;color:#fff;margin:16px auto 8px;display:block;}
+.orders-wrap{padding:20px;}
+.order-card{background:var(--w);border:var(--border);border-radius:var(--r8);margin-bottom:14px;overflow:hidden;box-shadow:var(--sh);}
+.order-card-hdr{background:var(--bg2);padding:10px 16px;display:flex;gap:20px;flex-wrap:wrap;}
+.order-hdr-lbl{font-size:11px;color:var(--ink4);text-transform:uppercase;}
+.order-hdr-val{font-size:13px;font-weight:700;}
+.order-card-body{padding:14px 16px;display:flex;gap:14px;align-items:center;}
+.order-thumb{width:80px;height:80px;background:var(--bg2);border:var(--border);border-radius:var(--r4);display:flex;align-items:center;justify-content:center;font-size:36px;flex-shrink:0;overflow:hidden;}
+.order-thumb img{width:100%;height:100%;object-fit:cover;}
+.order-status{font-size:16px;font-weight:700;margin-bottom:4px;}
+.os-delivered{color:var(--g);}
+.os-shipped,.os-confirmed{color:var(--b);}
+.os-pending{color:var(--a);}
+.os-cancelled{color:var(--r);}
+.ep{display:inline-flex;align-items:center;gap:4px;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:700;}
+.ep-held{background:var(--abg);color:#8B5E00;border:1px solid var(--ab);}
+.ep-rel{background:var(--gbg);color:var(--gd);border:1px solid var(--gb);}
+.ep-frz{background:var(--rbg);color:var(--r);border:1px solid var(--rb);}
+
+/* ── SELLER ───────────────────────────────────────────────── */
+.seller-topnav{background:var(--nv);height:60px;display:flex;align-items:center;padding:0 20px;gap:12px;}
+.seller-logo{font-family:var(--font2);font-size:20px;font-weight:900;color:#fff;}
+.seller-logo span{color:var(--or);}
+.seller-badge{background:rgba(255,153,0,.18);border:1px solid rgba(255,153,0,.3);color:var(--or2);padding:4px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+.seller-layout{display:flex;flex:1;min-height:0;}
+.seller-sidebar{width:210px;background:var(--nv2);flex-shrink:0;}
+.snav-item{display:flex;align-items:center;gap:10px;padding:12px 18px;font-size:13px;font-weight:600;color:rgba(255,255,255,.5);cursor:pointer;transition:all .15s;border-left:3px solid transparent;}
+.snav-item:hover{color:rgba(255,255,255,.85);background:rgba(255,255,255,.05);}
+.snav-item.active{color:#fff;background:rgba(255,153,0,.1);border-left-color:var(--or);}
+.seller-main{flex:1;background:var(--bg);overflow-y:auto;}
+.seller-page-hdr{background:var(--w);border-bottom:var(--border);padding:14px 20px;display:flex;align-items:center;justify-content:space-between;}
+.seller-page-title{font-family:var(--font2);font-size:18px;font-weight:700;}
+.seller-content{padding:20px;}
+.metric-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:12px;margin-bottom:16px;}
+.metric-card{background:var(--w);border:var(--border);border-radius:var(--r8);padding:14px;box-shadow:var(--sh);}
+.metric-lbl{font-size:11px;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px;font-weight:600;}
+.metric-val{font-family:var(--font2);font-size:24px;font-weight:800;}
+.metric-sub{font-size:12px;color:var(--ink4);margin-top:4px;}
+.mc-g{color:var(--g);}
+.mc-o{color:var(--or);}
+.earn-card{background:linear-gradient(135deg,#131921,#0a1f0a);border-radius:var(--r8);padding:20px;color:#fff;margin-bottom:16px;}
+.earn-lbl{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.4);margin-bottom:5px;}
+.earn-val{font-family:var(--font2);font-size:30px;font-weight:800;margin-bottom:4px;}
+.earn-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;}
+.earn-item{background:rgba(255,255,255,.07);border-radius:var(--r4);padding:11px;}
+.earn-item-lbl{font-size:10px;text-transform:uppercase;color:rgba(255,255,255,.4);margin-bottom:3px;}
+.earn-item-val{font-size:16px;font-weight:700;}
+.earn-item-val.g{color:#00D68F;}
+.earn-item-val.o{color:var(--or);}
+
+/* ── ADMIN ────────────────────────────────────────────────── */
+.admin-topnav{background:var(--nv);height:60px;display:flex;align-items:center;padding:0 20px;gap:12px;}
+.admin-logo{font-family:var(--font2);font-size:20px;font-weight:900;color:#fff;}
+.admin-logo span{color:var(--or);}
+.admin-layout{display:flex;flex:1;min-height:0;}
+.admin-sidebar{width:230px;background:var(--nv2);flex-shrink:0;display:flex;flex-direction:column;}
+.admin-sb-brand{padding:16px 18px;border-bottom:1px solid rgba(255,255,255,.06);}
+.admin-sb-logo{font-family:var(--font2);font-size:17px;font-weight:800;color:#fff;}
+.admin-sb-logo span{color:var(--or);}
+.admin-sb-role{font-size:10px;color:rgba(255,255,255,.3);margin-top:3px;text-transform:uppercase;letter-spacing:.06em;}
+.anav-item{display:flex;align-items:center;gap:10px;padding:12px 18px;font-size:13px;font-weight:600;color:rgba(255,255,255,.5);cursor:pointer;transition:all .15s;border-left:3px solid transparent;}
+.anav-item:hover{color:rgba(255,255,255,.85);background:rgba(255,255,255,.05);}
+.anav-item.active{color:#fff;background:rgba(255,153,0,.1);border-left-color:var(--or);}
+.anav-badge{margin-left:auto;background:var(--r);color:#fff;border-radius:10px;min-width:18px;height:18px;font-size:10px;font-weight:700;display:flex;align-items:center;justify-content:center;padding:0 4px;}
+.admin-main{flex:1;background:var(--bg);overflow-y:auto;display:flex;flex-direction:column;}
+.admin-page-hdr{background:var(--w);border-bottom:var(--border);padding:14px 22px;display:flex;align-items:center;justify-content:space-between;position:sticky;top:0;z-index:10;}
+.admin-page-title{font-family:var(--font2);font-size:18px;font-weight:700;}
+.admin-content{padding:20px;flex:1;}
+.admin-metrics{display:grid;grid-template-columns:repeat(auto-fill,minmax(180px,1fr));gap:12px;margin-bottom:18px;}
+.admin-metric{background:var(--w);border:var(--border);border-radius:var(--r8);padding:14px 16px;box-shadow:var(--sh);}
+.am-lbl{font-size:11px;color:var(--ink3);text-transform:uppercase;letter-spacing:.06em;margin-bottom:7px;font-weight:600;}
+.am-val{font-family:var(--font2);font-size:24px;font-weight:800;}
+.am-sub{font-size:12px;color:var(--ink3);margin-top:4px;}
+.am-up{color:var(--g);}
+.am-or{color:var(--or);}
+.comm-card{background:linear-gradient(135deg,#131921,#0a1f0a);border-radius:var(--r8);padding:20px;color:#fff;margin-bottom:18px;}
+.comm-lbl{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.4);margin-bottom:5px;}
+.comm-val{font-family:var(--font2);font-size:30px;font-weight:800;margin-bottom:4px;}
+.comm-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:14px;}
+.comm-item{text-align:center;}
+.comm-item-val{font-family:var(--font2);font-size:20px;font-weight:800;}
+.comm-item-lbl{font-size:10px;color:rgba(255,255,255,.4);margin-top:4px;text-transform:uppercase;}
+
+/* ── TABLES ───────────────────────────────────────────────── */
+.tbl-wrap{background:var(--w);border:var(--border);border-radius:var(--r8);overflow:hidden;margin-bottom:14px;box-shadow:var(--sh);}
+.tbl-hdr{display:flex;align-items:center;justify-content:space-between;padding:12px 18px;border-bottom:var(--border);}
+.tbl-hdr-title{font-size:14px;font-weight:700;}
+.tbl-scroll{overflow-x:auto;}
+table{width:100%;border-collapse:collapse;font-size:13px;}
+th{text-align:left;padding:10px 16px;font-size:11px;color:var(--ink3);text-transform:uppercase;letter-spacing:.05em;font-weight:700;border-bottom:var(--border);background:var(--bg2);white-space:nowrap;}
+td{padding:11px 16px;border-bottom:1px solid var(--bg2);color:var(--ink2);vertical-align:middle;}
+tr:last-child td{border-bottom:none;}
+tr:hover td{background:var(--bg);}
+
+/* ── ESCROW FLOW ──────────────────────────────────────────── */
+.ef-card{background:linear-gradient(135deg,#131921,#0a1f0a);border-radius:var(--r8);padding:20px;color:#fff;margin-bottom:18px;}
+.ef-title{font-size:14px;font-weight:700;color:#00D68F;margin-bottom:14px;}
+.ef-steps{display:flex;align-items:center;overflow-x:auto;}
+.ef-step{display:flex;flex-direction:column;align-items:center;gap:4px;min-width:76px;padding:0 6px;}
+.ef-icon{width:38px;height:38px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:16px;margin-bottom:3px;}
+.ef-icon.done{background:rgba(0,214,143,.2);border:2px solid #00D68F;}
+.ef-icon.active{background:rgba(255,153,0,.2);border:2px solid var(--or);}
+.ef-icon.inactive{background:rgba(255,255,255,.07);border:2px solid rgba(255,255,255,.15);}
+.ef-lbl{font-size:9px;text-transform:uppercase;letter-spacing:.04em;color:rgba(255,255,255,.45);text-align:center;}
+.ef-conn{flex:1;height:2px;background:rgba(255,255,255,.1);min-width:14px;margin-bottom:20px;}
+.ef-conn.done{background:#00D68F;}
+
+/* ── PAYOUT / SETTINGS / DISPUTES ────────────────────────── */
+.payout-card{background:var(--w);border:var(--border);border-radius:var(--r8);padding:16px;margin-bottom:10px;box-shadow:var(--sh);}
+.payout-row{display:flex;align-items:center;gap:12px;margin-bottom:12px;}
+.payout-avatar{width:40px;height:40px;border-radius:50%;background:linear-gradient(135deg,var(--g),var(--g2));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:700;font-size:15px;flex-shrink:0;}
+.settings-grid{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+.settings-card{background:var(--w);border:var(--border);border-radius:var(--r8);padding:18px;box-shadow:var(--sh);}
+.settings-card-title{font-size:14px;font-weight:700;margin-bottom:14px;padding-bottom:10px;border-bottom:var(--border);}
+.dispute-card{background:var(--w);border:var(--border);border-radius:var(--r8);padding:16px;margin-bottom:10px;box-shadow:var(--sh);}
+
+/* ── BUTTONS ──────────────────────────────────────────────── */
+.bx{padding:6px 12px;border-radius:var(--r4);font-size:12px;font-weight:700;border:none;cursor:pointer;transition:all .15s;}
+.bx-g{background:var(--gbg);color:var(--gd);border:1px solid var(--gb);}
+.bx-g:hover{background:var(--g);color:#fff;}
+.bx-r{background:var(--rbg);color:var(--r);border:1px solid var(--rb);}
+.bx-r:hover{background:var(--r);color:#fff;}
+.bx-b{background:var(--bbg);color:var(--b);border:1px solid var(--bb);}
+.bx-o{background:var(--abg);color:#8B5E00;border:1px solid var(--ab);}
+.bx-p{background:#F5F3FF;color:#6D28D9;border:1px solid #DDD6FE;}
+.bx-p:hover{background:#6D28D9;color:#fff;}
+.bx-ghost{background:var(--bg2);color:var(--ink3);border:var(--border);}
+.bx-ghost:hover{background:var(--bg3);}
+
+/* ── FORMS / PILLS ────────────────────────────────────────── */
+.fld{margin-bottom:12px;}
+.fld-lbl{font-size:11px;font-weight:700;color:var(--ink2);text-transform:uppercase;letter-spacing:.04em;margin-bottom:5px;display:block;}
+.fld-inp{width:100%;padding:9px 12px;border:2px solid var(--bg3);border-radius:var(--r4);font-size:13px;color:var(--ink);outline:none;transition:border .15s;}
+.fld-inp:focus{border-color:var(--or);}
+.fld-sel{width:100%;padding:9px 12px;border:2px solid var(--bg3);border-radius:var(--r4);font-size:13px;color:var(--ink);outline:none;background:var(--w);}
+.fld-ta{resize:vertical;min-height:80px;}
+.fld-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+.pill{display:inline-flex;align-items:center;padding:3px 8px;border-radius:20px;font-size:11px;font-weight:700;}
+.pill-g{background:var(--gbg);color:var(--gd);border:1px solid var(--gb);}
+.pill-r{background:var(--rbg);color:var(--r);border:1px solid var(--rb);}
+.pill-a{background:var(--abg);color:#8B5E00;border:1px solid var(--ab);}
+.pill-b{background:var(--bbg);color:var(--b);border:1px solid var(--bb);}
+.pill-gray{background:var(--bg2);color:var(--ink3);border:var(--border);}
+.pill-dk{background:var(--ink);color:#fff;}
+
+/* ── MODAL ────────────────────────────────────────────────── */
+.modal-bg{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:600;display:none;align-items:center;justify-content:center;padding:20px;backdrop-filter:blur(3px);}
+.modal-bg.open{display:flex;}
+.modal{background:var(--w);border-radius:var(--r12);width:min(520px,100%);max-height:90vh;overflow-y:auto;box-shadow:var(--shl);}
+.modal-hd{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;border-bottom:var(--border);}
+.modal-title{font-size:17px;font-weight:700;}
+.modal-close{background:var(--bg2);border:none;width:30px;height:30px;border-radius:50%;font-size:16px;cursor:pointer;}
+.modal-close:hover{background:var(--bg3);}
+.modal-body{padding:20px;}
+.modal-footer{padding:14px 20px;border-top:var(--border);display:flex;justify-content:flex-end;gap:8px;}
+
+/* ── IMAGE UPLOAD ─────────────────────────────────────────── */
+.img-drop{border:2px dashed var(--bg3);border-radius:var(--r8);padding:26px;text-align:center;cursor:pointer;background:var(--bg2);transition:all .2s;}
+.img-drop:hover,.img-drop.over{border-color:var(--or);background:var(--abg);}
+.img-previews{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px;}
+.img-preview-item{position:relative;width:78px;height:78px;}
+.img-preview-item img{width:78px;height:78px;object-fit:cover;border-radius:var(--r4);border:2px solid var(--bg3);}
+.img-preview-remove{position:absolute;top:-6px;right:-6px;width:20px;height:20px;border-radius:50%;background:var(--r);color:#fff;border:none;font-size:11px;cursor:pointer;display:flex;align-items:center;justify-content:center;}
+.img-main-badge{position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,.55);color:#fff;font-size:9px;text-align:center;border-radius:0 0 var(--r4) var(--r4);padding:2px 0;}
+
+/* ── BOTTOM NAV / TOAST ───────────────────────────────────── */
+.bnav{display:none;position:fixed;bottom:0;left:0;right:0;background:var(--w);border-top:var(--border);z-index:90;}
+.bnav-inner{display:flex;}
+.bnav-item{flex:1;display:flex;flex-direction:column;align-items:center;gap:2px;padding:8px 0;border:none;background:transparent;color:var(--ink3);font-size:10px;font-weight:600;cursor:pointer;}
+.bnav-item.active{color:var(--or);}
+.bnav-ico{font-size:20px;}
+#toast{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(12px);background:var(--nv);color:#fff;padding:11px 22px;border-radius:var(--r8);font-size:13px;font-weight:600;z-index:9999;opacity:0;pointer-events:none;transition:all .25s;max-width:calc(100vw - 40px);text-align:center;box-shadow:var(--shl);}
+#toast.show{opacity:1;transform:translateX(-50%) translateY(0);}
+#toast.g{background:var(--g);}
+#toast.r{background:var(--r);}
+#toast.o{background:var(--or);color:var(--ink);}
+
+/* ── LOADING SCREEN ───────────────────────────────────────── */
+.loading-screen{position:fixed;inset:0;background:var(--nv);display:flex;flex-direction:column;align-items:center;justify-content:center;z-index:9999;transition:opacity .4s;}
+.loading-screen.hidden{opacity:0;pointer-events:none;}
+.loading-logo{font-family:var(--font2);font-size:48px;font-weight:900;color:#fff;margin-bottom:10px;}
+.loading-logo span{color:var(--or);}
+.loading-sub{font-size:13px;color:rgba(255,255,255,.4);margin-bottom:28px;}
+.loading-bar{width:200px;height:3px;background:rgba(255,255,255,.1);border-radius:2px;overflow:hidden;}
+.loading-fill{height:100%;background:var(--or);border-radius:2px;animation:loadfill 1.4s ease forwards;}
+@keyframes loadfill{0%{width:0%}60%{width:70%}100%{width:100%}}
+
+/* ── RESPONSIVE ───────────────────────────────────────────── */
+@media(max-width:900px){.detail-wrap{flex-direction:column;}.buy-box{width:100%;}.detail-gallery{width:100%;}}
+@media(max-width:768px){
+  .bnav{display:block;}.main{padding-bottom:70px;}
+  .admin-sidebar{display:none;}.seller-sidebar{display:none;}
+  .cart-wrap,.checkout-wrap{flex-direction:column;}
+  .cart-sidebar,.checkout-sidebar{width:100%;}
+  .shop-wrap{flex-direction:column;}.filter-col{width:100%;}
+  .auth-body{flex-direction:column;align-items:center;}
+  .auth-side,.auth-form-wrap{width:100%;max-width:420px;}
+  .settings-grid{grid-template-columns:1fr;}.fld-row{grid-template-columns:1fr;}
+  .comm-grid{grid-template-columns:1fr 1fr;}
+}
+@media(max-width:480px){.prod-grid{grid-template-columns:1fr 1fr;}.promo-grid{grid-template-columns:1fr;}.tnav-loc{display:none;}}
+/* ── MOBILE FIX ───────────────────────────────────────────── */
+@media(max-width:768px){
+  /* Topnav: stack search below logo row */
+  .topnav{flex-wrap:wrap;height:auto;padding:8px 12px;gap:6px;}
+  .tnav-logo{font-size:20px;}
+  .tnav-loc{display:none;}
+  .tnav-search{order:3;flex:0 0 100%;max-width:100%;margin-top:4px;}
+  .tnav-sinp{font-size:13px;}
+  .tnav-right{margin-left:auto;gap:2px;}
+  .tnav-link-top{display:none;}
+  .tnav-link-bot{font-size:12px;}
+  .tnav-lang{display:none;}
+
+  /* Trust bar: single column clean */
+  .trust-bar{flex-direction:column;align-items:flex-start;padding:0 16px;}
+  .trust-item{border-right:none;border-bottom:var(--border2);width:100%;padding:8px 0;}
+  .trust-item:last-child{border-bottom:none;}
+
+  /* Hero: fix text overflow */
+  .hero{padding:28px 16px 24px;}
+  .hero-stats{gap:16px;flex-wrap:wrap;}
+  .hstat-v{font-size:18px;}
+
+  /* AI search bar: stack vertically */
+  .ai-search-bar{flex-wrap:wrap;gap:6px;}
+  .ai-search-inp{font-size:13px;}
+  .ai-search-btn{width:100%;margin-top:2px;}
+
+  /* Sections */
+  .sec{margin:12px 10px;padding:14px;}
+
+  /* AI chat panel */
+  #ai-chat-panel{width:calc(100vw - 32px);right:16px;bottom:140px;}
+  #ai-chat-btn{bottom:70px;}
+}
+
+@media(max-width:480px){
+  .tnav-link:nth-child(1){display:none;}
+  .tnav-link:nth-child(2){display:none;}
+  .tnav-right{gap:4px;}
+}
+::-webkit-scrollbar{width:4px;height:4px;}
+::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:2px;}
+/* ── AI FEATURES ──────────────────────── */
+.ai-search-bar{background:linear-gradient(135deg,rgba(19,25,33,.97),rgba(29,52,97,.97));border-bottom:1px solid rgba(255,153,0,.2);padding:8px 16px;display:flex;gap:8px;align-items:center;}
+.ai-search-inp{flex:1;height:36px;border:1px solid rgba(255,153,0,.3);border-radius:4px;padding:0 12px;font-size:13px;background:rgba(255,255,255,.08);color:#fff;outline:none;}
+.ai-search-inp::placeholder{color:rgba(255,255,255,.4);}
+.ai-search-inp:focus{border-color:#FF9900;}
+.ai-search-btn{height:36px;padding:0 14px;background:#FF9900;border:none;border-radius:4px;font-size:13px;font-weight:700;cursor:pointer;}
+#ai-chat-btn{position:fixed;bottom:86px;right:20px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#131921,#1d3461);border:2px solid #FF9900;color:#fff;font-size:24px;cursor:pointer;box-shadow:0 8px 32px rgba(0,0,0,.2);z-index:500;display:none;align-items:center;justify-content:center;}
+#ai-chat-btn.visible{display:flex;}
+#ai-chat-panel{position:fixed;bottom:155px;right:20px;width:320px;background:#fff;border:1px solid #DDD;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.2);z-index:500;display:none;flex-direction:column;max-height:420px;}
+#ai-chat-panel.open{display:flex;}
+.ai-chat-hdr{background:linear-gradient(135deg,#131921,#1d3461);padding:12px 16px;border-radius:12px 12px 0 0;display:flex;align-items:center;justify-content:space-between;}
+.ai-chat-hdr-title{color:#fff;font-weight:700;font-size:14px;}
+.ai-chat-close{background:none;border:none;color:rgba(255,255,255,.6);font-size:18px;cursor:pointer;}
+.ai-chat-msgs{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;background:#F3F3F3;}
+.ai-msg{padding:9px 12px;border-radius:8px;font-size:13px;line-height:1.5;max-width:90%;}
+.ai-msg.bot{background:#fff;border:1px solid #DDD;align-self:flex-start;}
+.ai-msg.user{background:#FF9900;color:#0F1111;align-self:flex-end;}
+.ai-msg.typing{color:#767676;font-style:italic;}
+.ai-chat-inp{display:flex;padding:10px;border-top:1px solid #DDD;gap:6px;background:#fff;border-radius:0 0 12px 12px;}
+.ai-chat-inp input{flex:1;padding:8px 10px;border:1px solid #E3E6E6;border-radius:4px;font-size:13px;outline:none;}
+.ai-chat-inp input:focus{border-color:#FF9900;}
+.ai-chat-inp button{padding:8px 12px;background:#FF9900;border:none;border-radius:4px;font-size:13px;font-weight:700;cursor:pointer;}
+.ai-gen-btn{padding:8px 14px;background:linear-gradient(135deg,#131921,#1d3461);color:#FF9900;border:1px solid #FF9900;border-radius:4px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px;width:100%;display:flex;align-items:center;justify-content:center;gap:6px;}
+.ai-gen-btn:disabled{opacity:.5;cursor:not-allowed;}
+</style>
+</head>
+<body>
+
+<!-- LOADING SCREEN -->
+<div class="loading-screen" id="loading-screen">
+  <div class="loading-logo">SO<span>KO</span></div>
+  <div class="loading-sub">🇷🇼 Rwanda's Marketplace</div>
+  <div class="loading-bar"><div class="loading-fill"></div></div>
+</div>
+
+<div id="toast"></div>
+
+<!-- ══════════════════════ AUTH VIEW ════════════════════════ -->
+<div class="view" id="view-auth">
+<div class="auth-page">
+  <div class="auth-hdr">
+    <div class="auth-logo">SO<span>KO</span></div>
+    <div class="auth-tag">🇷🇼 Rwanda's #1 Marketplace · Escrow-Protected · Verified Sellers</div>
+  </div>
+  <div class="auth-body">
+    <div class="auth-side">
+      <div class="auth-side-title">Why choose SOKO?</div>
+      <div class="auth-feat"><div class="af-icon">🔒</div><div><div class="af-title">Escrow-Protected Payments</div><div class="af-desc">Your money is held safely and only released when you confirm delivery. Zero risk.</div></div></div>
+      <div class="auth-feat"><div class="af-icon">✅</div><div><div class="af-title">KYC-Verified Sellers</div><div class="af-desc">Every seller submits a National ID. You always know who you're buying from.</div></div></div>
+      <div class="auth-feat"><div class="af-icon">🏍️</div><div><div class="af-title">Fast Local Delivery</div><div class="af-desc">Moto delivery across Kigali and major cities. Food, electronics, fashion — same day.</div></div></div>
+      <div class="auth-feat"><div class="af-icon">📲</div><div><div class="af-title">MTN MoMo & Airtel Money</div><div class="af-desc">Pay the way Rwanda pays. Mobile money, cash on delivery, or card.</div></div></div>
+      <div class="auth-trust"><span>🇷🇼 Made in Rwanda</span><span>🔒 Low platform fee</span><span>✓ 500+ Sellers</span><span>98% to seller</span></div>
+    </div>
+    <div class="auth-form-wrap">
+      <div class="auth-tabs">
+        <button class="atab active" id="atab-login" onclick="authTab('login')">Sign In</button>
+        <button class="atab" id="atab-signup" onclick="authTab('signup')">Create Account</button>
+      </div>
+      <!-- LOGIN -->
+      <div class="apanel" id="apanel-login">
+        <div class="fg"><label class="fl">Email or phone number</label><input class="fi" id="login-identifier" type="text" placeholder="you@email.com or +250 7XX XXX XXX" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+        <div class="fg"><label class="fl">Password</label><input class="fi" id="login-pass" type="password" placeholder="At least 6 characters" onkeydown="if(event.key==='Enter')doLogin()"/></div>
+        <button class="btn-or btn-or-dk" style="margin-bottom:8px;" onclick="doLogin()">Sign in →</button>
+        <div style="text-align:right;margin-bottom:12px;"><span onclick="forgotPassword()" style="font-size:12px;color:var(--b);cursor:pointer;text-decoration:underline;">Forgot password?</span></div>
+        <div style="font-size:11px;color:var(--ink3);margin-bottom:12px;">By signing in you agree to SOKO's Conditions of Use and Privacy Notice.</div>
+        <div style="font-size:11px;color:var(--ink3);text-align:center;">Don't have an account? <span class="dl" onclick="authTab('signup')">Create one</span></div>
+      </div>
+      <!-- SIGNUP -->
+      <div class="apanel" id="apanel-signup" style="display:none;">
+        <div class="fg2">
+          <div class="fg"><label class="fl">First name</label><input class="fi" id="su-fname" placeholder="Jean"/></div>
+          <div class="fg"><label class="fl">Last name</label><input class="fi" id="su-lname" placeholder="Mutoni"/></div>
+        </div>
+        <div class="fg"><label class="fl">Email address</label><input class="fi" id="su-email" type="email" placeholder="you@email.com"/></div>
+        <div class="fg"><label class="fl">Phone <span style="font-weight:400;text-transform:none;font-size:11px;">(optional)</span></label><input class="fi" id="su-phone" type="tel" placeholder="+250 7XX XXX XXX"/></div>
+        <div class="fg"><label class="fl">Password</label><input class="fi" id="su-pass" type="password" placeholder="At least 6 characters"/></div>
+        <button class="btn-or" style="margin-bottom:12px;" onclick="doSignup()">Create your SOKO account →</button>
+        <div style="font-size:11px;color:var(--ink3);">By creating an account you agree to SOKO's Conditions of Use and Privacy Notice.</div>
+      </div>
+    </div>
+  </div>
+</div>
+</div>
+<!-- ═══ END PART 1 — continue with Part 2 (Buyer view HTML) ═══ -->
+<!-- ═══ PART 2 — BUYER VIEW ═══════════════════════════════════
+     Paste this block directly after the closing </div></div>
+     of the AUTH VIEW from Part 1.
+     ═══════════════════════════════════════════════════════════ -->
+
+<!-- ══════════════════════ BUYER VIEW ════════════════════════ -->
+<div class="view active" id="view-buyer">
+  <!-- TOPNAV -->
+  <div class="topnav">
+    <div class="tnav-logo" onclick="buyerHome()">SO<span>KO</span></div>
+    <div class="tnav-loc" onclick="openModal('modal-location')">
+      <div class="tnav-loc-top">📍 Deliver to</div>
+      <div class="tnav-loc-bot" id="nav-location-text">Kigali, Rwanda</div>
+    </div>
+    <div class="tnav-search">
+      <select class="tnav-scat" id="search-cat-sel">
+        <option value="">All</option>
+        <option value="food">Food</option>
+        <option value="electronics">Electronics</option>
+        <option value="clothes">Clothes</option>
+        <option value="shoes">Shoes</option>
+        <option value="home">Home</option>
+        <option value="beauty">Beauty</option>
+        <option value="sports">Sports</option>
+      </select>
+      <input class="tnav-sinp" id="search-inp" placeholder="Search SOKO.rw" oninput="doSearch(this.value)" onkeydown="if(event.key==='Enter')doSearch(this.value)"/>
+      <button class="tnav-sbtn" onclick="doSearch(document.getElementById('search-inp').value)">🔍</button>
+    </div>
+    <div class="tnav-right">
+      <div class="tnav-link" onclick="toggleAcctDD()">
+        <div class="tnav-link-top">Hello, <span id="buyer-name-nav">sign in</span></div>
+        <div class="tnav-link-bot">Account & Lists ▾</div>
+      </div>
+      <div class="tnav-link" onclick="buyerShowView('orders')">
+        <div class="tnav-link-top">Returns</div>
+        <div class="tnav-link-bot">& Orders</div>
+      </div>
+      <div class="tnav-cart" onclick="buyerShowView('cart')">
+        <span style="font-size:26px;color:#fff;">🛒</span>
+        <div>
+          <div style="font-size:20px;font-weight:800;color:var(--or);" id="cart-badge">0</div>
+          <div style="font-size:13px;font-weight:700;color:#fff;">Cart</div>
+        </div>
+      </div>
+      <select class="tnav-lang" onchange="applyLang(this.value)">
+        <option value="en">EN</option>
+        <option value="fr">FR</option>
+        <option value="rw">RW</option>
+      </select>
+    </div>
+   
+</div>
+
+  <!-- ACCOUNT DROPDOWN -->
+  <div class="acct-dd" id="acct-dd">
+    <div class="acct-dd-hdr">
+      <div class="acct-dd-name" id="acct-dd-name">Jean Mutoni</div>
+      <div class="acct-dd-role" id="acct-dd-role">Buyer Account</div>
+    </div>
+    <div class="acct-dd-item" onclick="buyerShowView('orders');closeAll()">📦 Your Orders</div>
+    <div class="acct-dd-item" onclick="buyerShowView('review');closeAll()">⭐ Write a Review</div>
+    <div class="acct-dd-item" onclick="buyerShowView('dispute');closeAll()">🛡️ Report a Problem</div>
+    <div class="acct-dd-item" onclick="buyerShowView('become-seller');closeAll()">🏪 Sell on SOKO</div>
+    <div class="acct-dd-item" id="acct-dd-seller-switch" style="display:none;border-top:var(--border);color:var(--g);font-weight:600;" onclick="switchToSeller();closeAll()">📊 Go to Seller Dashboard</div>
+    <div class="acct-dd-item" onclick="toggleNotif();closeAcctDD()">🔔 Notifications</div>
+    <div class="acct-dd-item red" onclick="doLogout()">🚪 Sign Out</div>
+  </div>
+
+  <!-- NOTIFICATIONS PANEL -->
+  <div class="notif-panel" id="notif-panel">
+    <div class="notif-hdr">
+      <div style="color:#fff;font-weight:700;">Notifications</div>
+      <button onclick="toggleNotif()" style="background:none;border:none;color:rgba(255,255,255,.6);font-size:16px;cursor:pointer;">✕</button>
+    </div>
+    <div id="notif-items"></div>
+  </div>
+
+  <!-- ALL DRAWER -->
+  <div class="all-drawer" id="all-drawer">
+    <div class="adw-title">Browse SOKO</div>
+    <div class="adw-item" onclick="buyerHome();closeAll()">🏠 Home</div>
+    <div class="adw-item" onclick="filterCat('food');closeAll()">🍎 Food & Drinks</div>
+    <div class="adw-item" onclick="filterCat('electronics');closeAll()">📱 Electronics</div>
+    <div class="adw-item" onclick="filterCat('clothes');closeAll()">👕 Clothes</div>
+    <div class="adw-item" onclick="filterCat('shoes');closeAll()">👟 Shoes</div>
+    <div class="adw-item" onclick="filterCat('home');closeAll()">🏠 Home & Kitchen</div>
+    <div class="adw-item" onclick="filterCat('beauty');closeAll()">💄 Beauty</div>
+    <div class="adw-item" onclick="filterCat('sports');closeAll()">⚽ Sports</div>
+    <div class="adw-sep"></div>
+    <div class="adw-item" onclick="buyerShowView('orders');closeAll()">📦 Your Orders</div>
+    <div class="adw-item" onclick="buyerShowView('become-seller');closeAll()">🏪 Sell on SOKO</div>
+    <div class="adw-item red" onclick="doLogout()">🚪 Sign Out</div>
+  </div>
+
+  <!-- SUBNAV -->
+  <div class="subnav">
+    <div class="snav" id="all-menu-btn" onclick="toggleDrawer()">☰ All</div>
+    <div class="snav" onclick="filterCat('food')">🍎 Food & Drinks</div>
+    <div class="snav" onclick="filterCat('electronics')">📱 Electronics</div>
+    <div class="snav" onclick="filterCat('clothes')">👕 Clothes</div>
+    <div class="snav" onclick="filterCat('shoes')">👟 Shoes</div>
+    <div class="snav" onclick="filterCat('home')">🏠 Home</div>
+    <div class="snav" onclick="filterCat('beauty')">💄 Beauty</div>
+    <div class="snav" onclick="filterCat('sports')">⚽ Sports</div>
+    <div class="snav" onclick="buyerShowView('become-seller')">🏪 Sell on SOKO</div>
+  </div>
+
+  <!-- MAIN CONTENT AREA -->
+  <div class="main" id="buyer-main">
+
+    <!-- ── HOME ─────────────────────────────────────────────── -->
+    <div id="buyer-home">
+      <div class="hero">
+        <div class="hero-inner">
+          <div class="hero-eye">🇷🇼 Rwanda's #1 Marketplace</div>
+          <div class="hero-title" id="hero-title">Everything you need,<br/>delivered with <em>confidence</em></div>
+          <div class="hero-desc" id="hero-desc">Food, electronics, fashion & more from KYC-verified Rwanda sellers. Every payment escrow-protected.</div>
+          <div class="hero-btns">
+            <button class="btn-hero btn-hero-p" onclick="focusSearch()">Shop Now →</button>
+            <button class="btn-hero btn-hero-s" onclick="buyerShowView('become-seller')">Start Selling</button>
+          </div>
+          <div class="hero-stats">
+            <div><div class="hstat-v">500+</div><div class="hstat-l">Verified Sellers</div></div>
+            <div><div class="hstat-v">10K+</div><div class="hstat-l">Products</div></div>
+            <div><div class="hstat-v">🔒 Safe</div><div class="hstat-l">Escrow protected</div></div>
+            <div><div class="hstat-v">98%</div><div class="hstat-l">Seller receives</div></div>
+          </div>
+        </div>
+      </div>
+      <div class="trust-bar">
+        <div class="trust-item"><span style="font-size:17px;">🔒</span><span style="font-size:12px;font-weight:600;color:var(--ink2);">Escrow-protected payments</span></div>
+        <div class="trust-item"><span style="font-size:17px;">✅</span><span style="font-size:12px;font-weight:600;color:var(--ink2);">KYC-verified sellers</span></div>
+        <div class="trust-item"><span style="font-size:17px;">🏍️</span><span style="font-size:12px;font-weight:600;color:var(--ink2);">Fast moto delivery</span></div>
+        <div class="trust-item"><span style="font-size:17px;">📲</span><span style="font-size:12px;font-weight:600;color:var(--ink2);">MTN MoMo / Airtel Money</span></div>
+        <div class="trust-item"><span style="font-size:17px;">↩️</span><span style="font-size:12px;font-weight:600;color:var(--ink2);">Dispute protection</span></div>
+      </div>
+      <div class="sec">
+        <div class="sec-title">🔥 Today's Deals <span class="sec-sa" onclick="buyerShowView('shop')">See all →</span></div>
+        <div class="promo-grid" id="promo-grid"></div>
+      </div>
+      <div class="sec">
+        <div class="sec-title">Shop by Category <span class="sec-sa" onclick="buyerShowView('shop')">All →</span></div>
+        <div class="cat-grid" id="cat-grid"></div>
+      </div>
+      <div class="sec">
+        <div class="sec-title">Featured Products <span class="sec-sa" onclick="buyerShowView('shop')">See all →</span></div>
+        <div class="prod-grid" id="home-products"></div>
+      </div>
+      <div class="sec">
+        <div class="sec-title">🍎 Fresh Food & Drinks <span class="sec-sa" onclick="filterCat('food')">See all →</span></div>
+        <div class="prod-grid" id="food-products"></div>
+      </div>
+      <div class="sec">
+        <div class="sec-title">📱 Electronics <span class="sec-sa" onclick="filterCat('electronics')">See all →</span></div>
+        <div class="prod-grid" id="elec-products"></div>
+      </div>
+    </div>
+
+    <!-- ── SHOP ──────────────────────────────────────────────── -->
+    <div id="buyer-shop" style="display:none;">
+      <div class="page-hdr">
+        <button class="back-btn" onclick="buyerHome()">← Back</button>
+        <div class="breadcrumb"><a onclick="buyerHome()">Home</a> › <span id="shop-bc">All Products</span></div>
+      </div>
+      <div class="shop-wrap">
+        <div class="filter-col">
+          <div class="filter-box">
+            <div class="filter-box-title">Filter by</div>
+            <div class="filter-sec">Category</div>
+            <div id="filter-cats"></div>
+            <div class="filter-sec">Price</div>
+            <div class="fopt"><input type="radio" name="price" checked onchange="renderProds(currentShopList,'shop-products')"/> Any price</div>
+            <div class="fopt"><input type="radio" name="price" onchange="filterByPrice(0,5000)"/> Under 5,000 RWF</div>
+            <div class="fopt"><input type="radio" name="price" onchange="filterByPrice(5000,50000)"/> 5,000–50,000 RWF</div>
+            <div class="fopt"><input type="radio" name="price" onchange="filterByPrice(50000,9999999)"/> Over 50,000 RWF</div>
+            <div class="filter-sec">Rating</div>
+            <div class="fopt"><input type="radio" name="rating" checked onchange="renderProds(currentShopList,'shop-products')"/> Any rating</div>
+            <div class="fopt"><input type="radio" name="rating" onchange="filterByRating(4)"/> ⭐⭐⭐⭐ & up</div>
+          </div>
+        </div>
+        <div class="shop-col">
+          <div class="shop-topbar">
+            <div style="font-size:14px;color:var(--ink3);" id="shop-count"></div>
+            <select style="padding:6px 10px;border:var(--border);border-radius:var(--r4);font-size:13px;outline:none;" onchange="sortProducts(this.value)">
+              <option value="">Featured</option>
+              <option value="price-asc">Price: Low to High</option>
+              <option value="price-desc">Price: High to Low</option>
+              <option value="rating">Avg. Rating</option>
+            </select>
+          </div>
+          <div class="prod-grid" id="shop-products"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── PRODUCT DETAIL ────────────────────────────────────── -->
+    <div id="buyer-detail" style="display:none;">
+      <div class="page-hdr">
+        <button class="back-btn" onclick="goBack()">← Back</button>
+        <div class="breadcrumb" id="detail-crumb"></div>
+      </div>
+      <div id="detail-content"></div>
+    </div>
+
+    <!-- ── CART ──────────────────────────────────────────────── -->
+    <div id="buyer-cart" style="display:none;">
+      <div class="page-hdr">
+        <button class="back-btn" onclick="goBack()">← Continue shopping</button>
+        <div class="breadcrumb">Shopping Cart</div>
+      </div>
+      <div class="cart-wrap">
+        <div class="cart-main"><div id="cart-items"></div></div>
+        <div class="cart-sidebar" id="cart-summary"></div>
+      </div>
+    </div>
+
+    <!-- ── CHECKOUT ──────────────────────────────────────────── -->
+    <div id="buyer-checkout" style="display:none;">
+      <div class="page-hdr">
+        <button class="back-btn" onclick="buyerShowView('cart')">← Back to Cart</button>
+        <div class="breadcrumb"><a onclick="buyerShowView('cart')">Cart</a> › Checkout</div>
+      </div>
+      <div class="checkout-wrap">
+        <div class="checkout-main">
+          <!-- Step 1: Address -->
+          <div class="checkout-sec">
+            <div class="checkout-sec-title">1. Delivery address</div>
+            <div class="fld-row">
+              <div class="fld"><label class="fld-lbl">Full name</label><input class="fld-inp" id="co-name" placeholder="Jean Mutoni"/></div>
+              <div class="fld"><label class="fld-lbl">Phone</label><input class="fld-inp" id="co-phone" placeholder="+250 7XX XXX XXX"/></div>
+            </div>
+            <div class="fld"><label class="fld-lbl">Street address</label><input class="fld-inp" id="co-addr" placeholder="KG 7 Ave, Kimironko"/></div>
+            <div class="fld-row">
+              <div class="fld"><label class="fld-lbl">City</label><input class="fld-inp" id="co-city" placeholder="Kigali"/></div>
+              <div class="fld"><label class="fld-lbl">Sector</label><input class="fld-inp" id="co-sector" placeholder="Kimironko"/></div>
+            </div>
+          </div>
+          <!-- Step 2: Delivery -->
+          <div class="checkout-sec">
+            <div class="checkout-sec-title">2. Delivery method</div>
+            <div class="del-opt sel" onclick="selDel(this)">
+              <input type="radio" style="accent-color:var(--or);" checked/>
+              <span style="font-size:22px;">🏍️</span>
+              <div><div style="font-size:14px;font-weight:700;">Moto Delivery</div><div style="font-size:12px;color:var(--ink3);">500–2,000 RWF · 1–3 hours</div></div>
+            </div>
+            <div class="del-opt" onclick="selDel(this)">
+              <input type="radio" style="accent-color:var(--or);"/>
+              <span style="font-size:22px;">📍</span>
+              <div><div style="font-size:14px;font-weight:700;">Pickup Point</div><div style="font-size:12px;color:var(--ink3);">Free · Collect at our office</div></div>
+            </div>
+          </div>
+          <!-- Step 3: Payment -->
+          <div class="checkout-sec">
+            <div class="checkout-sec-title">3. Payment method</div>
+            <div class="pay-opt sel" onclick="selPay(this)">
+              <input type="radio" style="accent-color:var(--or);" checked/>
+              <span style="font-size:24px;">📲</span>
+              <div><div style="font-size:14px;font-weight:700;">MTN Mobile Money</div><div style="font-size:12px;color:var(--ink3);">Dial *182# — instant</div></div>
+            </div>
+            <div class="pay-opt" onclick="selPay(this)">
+              <input type="radio" style="accent-color:var(--or);"/>
+              <span style="font-size:24px;">📱</span>
+              <div><div style="font-size:14px;font-weight:700;">Airtel Money</div><div style="font-size:12px;color:var(--ink3);">Dial *185# to pay</div></div>
+            </div>
+            <div class="pay-opt" onclick="selPay(this)">
+              <input type="radio" style="accent-color:var(--or);"/>
+              <span style="font-size:24px;">💵</span>
+              <div><div style="font-size:14px;font-weight:700;">Cash on Delivery</div><div style="font-size:12px;color:var(--ink3);">Pay when you receive</div></div>
+            </div>
+            <div class="pay-opt" onclick="selPay(this)">
+              <input type="radio" style="accent-color:var(--or);"/>
+              <span style="font-size:24px;">💳</span>
+              <div><div style="font-size:14px;font-weight:700;">Debit / Credit Card</div><div style="font-size:12px;color:var(--ink3);">Visa or Mastercard</div></div>
+            </div>
+          </div>
+        </div>
+        <!-- Checkout Sidebar -->
+        <div class="checkout-sidebar">
+          <div style="font-size:17px;font-weight:700;margin-bottom:14px;">Order Summary</div>
+          <div id="co-summary"></div>
+          <div class="escrow-box" style="margin-top:12px;">
+            <div class="escrow-box-title">🔒 Payment Protection</div>
+            <div class="escrow-step"><div class="escrow-dot">1</div><span>You pay → SOKO holds funds</span></div>
+            <div class="escrow-step"><div class="escrow-dot">2</div><span>Seller ships your order</span></div>
+            <div class="escrow-step"><div class="escrow-dot">3</div><span>You confirm receipt</span></div>
+            <div class="escrow-step"><div class="escrow-dot">4</div><span>2% service fee · payment released to seller</span></div>
+          </div>
+          <button class="btn-place" onclick="placeOrder()">Place your order →</button>
+          <div style="font-size:11px;color:var(--ink4);margin-top:8px;text-align:center;">Secure checkout powered by SOKO Escrow</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── ORDER SUCCESS ──────────────────────────────────────── -->
+    <div id="buyer-success" style="display:none;">
+      <div class="success-wrap">
+        <div class="success-icon">✓</div>
+        <div class="success-title">Order Placed! 🎉</div>
+        <div style="font-size:14px;color:var(--ink3);margin-bottom:14px;">Payment secured in escrow. Seller will ship shortly.</div>
+        <div class="success-ref" id="success-ref">ORD-0000</div>
+        <div class="tracker">
+          <div style="font-size:14px;font-weight:700;margin-bottom:14px;">🔒 Escrow Status</div>
+          <div class="tracker-step"><div class="td done">✓</div><div><div style="font-size:13px;font-weight:600;">Payment Received</div><div style="font-size:11px;color:var(--ink4);">Funds secured in escrow</div></div></div>
+          <div class="tracker-step"><div class="td active">⏳</div><div><div style="font-size:13px;font-weight:600;">Seller Ships Order</div><div style="font-size:11px;color:var(--ink4);">Awaiting dispatch</div></div></div>
+          <div class="tracker-step"><div class="td pending">○</div><div><div style="font-size:13px;font-weight:600;">You Confirm Delivery</div><div style="font-size:11px;color:var(--ink4);">Tap button when received</div></div></div>
+          <div class="tracker-step"><div class="td pending">○</div><div><div style="font-size:13px;font-weight:600;">Funds Released to Seller</div><div style="font-size:11px;color:var(--ink4);">Payment released to seller</div></div></div>
+        </div>
+        <button class="btn-confirm-del" onclick="confirmDelivery()">✓ I Received My Order — Release Payment</button>
+        <button style="padding:11px 24px;border-radius:24px;border:var(--border);background:var(--w);font-size:14px;cursor:pointer;display:block;margin:8px auto 0;" onclick="buyerHome()">Continue Shopping</button>
+      </div>
+    </div>
+
+    <!-- ── ORDERS ─────────────────────────────────────────────── -->
+    <div id="buyer-orders" style="display:none;">
+      <div class="page-hdr">
+        <button class="back-btn" onclick="buyerHome()">← Back</button>
+        <div class="breadcrumb">Your Orders</div>
+      </div>
+      <div class="orders-wrap" id="orders-content"></div>
+    </div>
+
+    <!-- ── BECOME SELLER ──────────────────────────────────────── -->
+    <div id="buyer-become-seller" style="display:none;">
+      <div class="page-hdr">
+        <button class="back-btn" onclick="goBack()">← Back</button>
+        <div class="breadcrumb">Sell on SOKO</div>
+      </div>
+      <div style="max-width:680px;margin:0 auto;padding:24px;">
+        <!-- KYC FORM (shown when logged in) -->
+        <div id="become-seller-kyc" style="display:none;">
+          <div style="font-size:20px;font-weight:700;margin-bottom:20px;">Complete Your ID Verification</div>
+          <p style="color:var(--ink3);margin-bottom:20px;">Upload a clear photo of your national ID to start selling. We'll review and approve within 4 hours.</p>
+          <div class="fld"><label class="fld-lbl">Full Name</label><input class="fld-inp" id="kyc-name" placeholder="Your full name"/></div>
+          <div class="fld"><label class="fld-lbl">ID Number</label><input class="fld-inp" id="kyc-id" placeholder="Your national ID number"/></div>
+          <div class="fld"><label class="fld-lbl">Upload ID Photo</label>
+            <div style="border:2px dashed var(--border);border-radius:var(--r8);padding:32px;text-align:center;cursor:pointer;background:var(--bg2);" ondrop="handleKycDrop(event)" ondragover="event.preventDefault()" onclick="document.getElementById('kyc-file-inp').click()">
+              <div style="font-size:32px;margin-bottom:8px;">📸</div>
+              <div style="font-size:14px;color:var(--ink3);">Drag & drop or click to upload</div>
+              <input type="file" id="kyc-file-inp" style="display:none;" accept="image/*" onchange="handleKycUpload(this.files[0])"/>
+            </div>
+            <div id="kyc-preview-area" style="margin-top:12px;"></div>
+          </div>
+          <button class="btn-or btn-or-dk" style="width:100%;padding:12px;" onclick="submitKYC()">Submit for Verification</button>
+        </div>
+        <!-- LOGIN PROMPT (shown for guests) -->
+        <div id="become-seller-login" style="display:none;text-align:center;padding:32px;">
+          <div style="font-size:56px;margin-bottom:14px;">🏪</div>
+          <h1 style="font-family:var(--font2);font-size:26px;font-weight:800;margin-bottom:10px;">Start Selling on SOKO</h1>
+          <p style="color:var(--ink3);font-size:14px;max-width:460px;margin:0 auto 24px;">Join verified Rwanda sellers. Upload real product photos, receive escrow-protected payments, weekly payouts to your Mobile Money.</p>
+          <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;text-align:left;margin-bottom:24px;">
+            <div style="padding:12px;background:var(--gbg);border-radius:var(--r4);"><div style="font-size:12px;font-weight:600;color:var(--g);">✓ Escrow Protected</div><div style="font-size:11px;color:var(--ink3);margin-top:4px;">Your money is safe</div></div>
+            <div style="padding:12px;background:var(--gbg);border-radius:var(--r4);"><div style="font-size:12px;font-weight:600;color:var(--g);">✓ ID Verified</div><div style="font-size:11px;color:var(--ink3);margin-top:4px;">4-hour approval</div></div>
+          </div>
+          <button class="btn-or btn-or-dk" style="width:auto;padding:12px 28px;" onclick="document.getElementById('view-auth').classList.add('active');document.getElementById('view-buyer').classList.remove('active');authTab('login');">Sign In to Sell →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── DISPUTE ────────────────────────────────────────────── -->
+    <div id="buyer-dispute" style="display:none;">
+      <div class="page-hdr">
+        <button class="back-btn" onclick="goBack()">← Back</button>
+        <div class="breadcrumb">Report a Problem</div>
+      </div>
+      <div style="max-width:580px;margin:20px auto;padding:0 20px;">
+        <div class="checkout-sec">
+          <div class="checkout-sec-title">Report an Issue</div>
+          <div style="background:var(--bbg);border:1px solid var(--bb);border-radius:var(--r4);padding:10px 14px;font-size:13px;color:var(--b);margin-bottom:14px;">🔒 Your payment is still in escrow and will NOT be released to the seller until this dispute is resolved.</div>
+          <div class="fld">
+            <label class="fld-lbl">Issue type</label>
+            <select class="fld-sel" id="dispute-type">
+              <option>Wrong item received</option>
+              <option>Damaged product</option>
+              <option>Item not delivered</option>
+              <option>Fake / counterfeit product</option>
+              <option>Other</option>
+            </select>
+          </div>
+          <div class="fld"><label class="fld-lbl">Order ID</label><input class="fld-inp" id="dispute-order" placeholder="ORD-XXXX"/></div>
+          <div class="fld"><label class="fld-lbl">Description</label><textarea class="fld-inp fld-ta" id="dispute-desc" placeholder="Describe the issue in detail…"></textarea></div>
+          <button class="btn-or btn-or-dk" onclick="submitDispute()">Submit Report →</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── REVIEW ─────────────────────────────────────────────── -->
+    <div id="buyer-review" style="display:none;">
+      <div class="page-hdr">
+        <button class="back-btn" onclick="goBack()">← Back</button>
+        <div class="breadcrumb">Write a Review</div>
+      </div>
+      <div style="max-width:500px;margin:20px auto;padding:0 20px;">
+        <div class="checkout-sec">
+          <div class="checkout-sec-title">Rate this product</div>
+          <div style="text-align:center;margin-bottom:18px;">
+            <div style="font-size:13px;color:var(--ink3);margin-bottom:10px;font-weight:600;">Overall rating</div>
+            <div style="display:flex;justify-content:center;gap:8px;font-size:40px;" id="star-row">
+              <span onclick="pickStar(1)" style="cursor:pointer;">☆</span>
+              <span onclick="pickStar(2)" style="cursor:pointer;">☆</span>
+              <span onclick="pickStar(3)" style="cursor:pointer;">☆</span>
+              <span onclick="pickStar(4)" style="cursor:pointer;">☆</span>
+              <span onclick="pickStar(5)" style="cursor:pointer;">☆</span>
+            </div>
+          </div>
+          <div class="fld"><label class="fld-lbl">Headline (optional)</label><input class="fld-inp" id="review-title" placeholder="What's most important to know?"/></div>
+          <div class="fld"><label class="fld-lbl">Review (optional)</label><textarea class="fld-inp fld-ta" id="review-text" placeholder="What did you like or dislike?"></textarea></div>
+          <button class="btn-or btn-or-dk" onclick="submitReview()">Submit Review</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end #buyer-main -->
+
+  <!-- BUYER BOTTOM NAV -->
+  <div class="bnav">
+    <div class="bnav-inner">
+      <button class="bnav-item active" onclick="bnavSet(this);buyerHome()"><span class="bnav-ico">🏠</span>Home</button>
+      <button class="bnav-item" onclick="bnavSet(this);buyerShowView('shop')"><span class="bnav-ico">🔍</span>Shop</button>
+      <button class="bnav-item" onclick="bnavSet(this);buyerShowView('orders')"><span class="bnav-ico">📦</span>Orders</button>
+      <button class="bnav-item" onclick="bnavSet(this);buyerShowView('cart')"><span class="bnav-ico">🛒</span>Cart</button>
+      <button class="bnav-item" onclick="bnavSet(this);toggleAcctDD()"><span class="bnav-ico">👤</span>Account</button>
+    </div>
+  </div>
+
+</div><!-- end #view-buyer -->
+
+<!-- ═══ END PART 2 — continue with Part 3 (Seller + Admin views + Modals) ═══ -->
+<!-- ═══ PART 3 — SELLER VIEW + ADMIN VIEW + ALL MODALS ════════
+     Paste this block directly after the end of Part 2.
+     ═══════════════════════════════════════════════════════════ -->
+
+<!-- ══════════════════════ SELLER VIEW ═══════════════════════ -->
+<div class="view" id="view-seller">
+  <div class="seller-topnav">
+    <div class="seller-logo">SO<span>KO</span> Seller Central</div>
+    <span class="seller-badge" id="seller-kyc-badge">⏳ KYC Pending</span>
+    <div style="margin-left:auto;display:flex;gap:8px;align-items:center;">
+      <select style="padding:5px;background:rgba(255,255,255,.1);border:none;color:#fff;border-radius:3px;font-size:12px;outline:none;" onchange="applyLang(this.value)">
+        <option value="en">EN</option><option value="fr">FR</option><option value="rw">RW</option>
+      </select>
+      <button style="padding:8px 18px;background:var(--r);border:none;border-radius:4px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;" onclick="doLogout()">🚪 Sign Out</button>
+    </div>
+  </div>
+  <div class="seller-layout" style="flex:1;">
+    <div class="seller-sidebar"><div id="seller-nav"></div></div>
+    <div class="seller-main"><div id="seller-content"></div></div>
+  </div>
+  <div class="bnav"><div class="bnav-inner" id="seller-bnav"></div></div>
+</div>
+
+<!-- ══════════════════════ ADMIN VIEW ════════════════════════ -->
+<div class="view" id="view-admin">
+  <div class="admin-topnav">
+    <div>
+      <div class="admin-logo">SO<span>KO</span></div>
+      <div style="font-size:10px;color:rgba(255,255,255,.35);text-transform:uppercase;letter-spacing:.06em;">Admin Console</div>
+    </div>
+    <div style="margin-left:auto;display:flex;gap:8px;align-items:center;">
+      <select style="padding:5px;background:rgba(255,255,255,.1);border:none;color:#fff;border-radius:3px;font-size:12px;outline:none;" onchange="applyLang(this.value)">
+        <option value="en">EN</option><option value="fr">FR</option><option value="rw">RW</option>
+      </select>
+      <button style="padding:7px 14px;background:var(--r);border:none;border-radius:3px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;" onclick="doLogout()">Logout</button>
+    </div>
+  </div>
+  <div class="admin-layout" style="flex:1;">
+    <div class="admin-sidebar">
+      <div class="admin-sb-brand">
+        <div class="admin-sb-logo">SO<span>KO</span></div>
+        <div class="admin-sb-role">Platform Admin</div>
+      </div>
+      <nav id="admin-nav"></nav>
+    </div>
+    <div class="admin-main"><div id="admin-content"></div></div>
+  </div>
+</div>
+
+<!-- ══════════════════════ MODALS ════════════════════════════ -->
+
+<!-- ADD PRODUCT -->
+<div class="modal-bg" id="modal-add-product">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-title">Add New Product</div>
+      <button class="modal-close" onclick="closeModal('modal-add-product')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="fld">
+        <label class="fld-lbl">Product images (up to 5)</label>
+        <div class="img-drop" id="prod-drop"
+          onclick="document.getElementById('prod-file').click()"
+          ondragover="event.preventDefault();this.classList.add('over')"
+          ondragleave="this.classList.remove('over')"
+          ondrop="handleProdDrop(event)">
+          <div style="font-size:32px;margin-bottom:8px;">📸</div>
+          <div style="font-size:14px;font-weight:700;margin-bottom:5px;">Click or drag images here</div>
+          <div style="font-size:12px;color:var(--ink4);">JPEG, PNG, WEBP · Max 5MB each · Up to 5 images</div>
+          <input type="file" id="prod-file" accept="image/*" multiple style="display:none;" onchange="handleProdFiles(this.files)"/>
+        </div>
+        <div class="img-previews" id="prod-previews"></div>
+        <div id="prod-img-status" style="font-size:12px;color:var(--ink3);margin-top:6px;">No images — add an emoji below as fallback</div>
+      </div>
+      <div class="fld"><label class="fld-lbl">Product name</label><input class="fld-inp" id="mp-name" placeholder="e.g. Fresh Avocados 1kg"/></div>
+      <div class="fld-row">
+        <div class="fld">
+          <label class="fld-lbl">Category</label>
+          <select class="fld-sel" id="mp-cat">
+            <option value="food">🍎 Food & Drinks</option>
+            <option value="electronics">📱 Electronics</option>
+            <option value="clothes">👕 Clothes</option>
+            <option value="shoes">👟 Shoes</option>
+            <option value="home">🏠 Home</option>
+            <option value="beauty">💄 Beauty</option>
+            <option value="sports">⚽ Sports</option>
+          </select>
+        </div>
+        <div class="fld"><label class="fld-lbl">Price (RWF)</label><input class="fld-inp" id="mp-price" type="number" placeholder="25000"/></div>
+      </div>
+      <div class="fld-row">
+        <div class="fld"><label class="fld-lbl">Stock quantity</label><input class="fld-inp" id="mp-stock" type="number" placeholder="10"/></div>
+        <div class="fld"><label class="fld-lbl">Emoji fallback</label><input class="fld-inp" id="mp-emoji" placeholder="🍎"/></div>
+      </div>
+      <div class="fld"><label class="fld-lbl">Description</label><textarea class="fld-inp fld-ta" id="mp-desc" placeholder="Describe your product…"></textarea></div><button class="ai-gen-btn" id="ai-gen-desc-btn" onclick="aiGenerateDesc()">
+  <span>✨</span><span id="ai-gen-label">Generate description with AI</span>
+</button>
+      <div style="background:var(--gbg);border:1px solid var(--gb);border-radius:var(--r4);padding:10px 12px;font-size:12px;color:var(--gd);">
+        💡 You receive your earnings after a small platform fee. Payments are escrow-protected.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="bx bx-ghost" onclick="closeModal('modal-add-product')">Cancel</button>
+      <button class="bx bx-g" style="padding:8px 18px;" onclick="addSellerProduct()">Add Product</button>
+    </div>
+  </div>
+</div>
+
+<!-- ORDER STATUS -->
+<div class="modal-bg" id="modal-order-status">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-title">Update Order Status</div>
+      <button class="modal-close" onclick="closeModal('modal-order-status')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="order-modal-info" style="background:var(--bg2);border-radius:var(--r4);padding:12px;margin-bottom:12px;font-size:13px;"></div>
+      <div id="order-escrow-info" style="margin-bottom:12px;"></div>
+      <div class="fld">
+        <label class="fld-lbl">New Status</label>
+        <select class="fld-sel" id="order-new-status">
+          <option>pending</option>
+          <option>confirmed</option>
+          <option>shipped</option>
+          <option>delivered</option>
+          <option>cancelled</option>
+        </select>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="bx bx-ghost" onclick="closeModal('modal-order-status')">Cancel</button>
+      <button class="bx bx-g" style="padding:8px 18px;" onclick="saveOrderStatus()">Update</button>
+    </div>
+  </div>
+</div>
+
+<!-- PAYOUT -->
+<div class="modal-bg" id="modal-payout">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-title">Process Payout</div>
+      <button class="modal-close" onclick="closeModal('modal-payout')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div id="payout-modal-detail"></div>
+      <div class="fld" style="margin-top:14px;">
+        <label class="fld-lbl">Payout method</label>
+        <select class="fld-sel" id="payout-method">
+          <option>MTN MoMo</option>
+          <option>Airtel Money</option>
+          <option>Bank Transfer</option>
+        </select>
+      </div>
+      <div class="fld"><label class="fld-lbl">Reference note</label><input class="fld-inp" id="payout-note" placeholder="e.g. Weekly payout May 2025"/></div>
+      <div style="background:var(--abg);border:1px solid var(--ab);border-radius:var(--r4);padding:10px 12px;font-size:12px;color:#8B5E00;">
+        ⚠️ Confirm you have manually transferred the funds before clicking below.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="bx bx-ghost" onclick="closeModal('modal-payout')">Cancel</button>
+      <button class="bx bx-g" style="padding:8px 18px;" onclick="confirmPayout()">Confirm Payout Sent ✓</button>
+    </div>
+  </div>
+</div>
+
+<!-- LOCATION -->
+<div class="modal-bg" id="modal-location">
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-hd">
+      <div class="modal-title">📍 Change Delivery Location</div>
+      <button class="modal-close" onclick="closeModal('modal-location')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--ink3);margin-bottom:14px;">Choose your city or enter a specific address.</p>
+      <div class="fld">
+        <label class="fld-lbl">Select city</label>
+        <select class="fld-sel" id="loc-city" onchange="locPreview(this.value)">
+          <option value="Kigali, Rwanda">Kigali</option>
+          <option value="Butare, Rwanda">Butare (Huye)</option>
+          <option value="Musanze, Rwanda">Musanze (Ruhengeri)</option>
+          <option value="Gisenyi, Rwanda">Gisenyi (Rubavu)</option>
+          <option value="Cyangugu, Rwanda">Cyangugu (Rusizi)</option>
+          <option value="Rwamagana, Rwanda">Rwamagana</option>
+          <option value="Nyagatare, Rwanda">Nyagatare</option>
+          <option value="Gitarama, Rwanda">Gitarama (Muhanga)</option>
+        </select>
+      </div>
+      <div class="fld">
+        <label class="fld-lbl">Or enter specific address</label>
+        <input class="fld-inp" id="loc-custom" placeholder="KG 7 Ave, Kimironko, Kigali"
+          oninput="locPreview(this.value||document.getElementById('loc-city').value)"/>
+      </div>
+      <div style="background:var(--gbg);border:1px solid var(--gb);border-radius:var(--r4);padding:10px 14px;font-size:13px;color:var(--gd);margin-top:8px;">
+        📍 <span id="loc-preview">Kigali, Rwanda</span>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="bx bx-ghost" onclick="closeModal('modal-location')">Cancel</button>
+      <button class="bx bx-g" style="padding:9px 20px;" onclick="saveLocation()">Save Location</button>
+    </div>
+  </div>
+</div>
+
+<!-- DISPUTE DETAIL (Admin) -->
+<div class="modal-bg" id="modal-dispute-detail">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-title">🛡️ Dispute Details</div>
+      <button class="modal-close" onclick="closeModal('modal-dispute-detail')">✕</button>
+    </div>
+    <div class="modal-body" id="dispute-detail-body"></div>
+    <div class="modal-footer" id="dispute-detail-footer"></div>
+  </div>
+</div>
+
+<!-- USER DETAIL (Admin) -->
+<div class="modal-bg" id="modal-user-detail">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-title">👤 User Details</div>
+      <button class="modal-close" onclick="closeModal('modal-user-detail')">✕</button>
+    </div>
+    <div class="modal-body" id="user-detail-body"></div>
+  </div>
+</div>
+
+<!-- PRODUCT DETAIL (Admin quick view) -->
+<div class="modal-bg" id="modal-product-detail">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-title">📦 Product Details</div>
+      <button class="modal-close" onclick="closeModal('modal-product-detail')">✕</button>
+    </div>
+    <div class="modal-body" id="product-detail-body"></div>
+    <div class="modal-footer">
+      <button class="bx bx-ghost" onclick="closeModal('modal-product-detail')">Close</button>
+    </div>
+  </div>
+</div>
+
+<!-- KYC DETAIL (Admin) -->
+<div class="modal-bg" id="modal-kyc-detail">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-title">🪪 KYC Application</div>
+      <button class="modal-close" onclick="closeModal('modal-kyc-detail')">✕</button>
+    </div>
+    <div class="modal-body" id="kyc-detail-body"></div>
+    <div class="modal-footer" id="kyc-detail-footer"></div>
+  </div>
+</div>
+
+
+<!-- WITHDRAWAL REQUEST MODAL -->
+<div class="modal-bg" id="modal-withdraw">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-title">💸 Request Payout</div>
+      <button class="modal-close" onclick="closeModal('modal-withdraw')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div style="background:var(--gbg);border:1px solid var(--gb);border-radius:var(--r8);padding:16px;margin-bottom:16px;text-align:center;">
+        <div style="font-size:11px;color:var(--gd);text-transform:uppercase;font-weight:700;margin-bottom:6px;">Available for Payout</div>
+        <div style="font-family:var(--font2);font-size:32px;font-weight:800;color:var(--gd);" id="withdraw-available">0 RWF</div>
+        <div style="font-size:11px;color:var(--ink3);margin-top:4px;">Funds held in escrow are not yet withdrawable</div>
+      </div>
+      <div class="fld">
+        <label class="fld-lbl">Amount to withdraw (RWF)</label>
+        <input class="fld-inp" id="withdraw-amount" type="number" placeholder="e.g. 50000" oninput="validateWithdrawAmount(this.value)"/>
+        <div id="withdraw-amount-hint" style="font-size:11px;color:var(--ink3);margin-top:4px;"></div>
+      </div>
+      <div class="fld">
+        <label class="fld-lbl">Payout method</label>
+        <select class="fld-sel" id="withdraw-method">
+          <option value="MTN MoMo">📲 MTN Mobile Money</option>
+          <option value="Airtel Money">📱 Airtel Money</option>
+          <option value="Bank Transfer">🏦 Bank Transfer</option>
+        </select>
+      </div>
+      <div class="fld">
+        <label class="fld-lbl">Phone / Account number</label>
+        <input class="fld-inp" id="withdraw-phone" placeholder="+250 7XX XXX XXX"/>
+      </div>
+      <div class="fld">
+        <label class="fld-lbl">Note (optional)</label>
+        <input class="fld-inp" id="withdraw-note" placeholder="e.g. Weekly payout request"/>
+      </div>
+      <div style="background:var(--abg);border:1px solid var(--ab);border-radius:var(--r4);padding:10px 12px;font-size:12px;color:#8B5E00;">
+        ⏱️ Payout requests are processed by the SOKO admin within <strong>1–2 business days</strong>. You will receive an SMS confirmation once sent.
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="bx bx-ghost" onclick="closeModal('modal-withdraw')">Cancel</button>
+      <button style="padding:10px 24px;background:var(--g);border:none;border-radius:var(--r4);color:#fff;font-size:14px;font-weight:700;cursor:pointer;" onclick="submitWithdrawModal()">Submit Request →</button>
+    </div>
+  </div>
+</div>
+
+<!-- RESET PASSWORD (from email link) -->
+<div class="modal-bg" id="modal-reset-password">
+  <div class="modal" style="max-width:400px;">
+    <div class="modal-hd">
+      <div class="modal-title">🔑 Set a New Password</div>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--ink3);margin-bottom:14px;">You're resetting your password via the link from your email. Choose a new password below.</p>
+      <div class="fld"><label class="fld-lbl">New password</label><input class="fld-inp" id="reset-new-pass" type="password" placeholder="At least 6 characters"/></div>
+      <div class="fld"><label class="fld-lbl">Confirm new password</label><input class="fld-inp" id="reset-new-pass2" type="password" placeholder="Repeat password" onkeydown="if(event.key==='Enter')submitNewPassword()"/></div>
+    </div>
+    <div class="modal-footer">
+      <button class="bx bx-g" style="padding:8px 18px;" onclick="submitNewPassword()">Update Password</button>
+    </div>
+  </div>
+</div>
+
+<!-- ═══ END PART 3 — continue with Part 4 (all JavaScript) ═══ -->
+<script>
+// SUPABASE
+const SUPABASE_URL = 'https://rjimbkxhrrreaiesdzjr.supabase.co';
+const SUPABASE_ANON_KEY = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InJqaW1ia3hocnJyZWFpZXNkempyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY4NDQ1MTUsImV4cCI6MjA5MjQyMDUxNX0.0Dra6oFMdef7oU0_XB7HQYfPKVgRqXXXVIoqzjeA78Y';
+const sb = (typeof supabase !== 'undefined') ? supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY) : null;
+
+// PASSWORD RECOVERY LISTENER
+if(sb){
+  sb.auth.onAuthStateChange((event, session) => {
+    if (event === 'PASSWORD_RECOVERY') {
+      openModal('modal-reset-password');
+    }
+  });
+}
+function checkPasswordRecoveryHash(){
+  const hash = window.location.hash;
+  if (hash && hash.includes('type=recovery')) {
+    openModal('modal-reset-password');
+  }
+}
+async function submitNewPassword(){
+  const p1 = document.getElementById('reset-new-pass').value;
+  const p2 = document.getElementById('reset-new-pass2').value;
+  if(!p1 || p1.length < 6){ toast('Password must be at least 6 characters','r'); return; }
+  if(p1 !== p2){ toast('Passwords do not match','r'); return; }
+  if(!sb){ toast('Backend unavailable','r'); return; }
+  const { error } = await sb.auth.updateUser({ password: p1 });
+  if(error){ toast(error.message,'r'); return; }
+  document.getElementById('reset-new-pass').value='';
+  document.getElementById('reset-new-pass2').value='';
+  closeModal('modal-reset-password');
+  toast('✓ Password updated — please sign in','g');
+  doLogout();
+}
+
+// DATA
+const CATS=[
+  {id:'food',en:'Food & Drinks',fr:'Alimentation',rw:'Ibiribwa',icon:'🍎'},
+  {id:'electronics',en:'Electronics',fr:'Électronique',rw:'Ikoranabuhanga',icon:'📱'},
+  {id:'clothes',en:'Clothes',fr:'Vêtements',rw:'Imyenda',icon:'👕'},
+  {id:'shoes',en:'Shoes',fr:'Chaussures',rw:'Ingofora',icon:'👟'},
+  {id:'home',en:'Home & Kitchen',fr:'Maison',rw:'Urugo',icon:'🏠'},
+  {id:'beauty',en:'Beauty',fr:'Beauté',rw:'Ubwiza',icon:'💄'},
+  {id:'sports',en:'Sports',fr:'Sports',rw:'Siporo',icon:'⚽'},
+];
+
+let PRODUCTS=[
+  {id:1,name:'Fresh Avocados 1kg — Organic Musanze',cat:'food',price:1500,stock:50,emoji:'🥑',images:[],rating:4.9,reviews:88,seller:'Farm Fresh RW',sellerPhone:'+250788800001',desc:'Fresh organic avocados from Musanze farms. 1kg bag.',badge:'new'},
+  {id:2,name:'Primus Beer — 12 Pack × 500ml',cat:'food',price:9000,stock:100,emoji:'🍺',images:[],rating:4.8,reviews:142,seller:'Drinks RW',sellerPhone:'+250788800002',desc:"Rwanda's favourite beer. 12×500ml cold bottles.",badge:'hot'},
+  {id:3,name:'Fresh Whole Milk — 1 Litre Daily',cat:'food',price:800,stock:150,emoji:'🥛',images:[],rating:4.9,reviews:203,seller:'Farm Fresh RW',sellerPhone:'+250788800001',desc:'Fresh pasteurized milk from local Rwanda farms.',badge:''},
+  {id:4,name:'Ibirayi Potatoes — 5kg Local Farm',cat:'food',price:2500,stock:200,emoji:'🥔',images:[],rating:4.7,reviews:55,seller:'Farm Fresh RW',sellerPhone:'+250788800001',desc:'Fresh potatoes from Rwandan farms. 5kg bag.',badge:''},
+  {id:5,name:'Samsung Galaxy A55 5G — 128GB',cat:'electronics',price:280000,stock:5,emoji:'📱',images:[],rating:4.7,reviews:18,seller:'PhoneCity KG',sellerPhone:'+250788200002',desc:'Samsung A55 5G — 128GB, 8GB RAM, triple camera.',badge:'new'},
+  {id:6,name:'Wireless Earbuds Pro — Bluetooth 5.2',cat:'electronics',price:22000,stock:20,emoji:'🎧',images:[],rating:4.5,reviews:89,seller:'TechHub RW',sellerPhone:'+250788100001',desc:'Premium earbuds. Bluetooth 5.2, 24hr battery.',badge:'sale'},
+  {id:7,name:'Laptop HP 256G10 — Intel i5 8GB RAM',cat:'electronics',price:520000,stock:3,emoji:'💻',images:[],rating:4.6,reviews:11,seller:'PhoneCity KG',sellerPhone:'+250788200002',desc:'HP Laptop: Intel Core i5, 8GB RAM, 256GB SSD.',badge:'hot'},
+  {id:8,name:'Sony Bluetooth Speaker — 20W Waterproof',cat:'electronics',price:35000,stock:14,emoji:'🔊',images:[],rating:4.6,reviews:56,seller:'TechHub RW',sellerPhone:'+250788100001',desc:'Portable waterproof speaker. 20W, 12hr battery.',badge:''},
+  {id:9,name:'Nike Air Force 1 — White (Sizes 39–46)',cat:'shoes',price:45000,stock:12,emoji:'👟',images:[],rating:4.8,reviews:42,seller:'SneakerHub RW',sellerPhone:'+250788100001',desc:'Authentic Nike Air Force 1. White. Sizes 39–46.',badge:'hot'},
+  {id:10,name:'Adidas Ultraboost 22 — Running Shoes',cat:'shoes',price:38000,stock:8,emoji:'👟',images:[],rating:4.9,reviews:33,seller:'SportZone RW',sellerPhone:'+250788400004',desc:'Adidas Ultraboost 22. Sizes 38–47.',badge:''},
+  {id:11,name:'African Print Kente Dress — S/M/L/XL',cat:'clothes',price:15000,stock:30,emoji:'👗',images:[],rating:4.6,reviews:67,seller:'Umucyo Fashion',sellerPhone:'+250788300003',desc:'Beautiful Kente-style African print dress.',badge:''},
+  {id:12,name:"Men's Rwanda Hoodie — Premium Cotton",cat:'clothes',price:12000,stock:25,emoji:'👕',images:[],rating:4.4,reviews:38,seller:'Umucyo Fashion',sellerPhone:'+250788300003',desc:'"Made in Rwanda" premium cotton hoodie.',badge:'new'},
+  {id:13,name:'Rice Cooker 1.8L — Non-stick with Steamer',cat:'home',price:18000,stock:22,emoji:'🍚',images:[],rating:4.7,reviews:61,seller:'HomeStore RW',sellerPhone:'+250788700007',desc:'1.8L rice cooker. Non-stick, steamer tray.',badge:''},
+  {id:14,name:'Football — FIFA Standard Size 5',cat:'sports',price:9000,stock:30,emoji:'⚽',images:[],rating:4.8,reviews:92,seller:'SportZone RW',sellerPhone:'+250788400004',desc:'FIFA-quality football. Indoor/outdoor.',badge:''},
+  {id:15,name:'Vitamin C Brightening Serum 30ml',cat:'beauty',price:8500,stock:45,emoji:'🧴',images:[],rating:4.7,reviews:124,seller:'GlowSkin RW',sellerPhone:'+250788500005',desc:'30ml brightening serum. Reduces dark spots.',badge:''},
+  {id:16,name:'Cooking Oil — Pure Sunflower 5L',cat:'food',price:12000,stock:80,emoji:'🛢️',images:[],rating:4.6,reviews:77,seller:'Drinks RW',sellerPhone:'+250788800002',desc:'Pure sunflower cooking oil. 5 litre bottle.',badge:''},
+];
+
+let ORDERS=[
+  {id:'ORD-2041',buyer:'Jean Mutoni',phone:'+250788000001',addr:'KG 7 Ave',city:'Kigali',product:'Nike Air Force 1',productId:9,qty:1,total:45000,commission:1800,sellerNet:43200,payment:'MTN MoMo',delivery:'moto',status:'confirmed',escrow:'held',date:'2025-05-08',seller:'SneakerHub RW'},
+  {id:'ORD-2038',buyer:'Marie Claire',phone:'+250788000002',addr:'KN 5 Rd',city:'Kigali',product:'Samsung Galaxy A55',productId:5,qty:1,total:280000,commission:11200,sellerNet:268800,payment:'Airtel Money',delivery:'moto',status:'shipped',escrow:'held',date:'2025-05-06',seller:'PhoneCity KG'},
+  {id:'ORD-2035',buyer:'Eric Habimana',phone:'+250788000003',addr:'KG 200 St',city:'Kigali',product:'African Print Dress',productId:11,qty:2,total:30000,commission:1200,sellerNet:28800,payment:'Cash on Delivery',delivery:'pickup',status:'delivered',escrow:'released',date:'2025-05-04',seller:'Umucyo Fashion'},
+  {id:'ORD-2030',buyer:'Diane Uwase',phone:'+250788000004',addr:'KK 15 Ave',city:'Kigali',product:'Wireless Earbuds Pro',productId:6,qty:1,total:22000,commission:880,sellerNet:21120,payment:'MTN MoMo',delivery:'moto',status:'pending',escrow:'held',date:'2025-05-03',seller:'TechHub RW'},
+  {id:'ORD-2028',buyer:'Patrick N.',phone:'+250788000005',addr:'KK 3 Ave',city:'Kigali',product:'Adidas Ultraboost 22',productId:10,qty:1,total:38000,commission:1520,sellerNet:36480,payment:'Card',delivery:'moto',status:'cancelled',escrow:'refunded',date:'2025-05-01',seller:'SportZone RW'},
+];
+
+let KYC=[
+  {id:'kyc-1',name:'Alice Uwimana',phone:'+250788111001',idNum:'1198570025080016',date:'2025-05-07',status:'pending',idImage:null},
+  {id:'kyc-2',name:'Bob Ndikumana',phone:'+250788111002',idNum:'1199400015060023',date:'2025-05-06',status:'pending',idImage:null},
+  {id:'kyc-3',name:'Claudette Mukandahiro',phone:'+250788111003',idNum:'1200450025040031',date:'2025-05-05',status:'pending',idImage:null},
+  {id:'kyc-4',name:'Daniel Habimana',phone:'+250788111004',idNum:'1197560035020042',date:'2025-05-03',status:'approved',idImage:null},
+  {id:'kyc-5',name:'Eva Ingabire',phone:'+250788111005',idNum:'1200580015010055',date:'2025-05-02',status:'rejected',idImage:null},
+];
+
+let USERS=[
+  {name:'Jean Mutoni',phone:'+250788000001',role:'buyer',verified:true,joined:'2025-04-01',status:'active',earnings:0,pendingPayout:0},
+  {name:'Marie Claire',phone:'+250788000002',role:'buyer',verified:true,joined:'2025-04-05',status:'active',earnings:0,pendingPayout:0},
+  {name:'Alice Uwimana',phone:'+250788111001',role:'seller',verified:true,joined:'2025-04-10',status:'active',earnings:139300,pendingPayout:94300},
+  {name:'Bob Ndikumana',phone:'+250788111002',role:'seller',verified:false,joined:'2025-05-06',status:'pending',earnings:0,pendingPayout:0},
+  {name:'TechHub RW',phone:'+250788100001',role:'seller',verified:true,joined:'2025-03-15',status:'active',earnings:285600,pendingPayout:180000},
+  {name:'System Admin',phone:'+250788000000',role:'admin',verified:true,joined:'2025-01-01',status:'active',earnings:0,pendingPayout:0},
+];
+
+let PAYOUTS=[
+  {id:'PAY-001',seller:'Alice Uwimana',phone:'+250788111001',amount:94300,ordersCount:3,method:'MTN MoMo',status:'pending',date:'2025-05-08'},
+  {id:'PAY-002',seller:'TechHub RW',phone:'+250788100001',amount:180000,ordersCount:7,method:'MTN MoMo',status:'pending',date:'2025-05-07'},
+  {id:'PAY-003',seller:'PhoneCity KG',phone:'+250788200002',amount:198400,ordersCount:2,method:'Bank Transfer',status:'pending',date:'2025-05-06'},
+  {id:'PAY-004',seller:'Umucyo Fashion',phone:'+250788300003',amount:62000,ordersCount:5,method:'Airtel Money',status:'pending',date:'2025-05-05'},
+  {id:'PAY-005',seller:'SportZone RW',phone:'+250788400004',amount:145000,ordersCount:8,method:'MTN MoMo',status:'paid',date:'2025-05-01'},
+];
+
+let DISPUTES=[
+  {id:'DSP-01',buyer:'Jean Mutoni',orderId:'ORD-2030',type:'Wrong item received',desc:'Received white shoes but ordered black.',status:'open',escrowAction:'frozen',date:'2025-05-08'},
+  {id:'DSP-02',buyer:'Marie Claire',orderId:'ORD-2028',type:'Item not delivered',desc:'Order cancelled but MoMo was charged.',status:'open',escrowAction:'frozen',date:'2025-05-07'},
+  {id:'DSP-03',buyer:'Eric Habimana',orderId:'ORD-2035',type:'Damaged product',desc:'Dress arrived with a tear.',status:'resolved',escrowAction:'released',date:'2025-05-05'},
+];
+
+// STATE
+let cart=[],currentUser=null,lang='en',selectedRole='buyer';
+let commissionRate=4;
+let currentBuyerView='home',prevBuyerView='home',activeProductId=null;
+let editingOrderId=null,editingPayoutId=null,pickedStar=0,signupData={};
+let currentShopList=[...PRODUCTS],currentLocation='Kigali, Rwanda';
+let prodImages=[],kycImageData=null;
+
+// UTILS
+const toast=(msg,type)=>{const t=document.getElementById('toast');t.textContent=msg;t.className=type?'show '+type:'show';clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2800);};
+const openModal=id=>document.getElementById(id).classList.add('open');
+const closeModal=id=>document.getElementById(id).classList.remove('open');
+const getCat=id=>{const c=CATS.find(x=>x.id===id);return c?(c[lang]||c.en):id;};
+const stars=r=>'★'.repeat(Math.round(r))+'☆'.repeat(5-Math.round(r));
+const fmt=n=>Number(n).toLocaleString();
+const closeAll=()=>{document.getElementById('acct-dd').classList.remove('open');document.getElementById('notif-panel').classList.remove('open');document.getElementById('all-drawer').classList.remove('open');};
+const closeAcctDD=()=>document.getElementById('acct-dd').classList.remove('open');
+
+document.querySelectorAll('.modal-bg').forEach(b=>b.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');}));
+document.addEventListener('click',e=>{
+  if(!e.target.closest('#acct-dd')&&!e.target.closest('[onclick*="toggleAcctDD"]'))document.getElementById('acct-dd').classList.remove('open');
+  if(!e.target.closest('#notif-panel')&&!e.target.closest('[onclick*="toggleNotif"]'))document.getElementById('notif-panel').classList.remove('open');
+  if(!e.target.closest('#all-drawer')&&!e.target.closest('#all-menu-btn'))document.getElementById('all-drawer').classList.remove('open');
+});
+
+window.addEventListener('DOMContentLoaded',()=>{
+  setTimeout(()=>{const ls=document.getElementById('loading-screen');if(ls)ls.classList.add('hidden');},1500);
+  restoreSession();
+  checkPasswordRecoveryHash();
+});
+
+// LANGUAGE
+function applyLang(l){
+  lang=l;
+  document.querySelectorAll('select[onchange*="applyLang"]').forEach(s=>s.value=l);
+  renderCats();
+  renderProds(PRODUCTS.slice(0,8),'home-products');
+  renderProds(PRODUCTS.filter(p=>p.cat==='food').slice(0,4),'food-products');
+  renderProds(PRODUCTS.filter(p=>p.cat==='electronics').slice(0,4),'elec-products');
+  const ht=document.getElementById('hero-title');
+  if(ht){if(l==='fr')ht.innerHTML="Tout ce dont vous avez besoin,<br/>livré en toute <em>confiance</em>";else if(l==='rw')ht.innerHTML="Ibintu byose ukeneye,<br/>gutumizwa mu <em>zizira</em>";else ht.innerHTML="Everything you need,<br/>delivered with <em>confidence</em>";}
+  const snItems=document.querySelectorAll('.snav');
+  const sLbls=l==='fr'?['☰ Tout','🍎 Alimentation','📱 Électronique','👕 Vêtements','👟 Chaussures','🏠 Maison','💄 Beauté','⚽ Sports','🏪 Vendre']:l==='rw'?['☰ Byose','🍎 Ibiribwa','📱 Ikoranabuhanga','👕 Imyenda','👟 Ingofora','🏠 Urugo','💄 Ubwiza','⚽ Siporo','🏪 Gurisha']:['☰ All','🍎 Food & Drinks','📱 Electronics','👕 Clothes','👟 Shoes','🏠 Home','💄 Beauty','⚽ Sports','🏪 Sell on SOKO'];
+  snItems.forEach((el,i)=>{if(sLbls[i])el.textContent=sLbls[i];});
+  toast({en:'🇬🇧 English selected',fr:'🇫🇷 Français activé',rw:'🇷🇼 Ikinyarwanda'}[l]);
+}
+
+// AUTH
+function authTab(t){
+  ['login','signup'].forEach(x=>{document.getElementById('atab-'+x).classList.toggle('active',x===t);document.getElementById('apanel-'+x).style.display=x===t?'block':'none';});
+}
+async function doLogin(){
+  const identifier=document.getElementById('login-identifier').value.trim();
+  const pw=document.getElementById('login-pass').value;
+  if(!identifier||!pw){toast('Please enter your email/phone and password','r');return;}
+  if(!sb){toast('Backend unavailable — try again shortly','r');return;}
+  toast('Signing in…');
+  let email=identifier;
+  if(!identifier.includes('@')){
+    const{data:match,error:lookupErr}=await sb.from('users').select('email').eq('phone',identifier).single();
+    if(lookupErr||!match){toast('No account found with that phone number','r');return;}
+    email=match.email;
+  }
+  const{data,error}=await sb.auth.signInWithPassword({email,password:pw});
+  if(error){toast(error.message,'r');return;}
+  let{data:profile}=await sb.from('users').select('*').eq('email',email).single();
+  if(!profile){
+    const{data:np}=await sb.from('users').insert([{name:email.split('@')[0],email,auth_id:data.user.id,role:'buyer',verified:false,status:'active'}]).select().single();
+    profile=np;
+  }
+  if(profile){signupData={name:profile.name,email:profile.email,phone:profile.phone||'',role:profile.role,_ctx:'login'};loginSuccess();}
+}
+async function doSignup(){
+  const fn=document.getElementById('su-fname').value.trim(),ln=document.getElementById('su-lname').value.trim();
+  const email=document.getElementById('su-email').value.trim(),pw=document.getElementById('su-pass').value;
+  const phone=document.getElementById('su-phone').value||'';
+  if(!fn||!ln||!email||!pw){toast('Please fill all required fields','r');return;}
+  if(pw.length<6){toast('Password must be at least 6 characters','r');return;}
+  if(sb){
+    toast('Creating your account…');
+    const{data,error}=await sb.auth.signUp({email,password:pw});
+    if(error){toast(error.message,'r');return;}
+    const{data:profile,error:profileError}=await sb.from('users').insert([{name:fn+' '+ln,email,phone:phone||null,role:'buyer',auth_id:data.user.id,verified:false,status:'active'}]).select().single();
+    if(profileError){toast('Account creation failed: '+profileError.message,'r');console.error('profile insert error:',profileError);return;}
+    signupData={name:profile.name,email:profile.email,phone:profile.phone||'',role:profile.role,_ctx:'signup'};
+    loginSuccess();
+    return;
+  }
+  signupData={name:fn+' '+ln,email,phone,role:'buyer',_ctx:'signup'};
+  USERS.push({name:signupData.name,phone,email,role:'buyer',verified:false,joined:new Date().toISOString().slice(0,10),status:'active',earnings:0,pendingPayout:0});
+  loginSuccess();
+}
+function handleKycUpload(file){
+  if(!file)return;
+  const r=new FileReader();
+  r.onload=e=>{kycImageData=e.target.result;document.getElementById('kyc-preview-area').innerHTML=`<img src="${e.target.result}" style="max-height:80px;border-radius:6px;margin:0 auto;display:block;"/>`;};
+  r.readAsDataURL(file);
+}
+function handleKycDrop(e){e.preventDefault();const f=e.dataTransfer.files[0];if(f)handleKycUpload(f);}
+async function submitKYC(){
+  const n=document.getElementById('kyc-name').value.trim(),i=document.getElementById('kyc-id').value.trim();
+  if(!n||!i){toast('Please fill all KYC fields','r');return;}
+  if(!kycImageData){toast('Please upload an ID photo','r');return;}
+  if(!currentUser||!currentUser.email){toast('Please log in first','r');return;}
+  toast('Submitting KYC…');
+  if(sb){
+    const{data,error}=await sb.from('kyc_submissions').insert([{user_id:currentUser.email,name:n,id_number:i,id_image:kycImageData,submitted_at:new Date().toISOString(),status:'pending'}]).select().single();
+    if(error){toast('KYC submission failed: '+error.message,'r');console.error(error);return;}
+    const{error:updateError}=await sb.from('users').update({role:'seller',status:'pending'}).eq('email',currentUser.email);
+    if(updateError){toast('Account upgrade failed: '+updateError.message,'r');return;}
+    currentUser.role='seller';
+    document.getElementById('become-seller-kyc').style.display='none';
+    document.getElementById('view-buyer').classList.remove('active');
+    document.getElementById('view-seller').classList.add('active');
+    buildSellerNav();
+    loadProductsFromSupabase().then(()=>renderSeller('dashboard'));
+    toast('✓ KYC submitted! You\'re now a seller. Approval within 4 hours.','g');
+    return;
+  }
+  KYC.push({id:'kyc-'+(KYC.length+1),name:n,idNum:i,date:new Date().toISOString().slice(0,10),status:'pending',idImage:kycImageData});
+  currentUser.role='seller';
+  document.getElementById('view-buyer').classList.remove('active');
+  document.getElementById('view-seller').classList.add('active');
+  buildSellerNav();
+  renderSeller('dashboard');
+  toast('✓ KYC submitted! Approval within 4 hours.','g');
+}
+function loginSuccess(){
+  currentUser={...signupData};
+  document.getElementById('view-auth').classList.remove('active');
+  if(currentUser.role==='admin'){document.getElementById('view-admin').classList.add('active');buildAdminNav();renderAdmin('overview');}
+  else if(currentUser.role==='seller'){document.getElementById('view-seller').classList.add('active');document.getElementById('acct-dd-seller-switch').style.display='none';buildSellerNav();loadProductsFromSupabase().then(()=>renderSeller('dashboard'));}
+  else{
+    document.getElementById('view-buyer').classList.add('active');
+    document.getElementById('buyer-name-nav').textContent=currentUser.name.split(' ')[0];
+    document.getElementById('acct-dd-name').textContent=currentUser.name;
+    document.getElementById('acct-dd-seller-switch').style.display='block';
+    buildBuyerHome();
+  }
+  toast('Welcome, '+currentUser.name.split(' ')[0]+'! 👋','g');
+}
+function switchToSeller(){
+  if(currentUser.role==='seller'){
+    document.getElementById('view-buyer').classList.remove('active');
+    document.getElementById('view-seller').classList.add('active');
+    buildSellerNav();
+    loadProductsFromSupabase().then(()=>renderSeller('dashboard'));
+  }else{
+    toast('Your seller account is still pending approval','o');
+  }
+}
+async function doLogout(){
+  if(sb){try{await sb.auth.signOut();}catch(e){console.log('signout:',e);}}
+  currentUser=null;cart=[];signupData={};
+  // Clear all views
+  ['view-buyer','view-seller','view-admin'].forEach(id=>{
+    const el=document.getElementById(id);
+    if(el)el.classList.remove('active');
+  });
+  // Reset auth screen
+  document.getElementById('view-auth').classList.add('active');
+  authTab('login');
+  // Clear OTP inputs
+  ['otp1','otp2','otp3','otp4'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  // Clear login fields
+  ['login-email','login-phone','login-pass'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  closeAll();
+  toast('You have signed out');
+}
+async function restoreSession(){
+  if(!sb)return;
+  try{
+    const{data:{session}}=await sb.auth.getSession();
+    if(!session)return;
+    const{data:profile}=await sb.from('users').select('*').eq('email',session.user.email).single();
+    if(profile){signupData={name:profile.name,email:profile.email,phone:profile.phone||'',role:profile.role,_ctx:'login'};loginSuccess();}
+  }catch(e){console.log('Session restore:',e);}
+}
+async function changeAdminPassword(){
+  const p1=document.getElementById('admin-new-pass').value;
+  const p2=document.getElementById('admin-new-pass2').value;
+  if(!p1||p1.length<6){toast('Password must be at least 6 characters','r');return;}
+  if(p1!==p2){toast('Passwords do not match','r');return;}
+  if(!sb){toast('Supabase not configured','r');return;}
+  const{error}=await sb.auth.updateUser({password:p1});
+  if(error){toast(error.message,'r');return;}
+  document.getElementById('admin-new-pass').value='';document.getElementById('admin-new-pass2').value='';
+  toast('✓ Password updated','g');
+}
+async function forgotPassword(){
+  const identifier=document.getElementById('login-identifier').value.trim();
+  if(!identifier){toast('Enter your email or phone first','r');return;}
+  if(!sb){toast('Supabase not configured','r');return;}
+  let email=identifier;
+  if(!identifier.includes('@')){
+    const{data:match}=await sb.from('users').select('email,role').eq('phone',identifier).single();
+    if(!match){toast('No account found with that phone number','r');return;}
+    if(match.role==='admin'){toast('Admin passwords can only be changed from inside the Admin panel','r');return;}
+    email=match.email;
+  }else{
+    const{data:match}=await sb.from('users').select('role').eq('email',email).single();
+    if(match&&match.role==='admin'){toast('Admin passwords can only be changed from inside the Admin panel','r');return;}
+  }
+  const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin});
+  if(error){toast(error.message,'r');return;}
+  toast('✓ Password reset link sent to '+email,'g');
+}
+
+// BUYER HOME
+function buildBuyerHome(){
+  renderPromos();renderCats();
+  renderProds(PRODUCTS.slice(0,8),'home-products');
+  renderProds(PRODUCTS.filter(p=>p.cat==='food').slice(0,4),'food-products');
+  renderProds(PRODUCTS.filter(p=>p.cat==='electronics').slice(0,4),'elec-products');
+  buildBecomeSeller();buildNotifs();updateCartBadge();
+}
+function renderPromos(){
+  const el=document.getElementById('promo-grid');if(!el)return;
+  el.innerHTML=[{cls:'pt1',em:'📱',lbl:'Flash Sale',title:'Electronics Up to 30% Off',cta:'Shop Electronics →',cat:'electronics'},{cls:'pt2',em:'🍎',lbl:'Fresh Today',title:'Local Food & Groceries',cta:'Order Food →',cat:'food'},{cls:'pt3',em:'👗',lbl:'New Arrivals',title:'African Fashion Collection',cta:'Explore →',cat:'clothes'},{cls:'pt4',em:'👟',lbl:'Top Sellers',title:'Shoes for Every Occasion',cta:'View Shoes →',cat:'shoes'}]
+  .map(p=>`<div class="promo-tile ${p.cls}" data-emoji="${p.em}" onclick="filterCat('${p.cat}')"><div><div class="promo-lbl">${p.lbl}</div><div class="promo-title">${p.title}</div></div><div class="promo-cta">${p.cta}</div></div>`).join('');
+}
+function renderCats(){
+  const el=document.getElementById('cat-grid');if(!el)return;
+  el.innerHTML=CATS.map(c=>`<div class="cat-card" onclick="filterCat('${c.id}')"><div style="font-size:30px;margin-bottom:7px;">${c.icon}</div><div style="font-size:12px;font-weight:600;">${getCat(c.id)}</div></div>`).join('');
+  const fc=document.getElementById('filter-cats');
+  if(fc)fc.innerHTML=CATS.map(c=>`<div class="fopt"><input type="checkbox" onchange="filterCat('${c.id}')"/> ${c.icon} ${getCat(c.id)}</div>`).join('');
+}
+function renderProds(list,cid){
+  const c=document.getElementById(cid);if(!c)return;
+  if(!list.length){c.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--ink3);"><div style="font-size:40px;margin-bottom:10px;">🔍</div><div style="font-weight:600;">No products found</div></div>`;return;}
+  c.innerHTML=list.map(p=>{
+    const badge=p.badge?`<div class="prod-badge ${p.badge}">${p.badge==='hot'?'Best Seller':p.badge==='new'?'New':'Sale'}</div>`:'';
+    const thumb=(p.images&&p.images.length)?`<img src="${p.images[0]}" style="width:100%;height:100%;object-fit:cover;"/>`:`<span>${p.emoji}</span>`;
+    return `<div class="prod-card"><div class="prod-thumb">${badge}${thumb}</div><div class="prod-info" onclick="showProduct(${p.id})"><div class="prod-brand">${p.seller}</div><div class="prod-name">${p.name}</div><div><span class="prod-stars">${stars(p.rating)}</span><span class="prod-rc">${p.reviews.toLocaleString()}</span></div><div class="prod-price">RWF ${fmt(p.price)}</div><div style="font-size:11px;color:var(--g);font-weight:600;">🔒 Payment protected</div></div><div style="padding:0 12px 12px;"><button class="btn-atc" onclick="addToCartGrid(event,${p.id})">Add to cart</button></div></div>`;
+  }).join('');
+}
+function buildBecomeSeller(){
+  const el=document.getElementById('become-steps');if(!el)return;el.innerHTML='';
+  [{icon:'📋',t:'Submit your ID (KYC)',d:'National ID reviewed in 24–48 hours'},{icon:'📦',t:'List your products',d:'Upload real photos, prices, stock levels'},{icon:'🔒',t:'Escrow-protected sales',d:'Payment held until buyer confirms delivery'},{icon:'💰',t:'Weekly payouts',d:'98% of every sale sent to your MoMo'}]
+  .forEach(s=>{el.innerHTML+=`<div style="background:var(--bg2);border-radius:8px;padding:14px;display:flex;gap:10px;"><span style="font-size:22px;">${s.icon}</span><div><div style="font-weight:700;font-size:13px;margin-bottom:2px;">${s.t}</div><div style="font-size:12px;color:var(--ink3);">${s.d}</div></div></div>`;});
+}
+function buildNotifs(){
+  const el=document.getElementById('notif-items');if(!el)return;
+  [{icon:'🔒',text:'Payment for <b>ORD-2041</b> held in escrow.',time:'2 min ago',u:true},{icon:'🚚',text:'Order <b>ORD-2038</b> is out for delivery.',time:'1 hour ago',u:true},{icon:'✅',text:'Payment released for <b>ORD-2035</b>.',time:'Yesterday',u:false},{icon:'⭐',text:'Rate your purchase from <b>TechHub RW</b>.',time:'2 days ago',u:false}]
+  .forEach(n=>{el.innerHTML+=`<div class="notif-item${n.u?' unread':''}"><div style="font-size:20px;flex-shrink:0;margin-top:1px;">${n.icon}</div><div><div style="font-size:13px;color:var(--ink2);">${n.text}</div><div style="font-size:11px;color:var(--ink4);margin-top:2px;">${n.time}</div></div></div>`;});
+}
+
+// BUYER NAVIGATION
+function buyerHome(){prevBuyerView=currentBuyerView;currentBuyerView='home';showBuyerSec('buyer-home');}
+function buyerShowView(v){
+  prevBuyerView=currentBuyerView;currentBuyerView=v;
+  const map={home:'buyer-home',shop:'buyer-shop',detail:'buyer-detail',cart:'buyer-cart',checkout:'buyer-checkout',success:'buyer-success',orders:'buyer-orders','become-seller':'buyer-become-seller',dispute:'buyer-dispute',review:'buyer-review'};
+  showBuyerSec(map[v]||'buyer-home');
+  if(v==='cart')renderCart();
+  if(v==='orders')renderOrders();
+  if(v==='checkout'){if(!cart.length){buyerShowView('cart');return;}renderCoSummary();}
+  if(v==='shop')renderShopPage(currentShopList,'All Products');
+  if(v==='become-seller'){
+    if(currentUser&&currentUser.email){
+      document.getElementById('become-seller-kyc').style.display='block';
+      document.getElementById('become-seller-login').style.display='none';
+    }else{
+      document.getElementById('become-seller-kyc').style.display='none';
+      document.getElementById('become-seller-login').style.display='block';
+    }
+  }
+  closeAll();
+}
+function showBuyerSec(id){document.querySelectorAll('#buyer-main > div').forEach(d=>d.style.display='none');const el=document.getElementById(id);if(el)el.style.display='block';}
+function goBack(){
+  if(prevBuyerView && prevBuyerView !== currentBuyerView){
+    buyerShowView(prevBuyerView);
+  }else{
+    buyerShowView('home');
+  }
+}
+function focusSearch(){document.getElementById('search-inp')?.focus();}
+function bnavSet(btn){document.querySelectorAll('.bnav-item').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+function toggleAcctDD(){document.getElementById('acct-dd').classList.toggle('open');document.getElementById('notif-panel').classList.remove('open');}
+function toggleNotif(){document.getElementById('notif-panel').classList.toggle('open');document.getElementById('acct-dd').classList.remove('open');}
+function toggleDrawer(){document.getElementById('all-drawer').classList.toggle('open');}
+
+// SEARCH & FILTER
+function doSearch(q){if(!q){buyerHome();return;}const f=PRODUCTS.filter(p=>p.name.toLowerCase().includes(q.toLowerCase())||getCat(p.cat).toLowerCase().includes(q.toLowerCase()));currentShopList=f;renderShopPage(f,`Results for "${q}"`);}
+function filterCat(catId){const f=PRODUCTS.filter(p=>p.cat===catId);currentShopList=f;renderShopPage(f,getCat(catId));const bc=document.getElementById('shop-bc');if(bc)bc.textContent=getCat(catId);}
+function filterByPrice(min,max){const f=currentShopList.filter(p=>p.price>=min&&p.price<=max);renderProds(f,'shop-products');document.getElementById('shop-count').innerHTML=`<b>${f.length}</b> results`;}
+function filterByRating(min){const f=currentShopList.filter(p=>p.rating>=min);renderProds(f,'shop-products');document.getElementById('shop-count').innerHTML=`<b>${f.length}</b> results`;}
+function renderShopPage(list,label){prevBuyerView=currentBuyerView;currentBuyerView='shop';showBuyerSec('buyer-shop');document.getElementById('shop-count').innerHTML=`<b>${list.length}</b> results in <b>${label}</b>`;renderProds(list,'shop-products');}
+function sortProducts(method){let list=[...currentShopList];if(method==='price-asc')list.sort((a,b)=>a.price-b.price);else if(method==='price-desc')list.sort((a,b)=>b.price-a.price);else if(method==='rating')list.sort((a,b)=>b.rating-a.rating);renderProds(list,'shop-products');}
+
+// PRODUCT DETAIL
+function showProduct(id){
+  activeProductId=id;prevBuyerView=currentBuyerView;currentBuyerView='detail';
+  showBuyerSec('buyer-detail');
+  const p=PRODUCTS.find(x=>x.id===id);if(!p)return;
+  const hasPics=p.images&&p.images.length;
+  const mainHtml=hasPics?`<img src="${p.images[0]}" style="width:100%;height:100%;object-fit:contain;"/>`:`<span style="font-size:130px;">${p.emoji}</span>`;
+  const thumbsHtml=(hasPics?p.images.slice(0,4):[p.emoji,p.emoji,p.emoji]).map((img,i)=>`<div class="detail-thumb ${i===0?'active':''}" onclick="swapImg(this,'${img}',${hasPics})">${hasPics?`<img src="${img}"/>`:`<span style="font-size:20px;">${img}</span>`}</div>`).join('');
+  const revs=[{u:'Jean M.',s:5,t:'Excellent product! Fast delivery.',d:'May 5, 2025'},{u:'Marie C.',s:4,t:'Good quality, exactly as described.',d:'May 3, 2025'},{u:'Eric H.',s:5,t:'Very happy. Will buy again!',d:'April 28, 2025'}];
+  document.getElementById('detail-crumb').innerHTML=`<a onclick="buyerHome()">Home</a> › <a onclick="filterCat('${p.cat}')">${getCat(p.cat)}</a> › ${p.name.slice(0,40)}…`;
+  document.getElementById('detail-content').innerHTML=`
+    <div class="detail-wrap">
+      <div class="detail-gallery">
+        <div class="detail-main-img" id="detail-main">${mainHtml}</div>
+        <div class="detail-thumbs">${thumbsHtml}</div>
+      </div>
+      <div class="detail-info">
+        <div style="font-size:12px;color:var(--b);margin-bottom:8px;"><a onclick="filterCat('${p.cat}')">${getCat(p.cat)}</a></div>
+        <div class="detail-title">${p.name}</div>
+        <div class="detail-brand">Visit the <span style="color:var(--b);">${p.seller}</span> Store</div>
+        <div class="detail-rating-row"><span style="color:var(--or);font-size:16px;">${stars(p.rating)}</span><span style="color:var(--or);font-weight:700;">${p.rating}</span><a style="color:var(--b);font-size:13px;">${p.reviews.toLocaleString()} ratings</a><span style="color:var(--ink4);">·</span><a style="color:var(--b);font-size:13px;">✓ Verified seller</a></div>
+        <div style="font-size:13px;color:var(--ink3);">List Price: <s>RWF ${fmt(Math.round(p.price*1.12))}</s></div>
+        <div><span class="detail-price">RWF ${fmt(p.price)}</span> <span style="font-size:13px;color:var(--r);">(Save ${Math.round((1-1/1.12)*100)}%)</span></div>
+        <div class="detail-desc">${p.desc}</div>
+        <div class="escrow-box">
+          <div class="escrow-box-title">🔒 Payment is Escrow-Protected</div>
+          <div class="escrow-step"><div class="escrow-dot">1</div><span>You pay RWF ${fmt(p.price)} → SOKO holds it safely</span></div>
+          <div class="escrow-step"><div class="escrow-dot">2</div><span>Seller ships · You confirm delivery</span></div>
+         <div class="escrow-step"><div class="escrow-dot">3</div><span>Payment released · 2% platform fee deducted · seller receives 98%</span></div> 
+        </div>
+        ${p.stock===0?'<div style="padding:14px;background:var(--rbg);border-radius:var(--r4);color:var(--r);font-weight:700;text-align:center;margin-top:12px;">Out of Stock</div>':''}
+      </div>
+      <div class="buy-box">
+        <div class="buy-box-price">RWF ${fmt(p.price)}</div>
+        <div style="font-size:13px;margin-bottom:4px;">FREE delivery <b style="color:var(--b);">tomorrow</b></div>
+        <div style="font-size:12px;color:var(--b);cursor:pointer;margin-bottom:10px;" onclick="openModal('modal-location')">📍 Deliver to ${currentLocation.split(',')[0]}</div>
+        <div class="buy-box-stock">${p.stock>0?'In Stock':'Out of Stock'}</div>
+        ${p.stock>0?`<div style="font-size:12px;font-weight:600;margin-bottom:6px;">Qty:</div>
+        <div class="qty-ctrl"><button class="qty-btn" onclick="changeQty(-1)">−</button><span class="qty-num" id="detail-qty">1</span><button class="qty-btn" onclick="changeQty(1)">+</button></div>
+        <button class="btn-atcr" onclick="addDetailToCart(${p.id})">Add to Cart</button>
+        <button class="btn-buynow" onclick="buyNow(${p.id})">Buy Now</button>`:''}
+        <div style="font-size:12px;color:var(--ink3);margin-bottom:10px;">🔒 Secure transaction</div>
+        <div class="buy-box-seller">Sold by <span>${p.seller}</span><div style="color:var(--g);font-size:12px;font-weight:600;margin-top:2px;">✓ KYC Verified</div></div>
+        <div class="contact-btns">
+          <a href="tel:${p.sellerPhone}" class="btn-contact">📞 Call</a>
+          <a href="https://wa.me/${p.sellerPhone.replace(/\s/g,'')}" class="btn-contact" target="_blank">💬 WhatsApp</a>
+        </div>
+      </div>
+    </div>
+    <div class="reviews-sec">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:var(--border);">
+        <div style="font-size:19px;font-weight:700;">Customer reviews</div>
+        <div style="text-align:right;"><div style="font-size:34px;color:var(--or);">${p.rating}</div><div style="color:var(--or);">${stars(p.rating)}</div><div style="font-size:12px;color:var(--ink3);">out of 5</div></div>
+      </div>
+      ${revs.map(r=>`<div class="rev-card"><div class="rev-hdr"><div class="rev-avatar">${r.u[0]}</div><div style="font-size:13px;font-weight:700;">${r.u}</div><span style="color:var(--or);">${stars(r.s)}</span></div><div style="font-size:13px;color:var(--ink2);line-height:1.6;">${r.t}</div><div style="font-size:11px;color:var(--ink4);margin-top:4px;">Reviewed ${r.d}</div></div>`).join('')}
+      <div style="margin-top:14px;"><button class="bx bx-ghost" style="padding:8px 16px;font-size:13px;" onclick="buyerShowView('review')">Write a review</button></div>
+    </div>`;
+}
+function swapImg(thumb,src,isReal){document.querySelectorAll('.detail-thumb').forEach(t=>t.classList.remove('active'));thumb.classList.add('active');const m=document.getElementById('detail-main');if(m)m.innerHTML=isReal?`<img src="${src}" style="width:100%;height:100%;object-fit:contain;"/>`:`<span style="font-size:130px;">${src}</span>`;}
+function changeQty(d){const el=document.getElementById('detail-qty');if(el)el.textContent=Math.max(1,Math.min(10,parseInt(el.textContent)+d));}
+function addDetailToCart(id){const qty=parseInt(document.getElementById('detail-qty')?.textContent)||1;const p=PRODUCTS.find(x=>x.id===id);if(!p)return;doAddToCart(p,qty);toast('✓ Added to cart','g');}
+function buyNow(id){addDetailToCart(id);buyerShowView('checkout');}
+function addToCartGrid(e,id){e.stopPropagation();const p=PRODUCTS.find(x=>x.id===id);if(!p)return;doAddToCart(p,1);toast('✓ Added to cart','g');}
+
+// CART
+function doAddToCart(p,qty=1){const ex=cart.find(c=>c.id===p.id);if(ex)ex.qty+=qty;else cart.push({id:p.id,name:p.name,price:p.price,emoji:p.emoji,images:p.images||[],qty,seller:p.seller});updateCartBadge();}
+function updateCartBadge(){document.getElementById('cart-badge').textContent=cart.reduce((a,c)=>a+c.qty,0);}
+function renderCart(){
+  const iw=document.getElementById('cart-items'),sw=document.getElementById('cart-summary');
+  if(!cart.length){iw.innerHTML=`<div class="cart-panel" style="text-align:center;padding:50px 20px;"><div style="font-size:80px;margin-bottom:14px;">🛒</div><h2 style="font-size:22px;font-weight:400;margin-bottom:8px;">Your cart is empty</h2><p style="color:var(--ink3);margin-bottom:20px;">Discover great deals on SOKO</p><button class="btn-checkout" style="width:auto;padding:12px 24px;" onclick="buyerHome()">Continue shopping</button></div>`;sw.innerHTML='';return;}
+  const sub=cart.reduce((a,c)=>a+c.price*c.qty,0);
+  iw.innerHTML=`<div class="cart-panel"><div class="cart-title">Shopping Cart <span style="font-size:14px;color:var(--ink3);float:right;">Price</span></div>`+
+  cart.map(item=>`<div class="cart-item">
+    <div class="cart-item-img">${(item.images&&item.images.length)?`<img src="${item.images[0]}"/>`:`<span style="font-size:48px;">${item.emoji}</span>`}</div>
+    <div style="flex:1;">
+      <div style="font-size:14px;color:var(--b);margin-bottom:3px;">${item.name}</div>
+      <div style="color:var(--g);font-size:12px;font-weight:600;margin-bottom:3px;">In Stock</div>
+      <div style="font-size:12px;color:var(--ink3);">Sold by ${item.seller}</div>
+      <div style="font-size:12px;color:var(--g);">🔒 Escrow protected</div>
+      <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
+        <span style="font-size:12px;font-weight:600;">Qty:</span>
+        <div style="display:flex;align-items:center;border:var(--border);border-radius:var(--r4);">
+          <button class="qty-btn" style="width:28px;height:28px;font-size:14px;" onclick="cartQty(${item.id},-1)">−</button>
+          <span style="width:32px;text-align:center;font-size:13px;font-weight:700;">${item.qty}</span>
+          <button class="qty-btn" style="width:28px;height:28px;font-size:14px;" onclick="cartQty(${item.id},1)">+</button>
+        </div>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:6px;">
+        <button style="padding:5px 10px;border:var(--border);border-radius:var(--r4);background:var(--bg2);font-size:12px;cursor:pointer;color:var(--b);" onclick="cartRemove(${item.id})">Delete</button>
+      </div>
+    </div>
+    <div style="font-size:16px;font-weight:700;flex-shrink:0;">RWF ${fmt(item.price*item.qty)}</div>
+  </div>`).join('')+
+  `<div style="text-align:right;font-size:16px;padding:12px 0;border-top:var(--border);">Subtotal (${cart.reduce((a,c)=>a+c.qty,0)} items): <strong>RWF ${fmt(sub)}</strong></div></div>`;
+  sw.innerHTML=`<div class="cart-escrow-note">🔒 All purchases are escrow-protected. Payment released only after you confirm delivery.</div>
+    <div style="font-size:18px;margin-bottom:14px;">Subtotal (${cart.reduce((a,c)=>a+c.qty,0)} items):<br/><strong style="font-size:22px;">RWF ${fmt(sub)}</strong></div>
+    <button class="btn-checkout" onclick="buyerShowView('checkout')">Proceed to checkout</button>
+    <div style="font-size:11px;color:var(--ink4);margin-top:8px;text-align:center;">Secure checkout powered by SOKO Escrow</div>`;
+}
+function cartQty(id,d){const item=cart.find(c=>c.id===id);if(item){item.qty=Math.max(1,item.qty+d);updateCartBadge();renderCart();}}
+function cartRemove(id){cart=cart.filter(c=>c.id!==id);updateCartBadge();renderCart();}
+function renderCoSummary(){
+  const sub=cart.reduce((a,c)=>a+c.price*c.qty,0),del=1000,total=sub+del;
+  const el=document.getElementById('co-summary');if(!el)return;
+  el.innerHTML=cart.map(item=>`<div class="co-row"><span>${item.emoji} ${item.name.slice(0,22)}… ×${item.qty}</span><span style="font-weight:600;color:var(--ink);">RWF ${fmt(item.price*item.qty)}</span></div>`).join('')+
+  `<div class="co-row"><span>Subtotal</span><span>RWF ${fmt(sub)}</span></div><div class="co-row"><span>Delivery</span><span>RWF ${fmt(del)}</span></div><div class="co-row total"><span>Order total</span><span>RWF ${fmt(total)}</span></div>`;
+}
+function selPay(el){document.querySelectorAll('.checkout-sec .pay-opt').forEach(o=>{o.classList.remove('sel');const r=o.querySelector('input');if(r)r.checked=false;});el.classList.add('sel');const r=el.querySelector('input');if(r)r.checked=true;}
+function selDel(el){document.querySelectorAll('.checkout-sec .del-opt').forEach(o=>o.classList.remove('sel'));el.classList.add('sel');}
+function placeOrder(){
+  if(!currentUser||!currentUser.email){
+    toast('Please sign in to complete your order','r');
+    document.getElementById('view-buyer').classList.remove('active');
+    document.getElementById('view-auth').classList.add('active');
+    authTab('login');
+    return;
+  }
+  const name=document.getElementById('co-name')?.value.trim(),phone=document.getElementById('co-phone')?.value.trim(),addr=document.getElementById('co-addr')?.value.trim();
+  if(!name||!phone||!addr){toast('Please fill all delivery details','r');return;}
+  const sub=cart.reduce((a,c)=>a+c.price*c.qty,0),total=sub+1000,comm=Math.round(total*(commissionRate/100));
+  const first=cart[0],p=PRODUCTS.find(x=>x.id===first?.id);
+  const id='ORD-'+(2050+ORDERS.length);
+  ORDERS.unshift({id,buyer:name,phone,addr,city:'Kigali',product:first?.name||'',productId:first?.id,qty:first?.qty||1,total,commission:comm,sellerNet:total-comm,payment:'MTN MoMo',delivery:'moto',status:'pending',escrow:'held',date:new Date().toISOString().slice(0,10),seller:p?.seller||'Seller'});
+  document.getElementById('success-ref').textContent=id;
+  cart=[];updateCartBadge();buyerShowView('success');
+  toast('🎉 Order placed! Payment secured in escrow.','g');
+}
+function confirmDelivery(){toast('✅ Delivery confirmed! Funds released to seller.','g');if(ORDERS[0]){ORDERS[0].status='delivered';ORDERS[0].escrow='released';}setTimeout(()=>buyerHome(),1600);}
+
+// ORDERS
+function renderOrders(){
+  const el=document.getElementById('orders-content');if(!el)return;
+  if(!ORDERS.length){el.innerHTML=`<div style="text-align:center;padding:60px;color:var(--ink3);"><div style="font-size:48px;margin-bottom:12px;">📦</div><div style="font-size:18px;font-weight:600;">No orders yet</div></div>`;return;}
+  el.innerHTML=ORDERS.slice(0,10).map(o=>{
+    const p=PRODUCTS.find(x=>x.id===o.productId);
+    const thumb=(p?.images&&p.images.length)?`<img src="${p.images[0]}" style="width:100%;height:100%;object-fit:cover;"/>`:`<span style="font-size:36px;">${p?.emoji||'📦'}</span>`;
+    const ecls=o.escrow==='held'?'ep-held':o.escrow==='released'?'ep-rel':'ep-frz';
+    const scls=o.status==='delivered'?'os-delivered':o.status==='shipped'||o.status==='confirmed'?'os-shipped':o.status==='cancelled'?'os-cancelled':'os-pending';
+    return `<div class="order-card">
+      <div class="order-card-hdr">
+        <div><div class="order-hdr-lbl">Order placed</div><div class="order-hdr-val">${o.date}</div></div>
+        <div><div class="order-hdr-lbl">Total</div><div class="order-hdr-val">RWF ${fmt(o.total)}</div></div>
+        <div><div class="order-hdr-lbl">Seller</div><div class="order-hdr-val">${o.seller}</div></div>
+        <div style="margin-left:auto;"><div class="order-hdr-lbl">Order #</div><div class="order-hdr-val" style="font-family:monospace;">${o.id}</div></div>
+      </div>
+      <div class="order-card-body">
+        <div class="order-thumb">${thumb}</div>
+        <div style="flex:1;">
+          <div class="order-status ${scls}">${o.status==='delivered'?'Delivered':o.status==='shipped'?'On the way':o.status==='confirmed'?'Confirmed':o.status==='cancelled'?'Cancelled':'Pending'}</div>
+          <div style="font-size:14px;font-weight:600;margin-bottom:5px;">${o.product} × ${o.qty}</div>
+          <span class="ep ${ecls}">🔒 ${o.escrow}</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:6px;">
+          ${o.status==='shipped'?`<button class="bx bx-g" style="padding:7px 12px;" onclick="confirmOrderDelivery('${o.id}')">Confirm Receipt</button>`:''}
+          ${o.status==='delivered'?`<button class="bx bx-o" onclick="buyerShowView('review')">⭐ Rate</button>`:''}
+          <button class="bx bx-ghost" onclick="buyerShowView('dispute')">🛡️ Dispute</button>
+        </div>
+      </div>
+    </div>`;
+  }).join('');
+}
+function confirmOrderDelivery(id){const o=ORDERS.find(x=>x.id===id);if(o){o.status='delivered';o.escrow='released';}toast('✅ Delivery confirmed!','g');renderOrders();}
+function submitDispute(){
+  const t=document.getElementById('dispute-type').value,o=document.getElementById('dispute-order').value.trim(),d=document.getElementById('dispute-desc').value.trim();
+  if(!o||!d){toast('Please fill all fields','r');return;}
+  DISPUTES.push({id:'DSP-'+DISPUTES.length,buyer:currentUser?.name||'User',orderId:o,type:t,desc:d,status:'open',escrowAction:'frozen',date:new Date().toISOString().slice(0,10)});
+  const ord=ORDERS.find(x=>x.id===o);if(ord)ord.escrow='frozen';
+  toast('✓ Report submitted. Escrow frozen.','g');buyerShowView('orders');
+}
+function pickStar(n){pickedStar=n;document.querySelectorAll('#star-row span').forEach((s,i)=>s.textContent=i<n?'★':'☆');}
+function submitReview(){if(!pickedStar){toast('Please select a star rating','r');return;}toast('✓ Review submitted. Thank you!','g');buyerShowView('orders');}
+
+// LOCATION
+function locPreview(val){const el=document.getElementById('loc-preview');if(el)el.textContent=val||'Kigali, Rwanda';}
+function saveLocation(){
+  const custom=document.getElementById('loc-custom')?.value.trim(),city=document.getElementById('loc-city')?.value||'Kigali, Rwanda';
+  currentLocation=custom||city;
+  const nav=document.getElementById('nav-location-text');if(nav)nav.textContent=currentLocation.split(',')[0];
+  const coCity=document.getElementById('co-city');if(coCity)coCity.value=currentLocation.split(',')[0];
+  closeModal('modal-location');toast('📍 Location updated: '+currentLocation,'g');
+}
+
+// IMAGE UPLOAD
+function handleProdFiles(files){
+  if(!files||!files.length)return;
+  const remaining=5-prodImages.length;
+  Array.from(files).slice(0,remaining).forEach(file=>{
+    if(file.size>5*1024*1024){toast('Image too large. Max 5MB.','r');return;}
+    const r=new FileReader();
+    r.onload=e=>{prodImages.push({url:e.target.result,name:file.name});renderProdPreviews();};
+    r.readAsDataURL(file);
+  });
+}
+function handleProdDrop(e){e.preventDefault();document.getElementById('prod-drop').classList.remove('over');handleProdFiles(e.dataTransfer.files);}
+function renderProdPreviews(){
+  const wrap=document.getElementById('prod-previews');if(!wrap)return;
+  wrap.innerHTML=prodImages.map((img,i)=>`<div class="img-preview-item"><img src="${img.url}"/><button class="img-preview-remove" onclick="removeProdImg(${i})">✕</button>${i===0?'<div class="img-main-badge">Main</div>':''}</div>`).join('');
+  const status=document.getElementById('prod-img-status');if(status)status.textContent=prodImages.length+' image(s) selected';
+}
+function removeProdImg(i){prodImages.splice(i,1);renderProdPreviews();}
+
+// SELLER
+const SELLER_NAV=[{icon:'📊',label:'Dashboard',id:'dashboard'},{icon:'📦',label:'Products',id:'products'},{icon:'🛒',label:'Orders',id:'orders'},{icon:'💰',label:'Earnings',id:'earnings'},{icon:'👤',label:'Profile',id:'profile'}];
+function buildSellerNav(){
+  const nav=document.getElementById('seller-nav');
+  nav.innerHTML=SELLER_NAV.map((n,i)=>`<div class="snav-item ${i===0?'active':''}" onclick="sellerNavClick(this,'${n.id}')"><span style="font-size:16px;width:20px;text-align:center;">${n.icon}</span>${n.label}</div>`).join('')+
+  `<div class="snav-item" style="margin-top:20px;border-top:1px solid rgba(255,255,255,.07);padding-top:12px;" onclick="doLogout()"><span style="font-size:16px;width:20px;text-align:center;">🚪</span>Sign Out</div>`;
+  const bnav=document.getElementById('seller-bnav');
+  if(bnav)bnav.innerHTML=SELLER_NAV.map((n,i)=>`<button class="bnav-item ${i===0?'active':''}" onclick="bnavSet(this);renderSeller('${n.id}')"><span class="bnav-ico">${n.icon}</span>${n.label}</button>`).join('')+`<button class="bnav-item" onclick="doLogout()"><span class="bnav-ico">🚪</span>Sign Out</button>`;
+}
+function sellerNavClick(btn,id){document.querySelectorAll('.snav-item').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderSeller(id);}
+function renderSeller(section){
+  const el=document.getElementById('seller-content');if(!el)return;
+  const badge=document.getElementById('seller-kyc-badge');
+  if(badge){badge.textContent=currentUser?.kycSubmitted?'⏳ KYC Pending':'✓ Verified';badge.style.background=currentUser?.kycSubmitted?'rgba(255,153,0,.18)':'rgba(0,200,100,.18)';}
+  if(section==='dashboard')el.innerHTML=sellerDashHTML();
+  else if(section==='products')el.innerHTML=sellerProdsHTML();
+  else if(section==='orders')el.innerHTML=sellerOrdersHTML();
+  else if(section==='earnings')el.innerHTML=sellerEarnHTML();
+  else if(section==='profile')el.innerHTML=sellerProfileHTML();
+}
+function sellerDashHTML(){
+  return `<div class="seller-page-hdr"><div class="seller-page-title">Dashboard</div><span style="font-size:13px;color:var(--ink3);">${new Date().toLocaleDateString('en-RW',{weekday:'short',month:'long',day:'numeric'})}</span></div>
+  <div class="seller-content">
+    <div class="metric-grid">
+      <div class="metric-card"><div class="metric-lbl">Revenue (Net)</div><div class="metric-val">139,300 <span style="font-size:13px;font-weight:400;color:var(--ink3);">RWF</span></div><div class="metric-sub">After platform fee</div></div>
+      <div class="metric-card"><div class="metric-lbl">Total Orders</div><div class="metric-val mc-g">12</div><div class="metric-sub">3 pending shipment</div></div>
+      <div class="metric-card"><div class="metric-lbl">In Escrow</div><div class="metric-val mc-o">45,000 RWF</div><div class="metric-sub">Awaiting confirmation</div></div>
+      <div class="metric-card"><div class="metric-lbl">Avg. Rating</div><div class="metric-val">4.7 ⭐</div><div class="metric-sub">23 reviews</div></div>
+    </div>
+    <div class="tbl-wrap"><div class="tbl-hdr"><div class="tbl-hdr-title">Recent Orders</div></div>
+    <div class="tbl-scroll"><table><thead><tr><th>Order ID</th><th>Product</th><th>Buyer</th><th>Total</th><th>You Get</th><th>Escrow</th><th>Status</th><th>Action</th></tr></thead>
+    <tbody>${ORDERS.slice(0,5).map(o=>`<tr>
+      <td style="font-family:monospace;font-weight:700;">${o.id}</td><td>${o.product.slice(0,18)}…</td><td>${o.buyer}</td>
+      <td style="font-weight:700;">RWF ${fmt(o.total)}</td><td style="color:var(--gd);font-weight:700;">RWF ${fmt(o.sellerNet)}</td>
+      <td><span class="ep ${o.escrow==='held'?'ep-held':o.escrow==='released'?'ep-rel':'ep-frz'}">🔒 ${o.escrow}</span></td>
+      <td><span class="pill ${o.status==='delivered'?'pill-g':o.status==='shipped'?'pill-b':o.status==='cancelled'?'pill-r':'pill-a'}">${o.status}</span></td>
+      <td>${o.status==='pending'?`<button class="bx bx-b" onclick="markShipped('${o.id}');renderSeller('dashboard')">Ship</button>`:'—'}</td>
+    </tr>`).join('')}</tbody></table></div></div>
+  </div>`;
+}
+function sellerProdsHTML(){
+  return `<div class="seller-page-hdr"><div class="seller-page-title">My Products</div><button class="bx bx-g" style="padding:8px 16px;font-size:13px;" onclick="prodImages=[];renderProdPreviews();openModal('modal-add-product')">+ Add Product</button></div>
+  <div class="seller-content"><div class="tbl-wrap"><div class="tbl-scroll"><table><thead><tr><th>Image</th><th>Product</th><th>Category</th><th>Price</th><th>You Get (98%)</th><th>Stock</th><th>Status</th></tr></thead>
+  <tbody>${PRODUCTS.slice(0,12).map(p=>`<tr>
+    <td><div style="width:44px;height:44px;background:var(--bg2);border-radius:var(--r4);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:24px;">${(p.images&&p.images.length)?`<img src="${p.images[0]}" style="width:100%;height:100%;object-fit:cover;"/>`:p.emoji}</div></td>
+    <td style="font-weight:600;">${p.name.slice(0,28)}…</td><td>${getCat(p.cat)}</td>
+    <td style="font-weight:700;">RWF ${fmt(p.price)}</td><td style="color:var(--gd);font-weight:700;">RWF ${fmt(Math.round(p.price*0.98))}</td>
+    <td>${p.stock}</td><td><span class="pill ${p.stock>5?'pill-g':p.stock>0?'pill-a':'pill-r'}">${p.stock>5?'In stock':p.stock>0?'Low':'Out'}</span></td>
+  </tr>`).join('')}</tbody></table></div></div></div>`;
+}
+function sellerOrdersHTML(){
+  return `<div class="seller-page-hdr"><div class="seller-page-title">Incoming Orders</div></div>
+  <div class="seller-content"><div class="tbl-wrap"><div class="tbl-scroll"><table><thead><tr><th>Order ID</th><th>Product</th><th>Buyer</th><th>Phone</th><th>Total</th><th>Escrow</th><th>Status</th><th>Action</th></tr></thead>
+  <tbody>${ORDERS.slice(0,8).map(o=>`<tr>
+    <td style="font-family:monospace;font-weight:700;">${o.id}</td><td>${o.product.slice(0,18)}…</td><td>${o.buyer}</td>
+    <td style="color:var(--b);">${o.phone}</td><td style="font-weight:700;">RWF ${fmt(o.total)}</td>
+    <td><span class="ep ${o.escrow==='held'?'ep-held':o.escrow==='released'?'ep-rel':'ep-frz'}">🔒 ${o.escrow}</span></td>
+    <td><span class="pill ${o.status==='delivered'?'pill-g':o.status==='shipped'?'pill-b':o.status==='cancelled'?'pill-r':'pill-a'}">${o.status}</span></td>
+    <td>${o.status==='pending'?`<button class="bx bx-b" onclick="markShipped('${o.id}');renderSeller('orders')">Mark Shipped</button>`:'—'}</td>
+  </tr>`).join('')}</tbody></table></div></div></div>`;
+}
+function sellerEarnHTML(){
+  return `<div class="seller-page-hdr"><div class="seller-page-title">Earnings & Payouts</div></div>
+  <div class="seller-content">
+    <div class="earn-card">
+      <div class="earn-lbl">Total Earnings (Net)</div><div class="earn-val">139,300 <span style="font-size:14px;color:rgba(255,255,255,.35);">RWF</span></div>
+      <div style="font-size:12px;color:rgba(255,255,255,.4);">After platform fee deduction</div>
+      <div class="earn-grid">
+        <div class="earn-item"><div class="earn-item-lbl">In Escrow</div><div class="earn-item-val o">45,000 RWF</div></div>
+        <div class="earn-item" style="cursor:pointer;" onclick="openWithdrawModal()">
+  <div class="earn-item-lbl">Ready for Payout</div>
+  <div class="earn-item-val g">94,300 RWF</div>
+  <div style="font-size:10px;color:rgba(255,255,255,.5);margin-top:4px;">Tap to withdraw →</div>
+</div>
+      </div>
+      <div style="background:rgba(0,150,80,.1);border:1px solid rgba(0,150,80,.2);border-radius:var(--r4);padding:10px 14px;margin-top:14px;font-size:12px;color:rgba(255,255,255,.65);">💳 SOKO settles weekly via MTN MoMo or bank. Funds release after buyer confirms delivery.
+      </div>
+      <button onclick="openWithdrawModal()" style="width:100%;margin-top:14px;padding:13px;background:linear-gradient(to bottom,#00C878,#00A85E);border:none;border-radius:var(--r4);color:#fff;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(0,168,94,.3);">
+        💸 Request Payout
+      </button>
+      <div style="display:none;"></div>
+    </div>
+    <div class="tbl-wrap"><div class="tbl-hdr"><div class="tbl-hdr-title">Earnings History</div></div>
+    <div class="tbl-scroll"><table><thead><tr><th>Order ID</th><th>Product</th><th>Date</th><th>Gross</th><th>Platform Fee</th><th>You Receive</th><th>Escrow</th></tr></thead>
+    <tbody>${ORDERS.filter(o=>o.status!=='cancelled').slice(0,6).map(o=>`<tr>
+      <td style="font-family:monospace;">${o.id}</td><td>${o.product.slice(0,16)}…</td>
+      <td style="color:var(--ink3);">${o.date}</td><td>RWF ${fmt(o.total)}</td>
+      <td style="color:var(--r);">-RWF ${fmt(o.commission)}</td>
+      <td style="font-weight:700;color:${o.escrow==='released'?'var(--g)':'var(--a)'};">RWF ${fmt(o.sellerNet)}</td>
+      <td><span class="ep ${o.escrow==='held'?'ep-held':o.escrow==='released'?'ep-rel':'ep-frz'}">${o.escrow}</span></td>
+    </tr>`).join('')}</tbody></table></div></div>
+    <div class="tbl-wrap"><div style="padding:16px;">
+      <div style="display:flex;justify-content:space-between;font-size:13px;padding:9px 0;border-bottom:var(--border2);"><span>Buyer pays</span><span style="font-weight:700;">100%</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;padding:9px 0;border-bottom:var(--border2);color:var(--r);"><span>Platform fee (2%)</span><span style="font-weight:700;">-2%</span></div>
+      <div style="display:flex;justify-content:space-between;font-size:13px;padding:9px 0;color:var(--gd);font-weight:700;"><span>You receive</span><span>98% of sale price</span></div>
+      <div style="background:var(--gbg);border-radius:var(--r4);padding:12px;margin-top:12px;font-size:12px;color:var(--gd);">Example: 20,000 RWF sale → You receive <strong>19,600 RWF</strong></div>
+    </div></div>
+  </div>`;
+}
+function sellerProfileHTML(){
+  return `<div class="seller-page-hdr"><div class="seller-page-title">Store Profile</div></div>
+  <div class="seller-content" style="max-width:600px;">
+    <div style="background:var(--w);border:var(--border);border-radius:var(--r8);padding:20px;margin-bottom:14px;box-shadow:var(--sh);">
+      <div style="font-size:16px;font-weight:700;margin-bottom:14px;border-bottom:var(--border);padding-bottom:10px;">Store Details</div>
+      <div class="fld"><label class="fld-lbl">Store name</label><input class="fld-inp" value="${currentUser?.name||'My Store RW'}"/></div>
+      <div class="fld"><label class="fld-lbl">Phone</label><input class="fld-inp" value="${currentUser?.phone||'+250 7XX XXX XXX'}"/></div>
+      <div class="fld"><label class="fld-lbl">WhatsApp</label><input class="fld-inp" placeholder="+250 7XX XXX XXX"/></div>
+      <div class="fld"><label class="fld-lbl">Location</label><input class="fld-inp" placeholder="Kigali, Rwanda"/></div>
+      <button class="bx bx-g" style="padding:9px 20px;font-size:13px;" onclick="toast('✓ Profile saved','g')">Save Changes</button>
+    </div>
+    <div style="background:var(--w);border:var(--border);border-radius:var(--r8);padding:20px;box-shadow:var(--sh);">
+      <div style="font-size:16px;font-weight:700;margin-bottom:12px;">KYC Status</div>
+      <span class="pill ${currentUser?.kycSubmitted?'pill-a':'pill-g'}">${currentUser?.kycSubmitted?'⏳ Pending Admin Review':'✓ Verified Seller'}</span>
+      <p style="font-size:13px;color:var(--ink3);margin-top:10px;line-height:1.6;">${currentUser?.kycSubmitted?"Your documents are under review. You'll receive an SMS once approved.":'Your identity has been verified. You can list products and receive payments.'}</p>
+    </div>
+  </div>`;
+}
+function markShipped(id){const o=ORDERS.find(x=>x.id===id);if(o){o.status='shipped';toast('✓ Order marked as shipped','g');}}
+async function addSellerProduct(){
+  const name=document.getElementById('mp-name').value.trim();
+  const price=parseInt(document.getElementById('mp-price').value);
+  const stock=parseInt(document.getElementById('mp-stock').value)||10;
+  const cat=document.getElementById('mp-cat').value;
+  const emoji=document.getElementById('mp-emoji').value||'📦';
+  const desc=document.getElementById('mp-desc').value||'';
+  if(!name||!price){toast('Product name and price are required','r');return;}
+  toast('Uploading images…');
+  let imageUrls=[];
+  for(let i=0;i<prodImages.length;i++){
+    const img=prodImages[i];
+    const res=await fetch(img.url);
+    const blob=await res.blob();
+    const ext=blob.type.split('/')[1]||'jpg';
+    const fileName=`products/${Date.now()}_${i}.${ext}`;
+    const{data,error}=await sb.storage.from('product-images').upload(fileName,blob,{contentType:blob.type,upsert:false});
+    if(error){toast('Image upload failed: '+error.message,'r');return;}
+    const{data:urlData}=sb.storage.from('product-images').getPublicUrl(fileName);
+    imageUrls.push(urlData.publicUrl);
+  }
+  toast('Saving product…');
+  const{data,error}=await sb.from('products').insert([{
+    name,category:cat,cat,price,stock,emoji,description:desc,
+    images:imageUrls,badge:'new',rating:5.0,reviews_count:0,reviews:0,
+    seller_name:currentUser?.name||'My Store',seller:currentUser?.name||'My Store',
+    seller_phone:currentUser?.phone||'',seller_id:currentUser?.email||currentUser?.phone||'',
+    active:true,
+  }]).select().single();
+  if(error){toast('Failed to save product: '+error.message,'r');return;}
+  PRODUCTS.unshift({
+    id:data.id,name:data.name,cat:data.cat||data.category,price:data.price,
+    stock:data.stock,emoji:data.emoji,images:data.images||[],rating:5.0,reviews:0,
+    seller:data.seller_name||data.seller,sellerPhone:data.seller_phone||'',
+    desc:data.description||'',badge:'new',
+  });
+  prodImages=[];closeModal('modal-add-product');renderSeller('products');
+  toast('✓ Product added and saved!','g');
+}
+
+// ADMIN
+const ADMIN_NAV=[{icon:'📊',label:'Overview',id:'overview'},{icon:'🔒',label:'Escrow',id:'escrow'},{icon:'💸',label:'Payouts',id:'payouts',badge:()=>PAYOUTS.filter(p=>p.status==='pending').length},{icon:'🪪',label:'KYC',id:'kyc',badge:()=>KYC.filter(k=>k.status==='pending').length},{icon:'👥',label:'Users',id:'users'},{icon:'📦',label:'Products',id:'products'},{icon:'🛒',label:'Orders',id:'orders'},{icon:'🛡️',label:'Disputes',id:'disputes',badge:()=>DISPUTES.filter(d=>d.status==='open').length},{icon:'⚙️',label:'Settings',id:'settings'}];
+function buildAdminNav(){
+  const el=document.getElementById('admin-nav');
+  el.innerHTML=ADMIN_NAV.map((n,i)=>`<div class="anav-item ${i===0?'active':''}" onclick="adminNavClick(this,'${n.id}')"><span style="font-size:16px;width:22px;text-align:center;">${n.icon}</span>${n.label}${n.badge?`<span class="anav-badge" id="adm-b-${n.id}">${n.badge()}</span>`:''}</div>`).join('')+
+  `<div class="anav-item" style="margin-top:auto;border-top:1px solid rgba(255,255,255,.07);padding-top:12px;" onclick="doLogout()"><span style="font-size:16px;width:22px;text-align:center;">🚪</span>Logout</div>`;
+}
+function adminNavClick(btn,id){document.querySelectorAll('.anav-item').forEach(b=>b.classList.remove('active'));btn.classList.add('active');renderAdmin(id);}
+function renderAdmin(section){
+  const el=document.getElementById('admin-content');if(!el)return;
+  ADMIN_NAV.forEach(n=>{if(n.badge){const b=document.getElementById('adm-b-'+n.id);if(b)b.textContent=n.badge();}});
+  if(section==='overview')el.innerHTML=adminOverviewHTML();
+  else if(section==='escrow')el.innerHTML=adminEscrowHTML();
+  else if(section==='payouts')el.innerHTML=adminPayoutsHTML();
+  else if(section==='kyc')el.innerHTML=adminKYCHTML();
+  else if(section==='users')el.innerHTML=adminUsersHTML();
+  else if(section==='products')el.innerHTML=adminProductsHTML();
+  else if(section==='orders')el.innerHTML=adminOrdersHTML();
+  else if(section==='disputes')el.innerHTML=adminDisputesHTML();
+  else if(section==='settings')el.innerHTML=adminSettingsHTML();
+}
+function adminOverviewHTML(){
+  const totalGMV=ORDERS.filter(o=>o.status!=='cancelled').reduce((a,o)=>a+o.total,0);
+  const totalComm=ORDERS.filter(o=>o.status!=='cancelled').reduce((a,o)=>a+o.commission,0);
+  const escrowHeld=ORDERS.filter(o=>o.escrow==='held').reduce((a,o)=>a+o.total,0);
+  return `<div class="admin-page-hdr"><div class="admin-page-title">Platform Overview</div><div style="font-size:12px;color:var(--ink3);">${new Date().toLocaleDateString('en-RW',{weekday:'long',day:'numeric',month:'long',year:'numeric'})}</div></div>
+  <div class="admin-content">
+    <div class="comm-card">
+      <div class="comm-lbl">Platform Revenue (4% Total: 2% buyer + 2% seller — internal only)</div>
+      <div class="comm-val">${fmt(totalComm)} <span style="font-size:15px;color:rgba(255,255,255,.35);">RWF</span></div>
+      <div style="font-size:12px;color:rgba(255,255,255,.35);">From ${fmt(totalGMV)} RWF total transactions</div>
+      <div class="comm-grid">
+        <div class="comm-item"><div class="comm-item-val" style="color:#00D68F;">${fmt(totalGMV)}</div><div class="comm-item-lbl">Total GMV (RWF)</div></div>
+        <div class="comm-item"><div class="comm-item-val" style="color:var(--or);">${fmt(escrowHeld)}</div><div class="comm-item-lbl">In Escrow (RWF)</div></div>
+        <div class="comm-item"><div class="comm-item-val">4%</div><div class="comm-item-lbl">Total Rate (internal)</div></div>
+      </div>
+    </div>
+    <div class="admin-metrics">
+      <div class="admin-metric"><div class="am-lbl">Total Orders</div><div class="am-val">${ORDERS.length}</div><div class="am-sub am-up">live</div></div>
+      <div class="admin-metric"><div class="am-lbl">Active Sellers</div><div class="am-val">${USERS.filter(u=>u.role==='seller'&&u.verified).length}</div><div class="am-sub">KYC verified</div></div>
+      <div class="admin-metric"><div class="am-lbl">Buyers</div><div class="am-val">${USERS.filter(u=>u.role==='buyer').length}</div><div class="am-sub">registered</div></div>
+      <div class="admin-metric"><div class="am-lbl">Products Live</div><div class="am-val">${PRODUCTS.length}</div><div class="am-sub">in catalog</div></div>
+      <div class="admin-metric"><div class="am-lbl">Pending Payouts</div><div class="am-val am-or">${PAYOUTS.filter(p=>p.status==='pending').length}</div><div class="am-sub">sellers waiting</div></div>
+      <div class="admin-metric"><div class="am-lbl">Open Disputes</div><div class="am-val" style="color:var(--r);">${DISPUTES.filter(d=>d.status==='open').length}</div><div class="am-sub">needs review</div></div>
+    </div>
+    <div class="tbl-wrap"><div class="tbl-hdr"><div class="tbl-hdr-title">Recent Orders</div></div>
+    <div class="tbl-scroll"><table><thead><tr><th>Order ID</th><th>Buyer</th><th>Product</th><th>Total</th><th>Platform Fee</th><th>Escrow</th><th>Status</th><th>Action</th></tr></thead>
+    <tbody>${ORDERS.slice(0,6).map(o=>`<tr>
+      <td style="font-family:monospace;font-weight:700;">${o.id}</td><td>${o.buyer}</td><td>${o.product.slice(0,18)}…</td>
+      <td style="font-weight:700;">RWF ${fmt(o.total)}</td><td style="color:var(--r);">RWF ${fmt(o.commission)}</td>
+      <td><span class="ep ${o.escrow==='held'?'ep-held':o.escrow==='released'?'ep-rel':'ep-frz'}">🔒 ${o.escrow}</span></td>
+      <td><span class="pill ${o.status==='delivered'?'pill-g':o.status==='shipped'?'pill-b':o.status==='cancelled'?'pill-r':'pill-a'}">${o.status}</span></td>
+      <td><button class="bx bx-b" onclick="openOrderModal('${o.id}')">Update</button></td>
+    </tr>`).join('')}</tbody></table></div></div>
+  </div>`;
+}
+function adminEscrowHTML(){
+  const eo=ORDERS.filter(o=>o.escrow==='held'||o.escrow==='frozen');
+  const totalHeld=eo.reduce((a,o)=>a+o.total,0);
+  return `<div class="admin-page-hdr"><div class="admin-page-title">🔒 Escrow Management</div><span class="pill pill-a">RWF ${fmt(totalHeld)} Held</span></div>
+  <div class="admin-content">
+    <div class="ef-card"><div class="ef-title">💰 Money Flow</div>
+      <div class="ef-steps">
+        <div class="ef-step"><div class="ef-icon done">💳</div><div class="ef-lbl">Buyer Pays</div></div><div class="ef-conn done"></div>
+        <div class="ef-step"><div class="ef-icon done">🔒</div><div class="ef-lbl">Escrow Hold</div></div><div class="ef-conn done"></div>
+        <div class="ef-step"><div class="ef-icon active">🚚</div><div class="ef-lbl">Delivery</div></div><div class="ef-conn"></div>
+        <div class="ef-step"><div class="ef-icon inactive">✅</div><div class="ef-lbl">Buyer Confirms</div></div><div class="ef-conn"></div>
+        <div class="ef-step"><div class="ef-icon inactive">💸</div><div class="ef-lbl">96% → Seller</div></div><div class="ef-conn"></div>
+        <div class="ef-step"><div class="ef-icon inactive">💰</div><div class="ef-lbl">4% → Platform</div></div>
+      </div>
+    </div>
+    <div class="tbl-wrap"><div class="tbl-hdr"><div class="tbl-hdr-title">Active Escrow Orders</div><span class="pill pill-a">${eo.length} in escrow</span></div>
+    <div class="tbl-scroll"><table><thead><tr><th>Order ID</th><th>Buyer</th><th>Seller</th><th>Amount</th><th>Platform Fee (4%)</th><th>Seller Receives</th><th>Status</th><th>Actions</th></tr></thead>
+    <tbody>${eo.map(o=>`<tr>
+      <td style="font-family:monospace;font-weight:700;">${o.id}</td><td>${o.buyer}</td><td>${o.seller}</td>
+      <td style="font-weight:700;">RWF ${fmt(o.total)}</td><td style="color:var(--r);">RWF ${fmt(o.commission)}</td>
+      <td style="color:var(--gd);font-weight:700;">RWF ${fmt(o.sellerNet)}</td>
+      <td><span class="ep ${o.escrow==='held'?'ep-held':'ep-frz'}">🔒 ${o.escrow}</span></td>
+      <td style="display:flex;gap:5px;"><button class="bx bx-g" onclick="releaseEscrow('${o.id}')">✓ Release</button><button class="bx bx-r" onclick="refundEscrow('${o.id}')">↩ Refund</button></td>
+    </tr>`).join('')}</tbody></table></div></div>
+  </div>`;
+}
+function adminPayoutsHTML(){
+  const totalPending=PAYOUTS.filter(p=>p.status==='pending').reduce((a,p)=>a+p.amount,0);
+  return `<div class="admin-page-hdr"><div class="admin-page-title">💸 Seller Payouts</div><span class="pill pill-a">${PAYOUTS.filter(p=>p.status==='pending').length} Pending</span></div>
+  <div class="admin-content">
+    <div style="background:linear-gradient(135deg,#131921,#0a1f0a);border-radius:var(--r8);padding:20px;color:#fff;margin-bottom:18px;">
+      <div style="font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.4);margin-bottom:5px;">Total Pending Payouts</div>
+      <div style="font-family:var(--font2);font-size:30px;font-weight:800;">${fmt(totalPending)} <span style="font-size:14px;color:rgba(255,255,255,.35);">RWF</span></div>
+      <div style="font-size:12px;color:rgba(255,255,255,.4);margin-top:6px;">⚠️ No auto-withdrawal — Admin manually transfers via MoMo or bank.</div>
+    </div>
+    ${PAYOUTS.map(p=>`<div class="payout-card">
+      <div class="payout-row"><div class="payout-avatar">${p.seller[0]}</div>
+        <div style="flex:1;"><div style="font-weight:700;font-size:14px;">${p.seller}</div><div style="font-size:12px;color:var(--ink3);">${p.phone} · ${p.ordersCount} orders · ${p.method}</div></div>
+        <span class="pill ${p.status==='pending'?'pill-a':'pill-g'}">${p.status==='pending'?'⏳ Pending':'✅ Paid'}</span>
+      </div>
+      <div style="display:flex;align-items:center;justify-content:space-between;">
+        <div><div style="font-size:11px;color:var(--ink3);">Amount to transfer</div><div style="font-family:var(--font2);font-size:24px;font-weight:800;">RWF ${fmt(p.amount)}</div></div>
+        <div style="display:flex;gap:8px;">${p.status==='pending'?`<button class="bx bx-p" style="padding:8px 14px;" onclick="openPayoutModal('${p.id}')">💸 Process</button><button class="bx bx-r" onclick="toast('❄️ Payout frozen')">❄️ Freeze</button>`:`<span style="font-size:12px;color:var(--g);font-weight:600;">✅ Settled ${p.date}</span>`}</div>
+      </div>
+    </div>`).join('')}
+  </div>`;
+}
+function adminKYCHTML(){
+  return `<div class="admin-page-hdr"><div class="admin-page-title">KYC Verification</div><span class="pill pill-a">${KYC.filter(k=>k.status==='pending').length} Pending</span></div>
+  <div class="admin-content"><div class="tbl-wrap"><div class="tbl-scroll"><table><thead><tr><th>Applicant</th><th>Phone</th><th>ID Number</th><th>ID Photo</th><th>Submitted</th><th>Status</th><th>Actions</th></tr></thead>
+  <tbody>${KYC.map(k=>`<tr>
+    <td style="font-weight:700;">${k.name}</td><td>${k.phone}</td>
+    <td style="font-family:monospace;font-size:12px;">${k.idNum}</td>
+    <td>${k.idImage?`<img src="${k.idImage}" style="width:50px;height:36px;object-fit:cover;border-radius:3px;cursor:pointer;" onclick="window.open('${k.idImage}')"/>`:'<div style="width:50px;height:36px;background:var(--bg2);border-radius:3px;display:flex;align-items:center;justify-content:center;font-size:20px;">🪪</div>'}</td>
+    <td style="color:var(--ink3);">${k.date}</td>
+    <td><span class="pill ${k.status==='approved'?'pill-g':k.status==='rejected'?'pill-r':'pill-a'}">${k.status}</span></td>
+    <td style="display:flex;gap:5px;">${k.status==='pending'?`<button class="bx bx-g" onclick="approveKYC('${k.id}')">✓ Approve</button><button class="bx bx-r" onclick="rejectKYC('${k.id}')">✕ Reject</button>`:k.status==='approved'?'<span style="color:var(--g);font-size:12px;font-weight:600;">✓ Approved</span>':'<span style="color:var(--r);font-size:12px;font-weight:600;">✕ Rejected</span>'}</td>
+  </tr>`).join('')}</tbody></table></div></div></div>`;
+}
+function adminUsersHTML(){
+  return `<div class="admin-page-hdr"><div class="admin-page-title">All Users</div><input class="fld-inp" style="width:200px;" placeholder="Search users…" oninput="filterAdminUsers(this.value)"/></div>
+  <div class="admin-content"><div class="tbl-wrap" id="users-tbl-wrap">${usersTableHTML(USERS)}</div></div>`;
+}
+function filterAdminUsers(q){const f=q?USERS.filter(u=>u.name.toLowerCase().includes(q.toLowerCase())||u.phone.includes(q)):USERS;const w=document.getElementById('users-tbl-wrap');if(w)w.innerHTML=usersTableHTML(f);}
+function usersTableHTML(list){
+  return `<div class="tbl-scroll"><table><thead><tr><th>Name</th><th>Phone</th><th>Role</th><th>Verified</th><th>Joined</th><th>Status</th><th>Pending Payout</th><th>Actions</th></tr></thead>
+  <tbody>${list.map(u=>`<tr>
+    <td style="font-weight:700;color:var(--b);cursor:pointer;" onclick="openUserDetail('${u.phone}')">${u.name}</td>
+    <td>${u.phone}</td>
+    <td><span class="pill ${u.role==='admin'?'pill-dk':u.role==='seller'?'pill-b':'pill-gray'}">${u.role}</span></td>
+    <td>${u.verified?'<span class="pill pill-g">✓ Yes</span>':'<span class="pill pill-a">No</span>'}</td>
+    <td style="color:var(--ink3);">${u.joined}</td>
+    <td><span class="pill ${u.status==='active'?'pill-g':u.status==='pending'?'pill-a':'pill-r'}">${u.status}</span></td>
+    <td style="font-weight:700;color:var(--gd);">${u.pendingPayout?`RWF ${fmt(u.pendingPayout)}`:'—'}</td>
+    <td><button class="bx bx-r" onclick="banUser('${u.phone}')">🚫 Ban</button></td>
+  </tr>`).join('')}</tbody></table></div>`;
+}
+function adminProductsHTML(){
+  return `<div class="admin-page-hdr"><div class="admin-page-title">All Products (${PRODUCTS.length})</div></div>
+  <div class="admin-content"><div class="tbl-wrap"><div class="tbl-scroll"><table><thead><tr><th>Image</th><th>Product</th><th>Seller</th><th>Category</th><th>Price</th><th>Stock</th><th>Status</th><th>Action</th></tr></thead>
+  <tbody>${PRODUCTS.map(p=>`<tr>
+    <td><div style="width:44px;height:44px;background:var(--bg2);border-radius:var(--r4);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:24px;">${(p.images&&p.images.length)?`<img src="${p.images[0]}" style="width:100%;height:100%;object-fit:cover;"/>`:p.emoji}</div></td>
+    <td style="font-weight:600;">${p.name.slice(0,26)}…</td><td>${p.seller}</td><td>${getCat(p.cat)}</td>
+    <td style="font-weight:700;">${fmt(p.price)}</td><td>${p.stock}</td>
+    <td><span class="pill ${p.stock>5?'pill-g':p.stock>0?'pill-a':'pill-r'}">${p.stock>5?'In stock':p.stock>0?'Low':'Out'}</span></td>
+    <td><button class="bx bx-r" onclick="removeProduct(${p.id})">Remove</button></td>
+  </tr>`).join('')}</tbody></table></div></div></div>`;
+}
+function adminOrdersHTML(){
+  return `<div class="admin-page-hdr"><div class="admin-page-title">All Orders</div>
+    <select class="fld-sel" style="width:160px;" onchange="renderOrdersFiltered(this.value)"><option value="">All statuses</option><option>pending</option><option>confirmed</option><option>shipped</option><option>delivered</option><option>cancelled</option></select>
+  </div>
+  <div class="admin-content"><div class="tbl-wrap" id="admin-orders-tbl">${ordersTableHTML(ORDERS)}</div></div>`;
+}
+function renderOrdersFiltered(f){const list=f?ORDERS.filter(o=>o.status===f):ORDERS;const w=document.getElementById('admin-orders-tbl');if(w)w.innerHTML=ordersTableHTML(list);}
+function ordersTableHTML(list){
+  return `<div class="tbl-scroll"><table><thead><tr><th>Order ID</th><th>Buyer</th><th>Seller</th><th>Total</th><th>Platform Fee</th><th>Seller Net</th><th>Escrow</th><th>Status</th><th>Action</th></tr></thead>
+  <tbody>${list.map(o=>`<tr>
+    <td style="font-family:monospace;font-weight:700;">${o.id}</td><td>${o.buyer}</td><td>${o.seller}</td>
+    <td style="font-weight:700;">RWF ${fmt(o.total)}</td><td style="color:var(--r);">RWF ${fmt(o.commission)}</td>
+    <td style="color:var(--gd);font-weight:700;">RWF ${fmt(o.sellerNet)}</td>
+    <td><span class="ep ${o.escrow==='held'?'ep-held':o.escrow==='released'?'ep-rel':'ep-frz'}">🔒 ${o.escrow}</span></td>
+    <td><span class="pill ${o.status==='delivered'?'pill-g':o.status==='shipped'?'pill-b':o.status==='cancelled'?'pill-r':'pill-a'}">${o.status}</span></td>
+    <td><button class="bx bx-b" onclick="openOrderModal('${o.id}')">Update</button></td>
+  </tr>`).join('')}</tbody></table></div>`;
+}
+function adminDisputesHTML(){
+  return `<div class="admin-page-hdr"><div class="admin-page-title">Disputes & Reports</div></div>
+  <div class="admin-content">
+    ${DISPUTES.map(d=>`<div class="dispute-card">
+      <div style="display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:10px;">
+        <div><strong style="color:var(--b);cursor:pointer;" onclick="openDisputeDetail('${d.id}')">${d.id}</strong><span class="pill ${d.status==='open'?'pill-r':'pill-g'}" style="margin-left:8px;">${d.status}</span></div>
+        <span style="font-size:12px;color:var(--ink4);">${d.date}</span>
+      </div>
+      <div style="background:var(--abg);border:1px solid var(--ab);border-radius:3px;padding:6px 10px;font-size:11px;font-weight:700;color:#8B5E00;margin-bottom:8px;">🔒 Escrow: ${d.escrowAction}</div>
+      <div style="font-size:13px;font-weight:700;margin-bottom:4px;">🛡️ ${d.type}</div>
+      <div style="font-size:13px;color:var(--ink2);margin-bottom:4px;">Order: <strong>${d.orderId}</strong> · Buyer: ${d.buyer}</div>
+      <div style="font-size:13px;color:var(--ink3);margin-bottom:12px;">${d.desc}</div>
+      ${d.status==='open'?`<div style="display:flex;gap:8px;flex-wrap:wrap;">
+        <button class="bx bx-g" onclick="resolveDispute('${d.id}','refund')">↩️ Refund Buyer</button>
+        <button class="bx bx-b" onclick="resolveDispute('${d.id}','release')">✓ Release to Seller</button>
+        <button class="bx bx-o" onclick="toast('📞 Contact both parties')">📞 Contact Parties</button>
+      </div>`:`<span style="font-size:12px;color:var(--g);font-weight:600;">✓ Resolved — ${d.escrowAction}</span>`}
+    </div>`).join('')}
+  </div>`;
+}
+function adminSettingsHTML(){
+  return `<div class="admin-page-hdr"><div class="admin-page-title">Platform Settings</div></div>
+  <div class="admin-content"><div class="settings-grid">
+    <div class="settings-card"><div class="settings-card-title">🔑 Change My Password</div>
+      <div class="fld"><label class="fld-lbl">New password</label><input class="fld-inp" id="admin-new-pass" type="password" placeholder="At least 6 characters"/></div>
+      <div class="fld"><label class="fld-lbl">Confirm new password</label><input class="fld-inp" id="admin-new-pass2" type="password" placeholder="Repeat password"/></div>
+      <button class="bx bx-g" style="padding:8px 16px;" onclick="changeAdminPassword()">Update Password</button>
+    </div>
+    <div class="settings-card"><div class="settings-card-title">🏪 Platform Info</div>
+      <div class="fld"><label class="fld-lbl">Platform Name</label><input class="fld-inp" value="SOKO Marketplace"/></div>
+      <div class="fld"><label class="fld-lbl">Admin Email</label><input class="fld-inp" value="admin@soko.rw"/></div>
+      <div class="fld"><label class="fld-lbl">Support Phone</label><input class="fld-inp" value="+250 788 000 000"/></div>
+      <button class="bx bx-g" style="padding:8px 16px;" onclick="toast('✓ Saved','g')">Save</button>
+    </div>
+    <div class="settings-card"><div class="settings-card-title">💰 Commission & Payouts</div>
+      <div class="fld"><label class="fld-lbl">Commission Rate (%)</label>
+        <input class="fld-inp" id="commission-rate-input" value="${commissionRate}" type="number" min="0" max="20" oninput="previewCommission(this.value)"/>
+        <div style="font-size:11px;color:var(--ink3);margin-top:4px;">Internal only — 2% from buyer + 2% from seller = 4% total</div>
+        <div id="commission-preview" style="font-size:12px;color:var(--gd);margin-top:5px;background:var(--gbg);padding:8px 10px;border-radius:4px;border:1px solid var(--gb);">
+          Example: 20,000 RWF → Seller gets <strong id="comm-seller-ex">${fmt(Math.round(20000*(100-commissionRate)/100))}</strong> RWF · SOKO gets <strong id="comm-platform-ex">${fmt(Math.round(20000*commissionRate/100))}</strong> RWF
+        </div>
+      </div>
+      <div class="fld"><label class="fld-lbl">Payout Cycle</label><select class="fld-sel"><option>Weekly (every Monday)</option><option>Bi-weekly</option><option>Monthly</option><option>Manual only</option></select></div>
+      <div class="fld"><label class="fld-lbl">Auto-confirm delivery (days)</label><input class="fld-inp" value="7" type="number"/></div>
+      <button class="bx bx-g" style="padding:8px 16px;" onclick="saveCommissionRate()">Save & Apply</button>
+    </div>
+    <div class="settings-card"><div class="settings-card-title">📲 Payment Gateways</div>
+      <div class="fld"><label class="fld-lbl">MTN MoMo API Key</label><input class="fld-inp" type="password" placeholder="sk_live_…"/></div>
+      <div class="fld"><label class="fld-lbl">Airtel Money API Key</label><input class="fld-inp" type="password" placeholder="airtel_key_…"/></div>
+      <div class="fld"><label class="fld-lbl">Flutterwave Key</label><input class="fld-inp" type="password" placeholder="FLWSECK_…"/></div>
+      <button class="bx bx-g" style="padding:8px 16px;" onclick="toast('✓ Saved','g')">Save</button>
+    </div>
+    <div class="settings-card"><div class="settings-card-title">🛡️ Escrow Rules</div>
+      ${['Escrow on all orders','Auto-release after 7 days','Freeze funds on dispute','Admin can override release'].map(r=>`<label style="display:flex;align-items:center;gap:10px;font-size:13px;margin-bottom:10px;"><input type="checkbox" checked style="accent-color:var(--or);"/> ${r}</label>`).join('')}
+      <button class="bx bx-g" style="padding:8px 16px;margin-top:4px;" onclick="toast('✓ Saved','g')">Save</button>
+    </div>
+    <div class="settings-card"><div class="settings-card-title">🌍 Languages</div>
+      ${['🇷🇼 Kinyarwanda','🇬🇧 English','🇫🇷 French'].map(l=>`<label style="display:flex;align-items:center;gap:10px;font-size:14px;margin-bottom:10px;"><input type="checkbox" checked style="accent-color:var(--or);"/> ${l}</label>`).join('')}
+      <button class="bx bx-g" style="padding:8px 16px;margin-top:4px;" onclick="toast('✓ Saved','g')">Save</button>
+    </div>
+    <div class="settings-card"><div class="settings-card-title">🚫 Ban & Freeze Controls</div>
+      ${['Freeze seller earnings on ban','Refund buyer if seller banned','Auto-cancel pending orders'].map((r,i)=>`<label style="display:flex;align-items:center;gap:10px;font-size:13px;margin-bottom:10px;"><input type="checkbox" ${i<2?'checked':''} style="accent-color:var(--or);"/> ${r}</label>`).join('')}
+      <button class="bx bx-g" style="padding:8px 16px;margin-top:4px;" onclick="toast('✓ Saved','g')">Save</button>
+    </div>
+  </div></div>`;
+}
+
+// ADMIN ACTIONS
+function releaseEscrow(id){const o=ORDERS.find(x=>x.id===id);if(o){o.escrow='released';o.status='delivered';renderAdmin('escrow');toast('✅ Escrow released — RWF '+fmt(o.sellerNet)+' to seller','g');}}
+function refundEscrow(id){const o=ORDERS.find(x=>x.id===id);if(o){o.escrow='refunded';o.status='cancelled';renderAdmin('escrow');toast('↩ Refund issued to buyer','g');}}
+async function approveKYC(id){
+  const k=KYC.find(x=>x.id===id);
+  if(!k)return;
+  if(sb){
+    const{error:kycErr}=await sb.from('kyc_submissions').update({status:'approved',approved_at:new Date().toISOString()}).eq('id',id);
+    if(kycErr){toast('KYC approval failed: '+kycErr.message,'r');return;}
+    const{error:userErr}=await sb.from('users').update({role:'seller',status:'active',verified:true}).eq('email',k.user_id);
+    if(userErr){toast('User upgrade failed: '+userErr.message,'r');return;}
+  }
+  k.status='approved';
+  const u=USERS.find(x=>x.phone===k.phone);
+  if(u){u.verified=true;u.status='active';u.role='seller';}
+  renderAdmin('kyc');
+  toast('✓ Seller '+k.name+' approved!','g');
+}
+async function rejectKYC(id){
+  const k=KYC.find(x=>x.id===id);
+  if(!k)return;
+  if(sb){
+    const{error}=await sb.from('kyc_submissions').update({status:'rejected'}).eq('id',id);
+    if(error){toast('KYC rejection failed: '+error.message,'r');return;}
+  }
+  k.status='rejected';
+  renderAdmin('kyc');
+  toast('✕ KYC rejected','r');
+}
+function banUser(phone){const u=USERS.find(x=>x.phone===phone);if(u){u.status='banned';ORDERS.filter(o=>o.seller===u.name&&o.escrow==='held').forEach(o=>o.escrow='frozen');renderAdmin('users');toast('🚫 User banned & escrow frozen','r');}}
+function unbanUser(phone){const u=USERS.find(x=>x.phone===phone);if(u){u.status='active';closeModal('modal-user-detail');renderAdmin('users');toast('✓ User unbanned','g');}}
+function removeProduct(id){if(!confirm('Remove this product?'))return;PRODUCTS=PRODUCTS.filter(p=>p.id!==id);renderAdmin('products');toast('Product removed');}
+function resolveDispute(id,action){
+  const d=DISPUTES.find(x=>x.id===id);if(!d)return;
+  d.status='resolved';d.escrowAction=action==='refund'?'refunded':'released';
+  const o=ORDERS.find(x=>x.id===d.orderId);if(o){o.escrow=action==='refund'?'refunded':'released';if(action==='release')o.status='delivered';if(action==='refund')o.status='cancelled';}
+  renderAdmin('disputes');toast(action==='refund'?'↩ Refund issued to buyer':'✅ Funds released to seller','g');
+}
+function openOrderModal(id){
+  editingOrderId=id;const o=ORDERS.find(x=>x.id===id);if(!o)return;
+  document.getElementById('order-modal-info').innerHTML=`<strong>${o.id}</strong> · ${o.buyer} · RWF ${fmt(o.total)}`;
+  document.getElementById('order-escrow-info').innerHTML=`<div style="background:var(--abg);border:1px solid var(--ab);border-radius:var(--r4);padding:10px;font-size:12px;"><div style="font-weight:700;color:#8B5E00;margin-bottom:4px;">🔒 Escrow: ${o.escrow}</div><div style="color:var(--ink3);">Platform fee: RWF ${fmt(o.commission)} · Seller gets: RWF ${fmt(o.sellerNet)}</div></div>`;
+  document.getElementById('order-new-status').value=o.status;
+  openModal('modal-order-status');
+}
+function saveOrderStatus(){
+  const o=ORDERS.find(x=>x.id===editingOrderId);if(!o)return;
+  const ns=document.getElementById('order-new-status').value;
+  o.status=ns;if(ns==='delivered')o.escrow='released';if(ns==='cancelled')o.escrow='refunded';
+  closeModal('modal-order-status');renderAdmin('overview');toast('✓ Order updated','g');
+}
+function openPayoutModal(id){
+  editingPayoutId=id;const p=PAYOUTS.find(x=>x.id===id);if(!p)return;
+  document.getElementById('payout-modal-detail').innerHTML=`<div style="display:flex;align-items:center;gap:12px;margin-bottom:12px;"><div class="payout-avatar">${p.seller[0]}</div><div><div style="font-weight:700;">${p.seller}</div><div style="font-size:12px;color:var(--ink3);">${p.phone}</div></div></div><div style="background:var(--gbg);border:1px solid var(--gb);border-radius:var(--r4);padding:14px;text-align:center;"><div style="font-size:11px;color:var(--gd);margin-bottom:5px;font-weight:700;">AMOUNT TO TRANSFER</div><div style="font-size:28px;font-weight:800;color:var(--gd);">RWF ${fmt(p.amount)}</div></div>`;
+  document.getElementById('payout-method').value=p.method;
+  openModal('modal-payout');
+}
+function confirmPayout(){
+  const p=PAYOUTS.find(x=>x.id===editingPayoutId);if(!p)return;
+  p.status='paid';p.date=new Date().toISOString().slice(0,10);
+  closeModal('modal-payout');renderAdmin('payouts');toast('✅ Payout confirmed for '+p.seller,'g');
+}
+function openDisputeDetail(id){
+  const d=DISPUTES.find(x=>x.id===id);if(!d)return;
+  const o=ORDERS.find(x=>x.id===d.orderId);
+  document.getElementById('dispute-detail-body').innerHTML=`
+    <div style="display:flex;justify-content:space-between;margin-bottom:14px;"><div><strong style="font-size:16px;">${d.id}</strong><span class="pill ${d.status==='open'?'pill-r':'pill-g'}" style="margin-left:8px;">${d.status}</span></div><span style="font-size:12px;color:var(--ink4);">${d.date}</span></div>
+    <div style="background:var(--abg);border:1px solid var(--ab);border-radius:3px;padding:8px 12px;font-size:12px;font-weight:700;color:#8B5E00;margin-bottom:12px;">🔒 Escrow: ${d.escrowAction}</div>
+    <div style="margin-bottom:10px;"><div style="font-size:11px;color:var(--ink4);text-transform:uppercase;font-weight:700;">Issue Type</div><div style="font-size:14px;font-weight:700;margin-top:3px;">🛡️ ${d.type}</div></div>
+    <div style="margin-bottom:10px;"><div style="font-size:11px;color:var(--ink4);text-transform:uppercase;font-weight:700;">Order</div><div style="font-size:14px;margin-top:3px;"><strong>${d.orderId}</strong>${o?' · RWF '+fmt(o.total):''}</div></div>
+    <div style="margin-bottom:10px;"><div style="font-size:11px;color:var(--ink4);text-transform:uppercase;font-weight:700;">Buyer</div><div style="font-size:14px;margin-top:3px;">${d.buyer}</div></div>
+    <div><div style="font-size:11px;color:var(--ink4);text-transform:uppercase;font-weight:700;">Description</div><div style="font-size:13px;color:var(--ink2);line-height:1.6;margin-top:3px;background:var(--bg2);padding:10px;border-radius:6px;">${d.desc}</div></div>
+    ${o?`<div style="background:var(--gbg);border:1px solid var(--gb);border-radius:6px;padding:12px;font-size:13px;margin-top:12px;"><div style="font-weight:700;color:var(--gd);margin-bottom:6px;">💰 Escrow Breakdown</div><div>Total: <strong>RWF ${fmt(o.total)}</strong> · Fee: <strong>RWF ${fmt(o.commission)}</strong> · Seller would get: <strong>RWF ${fmt(o.sellerNet)}</strong></div></div>`:''}`;
+  document.getElementById('dispute-detail-footer').innerHTML=d.status==='open'
+    ?`<button class="bx bx-ghost" onclick="closeModal('modal-dispute-detail')">Close</button><button class="bx bx-r" onclick="resolveDispute('${d.id}','refund');closeModal('modal-dispute-detail')">↩️ Refund Buyer</button><button class="bx bx-g" onclick="resolveDispute('${d.id}','release');closeModal('modal-dispute-detail')">✓ Release to Seller</button>`
+    :`<button class="bx bx-ghost" onclick="closeModal('modal-dispute-detail')">Close</button>`;
+  openModal('modal-dispute-detail');
+}
+function openUserDetail(phone){
+  const u=USERS.find(x=>x.phone===phone);if(!u)return;
+  const uo=ORDERS.filter(o=>o.buyer===u.name||o.seller===u.name);
+  document.getElementById('user-detail-body').innerHTML=`
+    <div style="display:flex;align-items:center;gap:14px;margin-bottom:18px;padding-bottom:16px;border-bottom:var(--border);">
+      <div style="width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,var(--g),var(--g2));display:flex;align-items:center;justify-content:center;color:#fff;font-weight:800;font-size:22px;">${u.name[0]}</div>
+      <div><div style="font-size:18px;font-weight:800;">${u.name}</div><div style="font-size:13px;color:var(--ink3);">${u.phone}</div><span class="pill ${u.role==='admin'?'pill-dk':u.role==='seller'?'pill-b':'pill-gray'}" style="margin-top:4px;">${u.role}</span></div>
+      <div style="margin-left:auto;"><span class="pill ${u.status==='active'?'pill-g':u.status==='pending'?'pill-a':'pill-r'}">${u.status}</span></div>
+    </div>
+    <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px;margin-bottom:16px;">
+      <div style="background:var(--bg2);border-radius:8px;padding:12px;text-align:center;"><div style="font-size:11px;color:var(--ink4);text-transform:uppercase;margin-bottom:4px;">Joined</div><div style="font-weight:700;font-size:12px;">${u.joined}</div></div>
+      <div style="background:var(--bg2);border-radius:8px;padding:12px;text-align:center;"><div style="font-size:11px;color:var(--ink4);text-transform:uppercase;margin-bottom:4px;">Verified</div><div style="font-weight:700;">${u.verified?'✓ Yes':'No'}</div></div>
+      <div style="background:var(--bg2);border-radius:8px;padding:12px;text-align:center;"><div style="font-size:11px;color:var(--ink4);text-transform:uppercase;margin-bottom:4px;">Pending Payout</div><div style="font-weight:700;color:var(--gd);">${u.pendingPayout?'RWF '+fmt(u.pendingPayout):'—'}</div></div>
+    </div>
+    ${uo.length?`<div style="font-weight:700;margin-bottom:8px;">Orders (${uo.length})</div>${uo.slice(0,5).map(o=>`<div style="display:flex;justify-content:space-between;padding:8px 0;border-bottom:var(--border2);font-size:13px;"><span>${o.id} — ${o.product.slice(0,18)}</span><span class="pill ${o.status==='delivered'?'pill-g':o.status==='cancelled'?'pill-r':'pill-a'}">${o.status}</span></div>`).join(''):'<div style="color:var(--ink3);text-align:center;padding:20px;">No orders yet</div>'}
     <div style="display:flex;gap:8px;margin-top:16px;padding-top:14px;border-top:var(--border);">
       ${u.status!=='banned'?`<button class="bx bx-r" onclick="banUser('${u.phone}');closeModal('modal-user-detail');renderAdmin('users')">🚫 Ban User</button>`:`<button class="bx bx-g" onclick="unbanUser('${u.phone}')">✓ Unban</button>`}
       <button class="bx bx-ghost" onclick="closeModal('modal-user-detail')">Close</button>
