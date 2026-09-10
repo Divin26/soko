@@ -607,14 +607,6 @@ tr:hover td{background:var(--bg);}
         <div style="background:var(--abg);border:1px solid var(--ab);border-radius:var(--r4);padding:12px;margin-bottom:14px;font-size:13px;color:#8B5E00;">📋 <strong>Identity Verification Required</strong><br/>Submit your National ID to become a verified seller.</div>
         <div class="fg"><label class="fl">Full name (as on ID)</label><input class="fi" id="kyc-name" placeholder="Jean Paul Mutoni"/></div>
         <div class="fg"><label class="fl">National ID Number</label><input class="fi" id="kyc-id" placeholder="1199XXXXXXXXX XX XXX X"/></div>
-        <div class="fg">
-          <label class="fl">Upload ID photo</label>
-          <div class="img-drop" id="kyc-drop" onclick="document.getElementById('kyc-file').click()" ondragover="event.preventDefault();this.classList.add('over')" ondragleave="this.classList.remove('over')" ondrop="handleKycDrop(event)">
-            <div id="kyc-preview-area"><div style="font-size:28px;margin-bottom:6px;">📷</div><div style="font-size:13px;color:var(--ink3);">Click to upload your ID image</div><div style="font-size:11px;color:var(--ink4);margin-top:3px;">JPEG, PNG — max 5MB</div></div>
-            <input type="file" id="kyc-file" accept="image/*" style="display:none;" onchange="handleKycUpload(this.files[0])"/>
-          </div>
-        </div>
-        <button class="btn-or btn-or-dk" onclick="submitKYC()">Submit for review →</button>
       </div>
     </div>
   </div>
@@ -953,17 +945,22 @@ tr:hover td{background:var(--bg);}
         <div id="become-seller-kyc" style="display:none;">
           <div style="font-size:20px;font-weight:700;margin-bottom:20px;">Complete Your ID Verification</div>
           <p style="color:var(--ink3);margin-bottom:20px;">Upload a clear photo of your national ID to start selling. We'll review and approve within 4 hours.</p>
+          
           <div class="fld"><label class="fld-lbl">Full Name</label><input class="fld-inp" id="kyc-name" placeholder="Your full name"/></div>
           <div class="fld"><label class="fld-lbl">ID Number</label><input class="fld-inp" id="kyc-id" placeholder="Your national ID number"/></div>
-          <div class="fld"><label class="fld-lbl">Upload ID Photo</label>
-            <div style="border:2px dashed var(--border);border-radius:var(--r8);padding:32px;text-align:center;cursor:pointer;background:var(--bg2);" ondrop="handleKycDrop(event)" ondragover="event.preventDefault()" onclick="document.getElementById('kyc-file-inp').click()">
-              <div style="font-size:32px;margin-bottom:8px;">📸</div>
-              <div style="font-size:14px;color:var(--ink3);">Drag & drop or click to upload</div>
-              <input type="file" id="kyc-file-inp" style="display:none;" accept="image/*" onchange="handleKycUpload(this.files[0])"/>
+          
+          <div class="fld">
+            <label class="fld-lbl">Upload ID Photo</label>
+            <div id="kyc-upload-box" style="border:2px dashed var(--border);border-radius:var(--r8);padding:40px 24px;text-align:center;cursor:pointer;background:var(--bg2);transition:all 0.2s;" onmouseenter="this.style.background='var(--bg3)'" onmouseleave="this.style.background='var(--bg2)'" ondrop="handleKycDrop(event)" ondragover="event.preventDefault();event.stopPropagation();this.style.borderColor='var(--or)';this.style.background='var(--abg)'" ondragleave="this.style.borderColor='var(--border)';this.style.background='var(--bg2)'" onclick="document.getElementById('kyc-file-input').click()">
+              <div style="font-size:36px;margin-bottom:8px;">📸</div>
+              <div style="font-size:15px;font-weight:600;color:var(--ink);margin-bottom:4px;">Click or drag photo here</div>
+              <div style="font-size:12px;color:var(--ink3);">JPEG, PNG or GIF (max 5MB)</div>
+              <input type="file" id="kyc-file-input" accept="image/*" style="display:none;" onchange="handleKycUpload(this.files[0])"/>
             </div>
             <div id="kyc-preview-area" style="margin-top:12px;"></div>
           </div>
-          <button class="btn-or btn-or-dk" style="width:100%;padding:12px;" onclick="submitKYC()">Submit for Verification</button>
+          
+          <button class="btn-or btn-or-dk" style="width:100%;padding:12px;margin-top:12px;" onclick="submitKYC()">Submit for Verification</button>
         </div>
         <!-- LOGIN PROMPT (shown for guests) -->
         <div id="become-seller-login" style="display:none;text-align:center;padding:32px;">
@@ -1515,19 +1512,47 @@ async function doSignup(){
   loginSuccess();
 }
 function handleKycUpload(file){
-  if(!file)return;
-  const r=new FileReader();
-  r.onload=e=>{
-    kycImageData=e.target.result;
+  console.log('handleKycUpload called with file:', file);
+  if(!file){
+    console.warn('No file provided');
+    toast('No file selected','r');
+    return;
+  }
+  if(!file.type.startsWith('image/')){
+    console.warn('File is not an image:', file.type);
+    toast('Please select an image file','r');
+    return;
+  }
+  console.log('Reading file:', file.name, 'size:', file.size);
+  const reader=new FileReader();
+  reader.addEventListener('load',function(){
+    console.log('File loaded successfully');
+    kycImageData=reader.result;
+    console.log('kycImageData set, length:', kycImageData.length);
     const preview=document.getElementById('kyc-preview-area');
+    console.log('preview element:', preview);
     if(preview){
-      preview.innerHTML=`<div style="text-align:center;"><img src="${e.target.result}" style="max-height:120px;border-radius:6px;margin-top:8px;"/><div style="font-size:12px;color:var(--g);margin-top:6px;">✓ Photo uploaded</div></div>`;
+      const img=`<div style="text-align:center;padding:16px;"><img src="${kycImageData}" style="max-height:120px;border-radius:8px;border:2px solid var(--g);"/><div style="font-size:13px;color:var(--g);font-weight:600;margin-top:12px;">✓ Photo uploaded</div></div>`;
+      preview.innerHTML=img;
+      console.log('Preview updated');
     }
-    toast('✓ ID photo ready','g');
-  };
-  r.readAsDataURL(file);
+    toast('✓ Photo ready to submit','g');
+  });
+  reader.addEventListener('error',function(){
+    console.error('FileReader error');
+    toast('Failed to read file','r');
+  });
+  reader.readAsDataURL(file);
 }
-function handleKycDrop(e){e.preventDefault();const f=e.dataTransfer.files[0];if(f)handleKycUpload(f);}
+function handleKycDrop(e){
+  e.preventDefault();
+  console.log('Drop detected');
+  const files=e.dataTransfer.files;
+  if(files && files.length>0){
+    console.log('File dropped:', files[0].name);
+    handleKycUpload(files[0]);
+  }
+}
 async function submitKYC(){
   const n=document.getElementById('kyc-name').value.trim(),i=document.getElementById('kyc-id').value.trim();
   if(!n||!i){toast('Please fill all KYC fields','r');return;}
