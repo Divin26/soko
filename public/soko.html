@@ -1396,28 +1396,11 @@ let KYC=[
   {id:'kyc-5',name:'Eva Ingabire',phone:'+250788111005',idNum:'1200580015010055',date:'2025-05-02',status:'rejected',idImage:null},
 ];
 
-let USERS=[
-  {name:'Jean Mutoni',phone:'+250788000001',role:'buyer',verified:true,joined:'2025-04-01',status:'active',earnings:0,pendingPayout:0},
-  {name:'Marie Claire',phone:'+250788000002',role:'buyer',verified:true,joined:'2025-04-05',status:'active',earnings:0,pendingPayout:0},
-  {name:'Alice Uwimana',phone:'+250788111001',role:'seller',verified:true,joined:'2025-04-10',status:'active',earnings:139300,pendingPayout:94300},
-  {name:'Bob Ndikumana',phone:'+250788111002',role:'seller',verified:false,joined:'2025-05-06',status:'pending',earnings:0,pendingPayout:0},
-  {name:'TechHub RW',phone:'+250788100001',role:'seller',verified:true,joined:'2025-03-15',status:'active',earnings:285600,pendingPayout:180000},
-  {name:'System Admin',phone:'+250788000000',role:'admin',verified:true,joined:'2025-01-01',status:'active',earnings:0,pendingPayout:0},
-];
+let USERS=[];
 
-let PAYOUTS=[
-  {id:'PAY-001',seller:'Alice Uwimana',phone:'+250788111001',amount:94300,ordersCount:3,method:'MTN MoMo',status:'pending',date:'2025-05-08'},
-  {id:'PAY-002',seller:'TechHub RW',phone:'+250788100001',amount:180000,ordersCount:7,method:'MTN MoMo',status:'pending',date:'2025-05-07'},
-  {id:'PAY-003',seller:'PhoneCity KG',phone:'+250788200002',amount:198400,ordersCount:2,method:'Bank Transfer',status:'pending',date:'2025-05-06'},
-  {id:'PAY-004',seller:'Umucyo Fashion',phone:'+250788300003',amount:62000,ordersCount:5,method:'Airtel Money',status:'pending',date:'2025-05-05'},
-  {id:'PAY-005',seller:'SportZone RW',phone:'+250788400004',amount:145000,ordersCount:8,method:'MTN MoMo',status:'paid',date:'2025-05-01'},
-];
+let PAYOUTS=[];
 
-let DISPUTES=[
-  {id:'DSP-01',buyer:'Jean Mutoni',orderId:'ORD-2030',type:'Wrong item received',desc:'Received white shoes but ordered black.',status:'open',escrowAction:'frozen',date:'2025-05-08'},
-  {id:'DSP-02',buyer:'Marie Claire',orderId:'ORD-2028',type:'Item not delivered',desc:'Order cancelled but MoMo was charged.',status:'open',escrowAction:'frozen',date:'2025-05-07'},
-  {id:'DSP-03',buyer:'Eric Habimana',orderId:'ORD-2035',type:'Damaged product',desc:'Dress arrived with a tear.',status:'resolved',escrowAction:'released',date:'2025-05-05'},
-];
+let DISPUTES=[];
 
 // STATE
 let cart=[],currentUser=null,lang='en',selectedRole='buyer';
