@@ -1532,48 +1532,39 @@ function handleKycDrop(e){
   }
 }
 async function submitKYC(){
-  console.log('submitKYC called');
-  const nameInput=document.getElementById('kyc-name');
-  const idInput=document.getElementById('kyc-id');
+  const nameInput=document.querySelector('input[placeholder="Your full name"]');
+  const idInput=document.querySelector('input[placeholder="Your national ID number"]');
   
-  console.log('nameInput element:', nameInput);
-  console.log('idInput element:', idInput);
+  const n=nameInput?.value?.trim() || '';
+  const i=idInput?.value?.trim() || '';
   
-  const n=nameInput ? nameInput.value.trim() : '';
-  const i=idInput ? idInput.value.trim() : '';
+  alert(`Checking:\nName="${n}"\nID="${i}"\nPhoto=${kycImageData?'YES':'NO'}`);
   
-  console.log('name value:', n);
-  console.log('id value:', i);
-  console.log('kycImageData:', kycImageData);
+  if(!n||n.length<2){alert('Name empty or too short');return;}
+  if(!i||i.length<5){alert('ID empty or too short');return;}
+  if(!kycImageData){alert('No photo uploaded');return;}
+  if(!currentUser||!currentUser.email){alert('Not logged in');return;}
   
-  if(!n){toast('Please enter your full name','r');return;}
-  if(!i){toast('Please enter your ID number','r');return;}
-  if(!kycImageData){toast('Please upload an ID photo','r');return;}
-  if(!currentUser||!currentUser.email){toast('Please log in first','r');return;}
-  
-  toast('Submitting KYC…');
+  alert('Submitting to database...');
   if(sb){
     try{
-      const{data,error}=await sb.from('kyc_submissions').insert([{user_id:currentUser.email,name:n,id_number:i,id_image:kycImageData,submitted_at:new Date().toISOString(),status:'pending'}]).select().single();
-      if(error){toast('KYC submission failed: '+error.message,'r');console.error(error);return;}
-      // Update user status to pending, but keep role as buyer until admin approves
-      const{error:updateError}=await sb.from('users').update({status:'pending'}).eq('email',currentUser.email);
-      if(updateError){console.error('Status update error:',updateError);}
+      const{data,error}=await sb.from('kyc_submissions').insert([{user_id:currentUser.email,name:n,id_number:i,id_image:kycImageData,submitted_at:new Date().toISOString(),status:'pending'}]);
+      if(error){alert('DB Error: '+error.message);return;}
       
+      await sb.from('users').update({status:'pending'}).eq('email',currentUser.email);
       currentUser.status='pending';
       buyerShowView('home');
-      toast('✓ KYC submitted! Admin will review within 4 hours.','g');
+      alert('✓ KYC Submitted! Waiting for admin review.');
       return;
     }catch(err){
-      toast('Error submitting KYC: '+err.message,'r');
-      console.error('submitKYC error:',err);
+      alert('Error: '+err.message);
       return;
     }
   }
   KYC.push({id:'kyc-'+(KYC.length+1),name:n,idNum:i,date:new Date().toISOString().slice(0,10),status:'pending',idImage:kycImageData});
   currentUser.status='pending';
   buyerShowView('home');
-  toast('✓ KYC submitted! Admin will review within 4 hours.','g');
+  alert('✓ KYC Submitted!');
 }
 function loginSuccess(){
   currentUser={...signupData};
