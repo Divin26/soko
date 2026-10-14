@@ -9,17 +9,28 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --or:#FF9900;--ordk:#E47911;--or2:#FEBD69;
-  --nv:#131921;--nv2:#232F3E;
-  --g:#067D62;--g2:#04A97E;--gd:#046B53;--gbg:#E8F5F1;--gb:#A8DDD0;
-  --r:#CC0C39;--rbg:#FFF0F3;--rb:#FFB3C1;
-  --b:#0070C0;--bbg:#EEF6FF;--bb:#B3D9FF;
-  --a:#FF9900;--abg:#FFF8EE;--ab:#FFD580;
-  --ink:#0F1111;--ink2:#333;--ink3:#565959;--ink4:#767676;
-  --bg:#EAEDED;--bg2:#F3F3F3;--bg3:#E3E6E6;
-  --w:#FFF;--border:1px solid #DDD;--border2:1px solid #EEE;
-  --r4:4px;--r8:8px;--r12:12px;
-  --sh:0 2px 5px rgba(0,0,0,.12);--shm:0 4px 16px rgba(0,0,0,.15);--shl:0 8px 32px rgba(0,0,0,.2);
+  /* brand — warm amber, our action colour */
+  --or:#E0912A;--ordk:#C2761B;--or2:#F2C879;
+  /* chrome — ink blue instead of near-black */
+  --nv:#122438;--nv2:#1B3348;
+  /* money / success — emerald */
+  --g:#0C7355;--g2:#0E9469;--gd:#085C43;--gbg:#E9F4EF;--gb:#AED9C8;
+  /* alerts — terracotta */
+  --r:#C2452E;--rbg:#FBEDE9;--rb:#EDBBAF;
+  /* info — azure */
+  --b:#2C6BAE;--bbg:#EDF3FA;--bb:#BBD3EA;
+  /* accent aliases */
+  --a:#E0912A;--abg:#FCF5E8;--ab:#EFD7A4;
+  /* ink */
+  --ink:#17222E;--ink2:#37424C;--ink3:#5A6672;--ink4:#78838D;
+  /* surfaces — warm sand instead of cool grey */
+  --bg:#F3F1EC;--bg2:#EEEBE5;--bg3:#E1DCD3;
+  --w:#FFF;--border:1px solid #DDD7CD;--border2:1px solid #ECE8E1;
+  /* softer geometry than the old 4/8/12 */
+  --r4:6px;--r8:12px;--r12:18px;
+  --sh:0 1px 2px rgba(23,34,46,.06),0 2px 6px rgba(23,34,46,.05);
+  --shm:0 4px 14px rgba(23,34,46,.10);
+  --shl:0 12px 36px rgba(23,34,46,.16);
   --font:'Inter',sans-serif;--font2:'Outfit',sans-serif;
 }
 body{font-family:var(--font);background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;}
@@ -56,7 +67,7 @@ img{display:block;max-width:100%;}
 .fg2{display:grid;grid-template-columns:1fr 1fr;gap:10px;}
 .btn-or{width:100%;padding:11px;border-radius:var(--r4);border:1px solid var(--ordk);background:linear-gradient(to bottom,#FFD814,#F7CA00);color:var(--ink);font-size:14px;font-weight:700;cursor:pointer;}
 .btn-or:hover{background:linear-gradient(to bottom,#F7CA00,#EEB901);}
-.btn-or-dk{background:linear-gradient(to bottom,#F0C14B,#E47911);border-color:#B35A00;}
+.btn-or-dk{background:linear-gradient(to bottom,#F0C14B,#C2761B);border-color:#B35A00;}
 .dl{color:var(--b);font-weight:600;cursor:pointer;text-decoration:underline;}
 .role-opt.active,.role-opt:hover{border-color:var(--or);background:var(--abg);}
 /* ── TOPNAV ───────────────────────────────────────────────── */
@@ -111,7 +122,7 @@ img{display:block;max-width:100%;}
 .snav{padding:6px 12px;color:#fff;font-size:13px;font-weight:600;cursor:pointer;white-space:nowrap;border:2px solid transparent;border-radius:var(--r4);transition:border-color .15s;}
 .snav:hover{border-color:#fff;}
 /* ── HERO ─────────────────────────────────────────────────── */
-.hero{background:linear-gradient(135deg,#131921 0%,#1d3461 50%,#0a1f0a 100%);padding:44px 24px 36px;color:#fff;position:relative;overflow:hidden;}
+.hero{background:linear-gradient(135deg,#122438 0%,#1d3461 50%,#0a1f0a 100%);padding:44px 24px 36px;color:#fff;position:relative;overflow:hidden;}
 .hero::after{content:'🛍️';position:absolute;right:-20px;bottom:-30px;font-size:200px;opacity:.05;}
 .hero-inner{position:relative;z-index:1;max-width:520px;}
 .hero-eye{display:inline-block;background:rgba(255,153,0,.18);border:1px solid rgba(255,153,0,.3);color:var(--or2);padding:5px 14px;border-radius:20px;font-size:11px;font-weight:700;letter-spacing:.06em;margin-bottom:12px;}
@@ -137,7 +148,7 @@ img{display:block;max-width:100%;}
 .promo-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px;}
 .promo-tile{border-radius:var(--r12);padding:20px;min-height:128px;position:relative;overflow:hidden;cursor:pointer;display:flex;flex-direction:column;justify-content:space-between;}
 .promo-tile::after{content:attr(data-emoji);position:absolute;right:-5px;bottom:-10px;font-size:76px;opacity:.12;}
-.pt1{background:linear-gradient(135deg,#131921,#1d3461);}
+.pt1{background:linear-gradient(135deg,#122438,#1d3461);}
 .pt2{background:linear-gradient(135deg,#1a0a05,#7B1818);}
 .pt3{background:linear-gradient(135deg,#0a1f0a,#1a4a1a);}
 .pt4{background:linear-gradient(135deg,#1a1005,#4a3000);}
@@ -299,7 +310,7 @@ img{display:block;max-width:100%;}
 .metric-sub{font-size:12px;color:var(--ink4);margin-top:4px;}
 .mc-g{color:var(--g);}
 .mc-o{color:var(--or);}
-.earn-card{background:linear-gradient(135deg,#131921,#0a1f0a);border-radius:var(--r8);padding:20px;color:#fff;margin-bottom:16px;}
+.earn-card{background:linear-gradient(135deg,#122438,#0a1f0a);border-radius:var(--r8);padding:20px;color:#fff;margin-bottom:16px;}
 .earn-lbl{font-size:11px;text-transform:uppercase;letter-spacing:.06em;color:rgba(255,255,255,.4);margin-bottom:5px;}
 .earn-val{font-family:var(--font2);font-size:30px;font-weight:800;margin-bottom:4px;}
 .earn-grid{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;}
@@ -439,14 +450,14 @@ tr:hover td{background:var(--bg);}
 }
 ::-webkit-scrollbar{width:4px;height:4px;}
 ::-webkit-scrollbar-thumb{background:var(--bg3);border-radius:2px;}
-#ai-chat-btn{position:fixed;bottom:86px;right:20px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#131921,#1d3461);border:2px solid #FF9900;color:#fff;font-size:24px;cursor:pointer;box-shadow:0 8px 32px rgba(0,0,0,.2);z-index:500;display:none;align-items:center;justify-content:center;}
+#ai-chat-btn{position:fixed;bottom:86px;right:20px;width:56px;height:56px;border-radius:50%;background:linear-gradient(135deg,#122438,#1d3461);border:2px solid #E0912A;color:#fff;font-size:24px;cursor:pointer;box-shadow:0 8px 32px rgba(0,0,0,.2);z-index:500;display:none;align-items:center;justify-content:center;}
 #ai-chat-btn.visible{display:flex;}
 #ai-chat-panel{position:fixed;bottom:155px;right:20px;width:320px;background:#fff;border:1px solid #DDD;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.2);z-index:500;display:none;flex-direction:column;max-height:420px;}
 #ai-chat-panel.open{display:flex;}
 .ai-msg.bot{background:#fff;border:1px solid #DDD;align-self:flex-start;}
-.ai-msg.user{background:#FF9900;color:#0F1111;align-self:flex-end;}
-.ai-msg.typing{color:#767676;font-style:italic;}
-.ai-gen-btn{padding:8px 14px;background:linear-gradient(135deg,#131921,#1d3461);color:#FF9900;border:1px solid #FF9900;border-radius:4px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px;width:100%;display:flex;align-items:center;justify-content:center;gap:6px;}
+.ai-msg.user{background:#E0912A;color:#17222E;align-self:flex-end;}
+.ai-msg.typing{color:#78838D;font-style:italic;}
+.ai-gen-btn{padding:8px 14px;background:linear-gradient(135deg,#122438,#1d3461);color:#E0912A;border:1px solid #E0912A;border-radius:4px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px;width:100%;display:flex;align-items:center;justify-content:center;gap:6px;}
 .ai-gen-btn:disabled{opacity:.5;cursor:not-allowed;}
 
 
@@ -468,16 +479,16 @@ tr:hover td{background:var(--bg);}
 <div class="auth-page">
   <div class="auth-hdr">
     <div class="auth-logo">SO<span>KO</span></div>
-    <div class="auth-tag">🇷🇼 Rwanda's #1 Marketplace · Escrow-Protected · Verified Sellers</div>
+    <div class="auth-tag">🇷🇼 Rwanda's marketplace · Escrow-protected · verified sellers</div>
   </div>
   <div class="auth-body">
     <div class="auth-side">
       <div class="auth-side-title">Why choose SOKO?</div>
-      <div class="auth-feat"><div class="af-icon">🔒</div><div><div class="af-title">Escrow-Protected Payments</div><div class="af-desc">Your money is held safely and only released when you confirm delivery. Zero risk.</div></div></div>
+      <div class="auth-feat"><div class="af-icon">🔒</div><div><div class="af-title">Escrow-Protected Payments</div><div class="af-desc">Your money is held safely and only released when you confirm delivery.</div></div></div>
       <div class="auth-feat"><div class="af-icon">✅</div><div><div class="af-title">KYC-Verified Sellers</div><div class="af-desc">Every seller submits a National ID. You always know who you're buying from.</div></div></div>
       <div class="auth-feat"><div class="af-icon">🏍️</div><div><div class="af-title">Fast Local Delivery</div><div class="af-desc">Moto delivery across Kigali and major cities. Food, electronics, fashion — same day.</div></div></div>
       <div class="auth-feat"><div class="af-icon">📲</div><div><div class="af-title">MTN MoMo & Airtel Money</div><div class="af-desc">Pay the way Rwanda pays. Mobile money, cash on delivery, or card.</div></div></div>
-      <div class="auth-trust"><span>🇷🇼 Made in Rwanda</span><span>🔒 Low platform fee</span><span>✓ 500+ Sellers</span><span>98% to seller</span></div>
+      <div class="auth-trust"><span>🇷🇼 Made in Rwanda</span><span>🔒 Escrow-protected</span><span>🪪 ID-verified sellers</span><span>📲 Payouts to MoMo</span></div>
     </div>
     <div class="auth-form-wrap">
       <div class="auth-tabs">
@@ -541,12 +552,12 @@ tr:hover td{background:var(--bg);}
     </div>
     <div class="tnav-right">
       <div class="tnav-link" onclick="toggleAcctDD()">
-        <div class="tnav-link-top">Hello, <span id="buyer-name-nav">sign in</span></div>
-        <div class="tnav-link-bot">Account & Lists ▾</div>
+        <div class="tnav-link-top">Karibu, <span id="buyer-name-nav">sign in</span></div>
+        <div class="tnav-link-bot">My account ▾</div>
       </div>
       <div class="tnav-link" onclick="buyerShowView('orders')">
-        <div class="tnav-link-top">Returns</div>
-        <div class="tnav-link-bot">& Orders</div>
+        <div class="tnav-link-top">My</div>
+        <div class="tnav-link-bot">Orders</div>
       </div>
       <div class="tnav-cart" onclick="buyerShowView('cart')">
         <span style="font-size:26px;color:#fff;">🛒</span>
@@ -625,7 +636,7 @@ tr:hover td{background:var(--bg);}
     <div id="buyer-home">
       <div class="hero">
         <div class="hero-inner">
-          <div class="hero-eye">🇷🇼 Rwanda's #1 Marketplace</div>
+          <div class="hero-eye">🇷🇼 Built in Rwanda, for Rwanda</div>
           <div class="hero-title" id="hero-title">Everything you need,<br/>delivered with <em>confidence</em></div>
           <div class="hero-desc" id="hero-desc">Food, electronics, fashion & more from KYC-verified Rwanda sellers. Every payment escrow-protected.</div>
           <div class="hero-btns">
@@ -633,10 +644,10 @@ tr:hover td{background:var(--bg);}
             <button class="btn-hero btn-hero-s" onclick="buyerShowView('become-seller')">Start Selling</button>
           </div>
           <div class="hero-stats">
-            <div><div class="hstat-v">500+</div><div class="hstat-l">Verified Sellers</div></div>
-            <div><div class="hstat-v">10K+</div><div class="hstat-l">Products</div></div>
-            <div><div class="hstat-v">🔒 Safe</div><div class="hstat-l">Escrow protected</div></div>
-            <div><div class="hstat-v">98%</div><div class="hstat-l">Seller receives</div></div>
+            <div><div class="hstat-v">🔒</div><div class="hstat-l">Escrow-protected</div></div>
+            <div><div class="hstat-v">🪪</div><div class="hstat-l">ID-verified sellers</div></div>
+            <div><div class="hstat-v">🏍️</div><div class="hstat-l">Kigali moto delivery</div></div>
+            <div><div class="hstat-v">📲</div><div class="hstat-l">MoMo &amp; Airtel Money</div></div>
           </div>
         </div>
       </div>
@@ -1451,7 +1462,7 @@ function renderProds(list,cid){
   const c=document.getElementById(cid);if(!c)return;
   if(!list.length){c.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--ink3);"><div style="font-size:40px;margin-bottom:10px;">🔍</div><div style="font-weight:600;">No products found</div></div>`;return;}
   c.innerHTML=list.map(p=>{
-    const badge=p.badge?`<div class="prod-badge ${p.badge}">${p.badge==='hot'?'Best Seller':p.badge==='new'?'New':'Sale'}</div>`:'';
+    const badge=p.badge?`<div class="prod-badge ${p.badge}">${p.badge==='hot'?'Top rated':p.badge==='new'?'New':'Sale'}</div>`:'';
     const thumb=(p.images&&p.images.length)?`<img src="${p.images[0]}" style="width:100%;height:100%;object-fit:cover;"/>`:`<span>${p.emoji}</span>`;
     return `<div class="prod-card"><div class="prod-thumb">${badge}${thumb}</div><div class="prod-info" onclick="showProduct(${p.id})"><div class="prod-brand">${p.seller}</div><div class="prod-name">${p.name}</div><div><span class="prod-stars">${stars(p.rating)}</span><span class="prod-rc">${p.reviews.toLocaleString()}</span></div><div class="prod-price">RWF ${fmt(p.price)}</div><div style="font-size:11px;color:var(--g);font-weight:600;">🔒 Payment protected</div></div><div style="padding:0 12px 12px;"><button class="btn-atc" onclick="addToCartGrid(event,${p.id})">Add to cart</button></div></div>`;
   }).join('');
@@ -1544,8 +1555,8 @@ function showProduct(id){
       </div>
       <div class="buy-box">
         <div class="buy-box-price">RWF ${fmt(p.price)}</div>
-        <div style="font-size:13px;margin-bottom:4px;">FREE delivery <b style="color:var(--b);">tomorrow</b></div>
-        <div style="font-size:12px;color:var(--b);cursor:pointer;margin-bottom:10px;" onclick="openModal('modal-location')">📍 Deliver to ${currentLocation.split(',')[0]}</div>
+        <div style="font-size:13px;margin-bottom:4px;">Moto delivery <b style="color:var(--b);">in Kigali</b></div>
+        <div style="font-size:12px;color:var(--b);cursor:pointer;margin-bottom:10px;" onclick="openModal('modal-location')">📍 Delivering to ${currentLocation.split(',')[0]}</div>
         <div class="buy-box-stock">${p.stock>0?'In Stock':'Out of Stock'}</div>
         ${p.stock>0?`<div style="font-size:12px;font-weight:600;margin-bottom:6px;">Qty:</div>
         <div class="qty-ctrl"><button class="qty-btn" onclick="changeQty(-1)">−</button><span class="qty-num" id="detail-qty">1</span><button class="qty-btn" onclick="changeQty(1)">+</button></div>
@@ -1944,8 +1955,8 @@ async function sendAIMessage(){
   if(!msg)return;
   input.value='';
   const box=document.getElementById('ai-messages');
-  box.innerHTML+=`<div style="background:#FF9900;border-radius:8px;padding:10px 12px;font-size:13px;color:#0F1111;box-shadow:0 1px 4px rgba(0,0,0,.08);max-width:85%;align-self:flex-end;">${msg}</div>`;
-  box.innerHTML+=`<div id="ai-typing" style="background:#fff;border-radius:8px;padding:10px 12px;font-size:13px;color:#767676;max-width:85%;">Thinking…</div>`;
+  box.innerHTML+=`<div style="background:#E0912A;border-radius:8px;padding:10px 12px;font-size:13px;color:#17222E;box-shadow:0 1px 4px rgba(0,0,0,.08);max-width:85%;align-self:flex-end;">${msg}</div>`;
+  box.innerHTML+=`<div id="ai-typing" style="background:#fff;border-radius:8px;padding:10px 12px;font-size:13px;color:#78838D;max-width:85%;">Thinking…</div>`;
   box.scrollTop=box.scrollHeight;
   try{
     const response=await fetch('/api/ai',{
@@ -1960,7 +1971,7 @@ async function sendAIMessage(){
     box.scrollTop=box.scrollHeight;
   }catch(e){
     document.getElementById('ai-typing').remove();
-    box.innerHTML+=`<div style="background:#fff;border-radius:8px;padding:10px 12px;font-size:13px;color:#CC0C39;max-width:85%;">Something went wrong. Please try again.</div>`;
+    box.innerHTML+=`<div style="background:#fff;border-radius:8px;padding:10px 12px;font-size:13px;color:#C2452E;max-width:85%;">Something went wrong. Please try again.</div>`;
     box.scrollTop=box.scrollHeight;
   }
 }
@@ -1984,20 +1995,20 @@ async function sendAIMessage(){
 </div>
 
 <!-- AI CHAT BUTTON -->
-<div id="ai-fab" onclick="toggleAIChat()" style="position:fixed;bottom:24px;left:24px;z-index:9999;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#131921,#067D62);box-shadow:0 4px 16px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:22px;" title="Ask AI">🤖</div>
+<div id="ai-fab" onclick="toggleAIChat()" style="position:fixed;bottom:24px;left:24px;z-index:9999;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#122438,#0C7355);box-shadow:0 4px 16px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:22px;" title="Ask AI">🤖</div>
 
 <!-- AI CHAT POPUP -->
 <div id="ai-popup" style="display:none;position:fixed;bottom:88px;left:24px;z-index:9998;width:320px;background:#fff;border-radius:12px;box-shadow:0 8px 32px rgba(0,0,0,.2);overflow:hidden;flex-direction:column;">
-  <div style="background:linear-gradient(135deg,#131921,#067D62);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">
+  <div style="background:linear-gradient(135deg,#122438,#0C7355);padding:12px 16px;display:flex;align-items:center;justify-content:space-between;">
     <div style="color:#fff;font-weight:700;font-size:14px;">🤖 SOKO AI Assistant</div>
     <button onclick="toggleAIChat()" style="background:none;border:none;color:rgba(255,255,255,.7);font-size:18px;cursor:pointer;line-height:1;">✕</button>
   </div>
-  <div id="ai-messages" style="height:280px;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;background:#F3F3F3;">
+  <div id="ai-messages" style="height:280px;overflow-y:auto;padding:14px;display:flex;flex-direction:column;gap:10px;background:#EEEBE5;">
     <div style="background:#fff;border-radius:8px;padding:10px 12px;font-size:13px;color:#333;box-shadow:0 1px 4px rgba(0,0,0,.08);max-width:85%;">👋 Hi! I'm your SOKO assistant. Ask me anything about products, orders, or selling on SOKO!</div>
   </div>
   <div style="padding:10px;background:#fff;border-top:1px solid #EEE;display:flex;gap:8px;">
-    <input id="ai-input" placeholder="Ask something…" onkeydown="if(event.key==='Enter')sendAIMessage()" style="flex:1;padding:9px 12px;border:2px solid #E3E6E6;border-radius:20px;font-size:13px;outline:none;font-family:inherit;"/>
-    <button onclick="sendAIMessage()" style="width:36px;height:36px;border-radius:50%;background:#FF9900;border:none;font-size:16px;cursor:pointer;flex-shrink:0;">→</button>
+    <input id="ai-input" placeholder="Ask something…" onkeydown="if(event.key==='Enter')sendAIMessage()" style="flex:1;padding:9px 12px;border:2px solid #E1DCD3;border-radius:20px;font-size:13px;outline:none;font-family:inherit;"/>
+    <button onclick="sendAIMessage()" style="width:36px;height:36px;border-radius:50%;background:#E0912A;border:none;font-size:16px;cursor:pointer;flex-shrink:0;">→</button>
   </div>
 </div>
 </body>
