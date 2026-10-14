@@ -1424,7 +1424,11 @@ document.addEventListener('click',e=>{
 
 window.addEventListener('DOMContentLoaded',()=>{
   setTimeout(()=>{const ls=document.getElementById('loading-screen');if(ls)ls.classList.add('hidden');},1500);
-  restoreSession();
+  // Password recovery: Supabase returns the user with #access_token=…&type=recovery.
+  // onAuthStateChange covers the PKCE (?code=) variant, the hash check covers implicit.
+  const inRecovery=/[?#&]type=recovery/.test(window.location.hash+window.location.search);
+  if(sb)sb.auth.onAuthStateChange(event=>{if(event==='PASSWORD_RECOVERY')showPasswordReset();});
+  if(inRecovery)showPasswordReset();else restoreSession();
 });
 
 // LANGUAGE
@@ -1446,7 +1450,7 @@ function applyLang(l){
 // AUTH
 function authTab(t){
   ['login','signup'].forEach(x=>{document.getElementById('atab-'+x).classList.toggle('active',x===t);document.getElementById('apanel-'+x).style.display=x===t?'block':'none';});
-  document.getElementById('apanel-kyc').style.display='none';
+  const kycPanel=document.getElementById('apanel-kyc');if(kycPanel)kycPanel.style.display='none';
 }
 async function doLogin(){
   const identifier=document.getElementById('login-identifier').value.trim();
@@ -1628,6 +1632,28 @@ async function changeAdminPassword(){
   document.getElementById('admin-new-pass').value='';document.getElementById('admin-new-pass2').value='';
   toast('✓ Password updated','g');
 }
+
+// PASSWORD RECOVERY — landing for the link sent by forgotPassword().
+// Replaces the old React page that lived at src/components/ResetPassword.jsx.
+function showPasswordReset(){
+  const ls=document.getElementById('loading-screen');if(ls)ls.classList.add('hidden');
+  openModal('modal-reset-pass');
+  setTimeout(()=>{const f=document.getElementById('rp-new');if(f)f.focus();},60);
+}
+async function submitNewPassword(){
+  const p1=document.getElementById('rp-new').value,p2=document.getElementById('rp-confirm').value;
+  if(!p1||p1.length<6){toast('Password must be at least 6 characters','r');return;}
+  if(p1!==p2){toast('Passwords do not match','r');return;}
+  if(!sb){toast('Backend unavailable — try again shortly','r');return;}
+  const{error}=await sb.auth.updateUser({password:p1});
+  if(error){toast(error.message,'r');return;}
+  document.getElementById('rp-new').value='';document.getElementById('rp-confirm').value='';
+  closeModal('modal-reset-pass');
+  // Drop the recovery token from the URL so a refresh can't replay it.
+  history.replaceState(null,'',window.location.pathname);
+  toast('✓ Password updated','g');
+  await restoreSession();
+}
 async function forgotPassword(){
   const identifier=document.getElementById('login-identifier').value.trim();
   if(!identifier){toast('Enter your email or phone first','r');return;}
@@ -1642,7 +1668,7 @@ async function forgotPassword(){
     const{data:match}=await sb.from('users').select('role').eq('email',email).single();
     if(match&&match.role==='admin'){toast('Admin passwords can only be changed from inside the Admin panel','r');return;}
   }
-  const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin});
+  const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+'/reset-password'});
   if(error){toast(error.message,'r');return;}
   toast('✓ Password reset link sent to '+email,'g');
 }
@@ -2492,7 +2518,7 @@ async function aiGenerateDesc(){
   const btn=document.getElementById('ai-gen-desc-btn'),label=document.getElementById('ai-gen-label');
   btn.disabled=true;if(label)label.textContent='Generating…';
   try{
-    const res=await fetch('/.netlify/functions/ai',{method:'POST',headers:{'Content-Type':'application/json'},
+    const res=await fetch('/api/ai',{method:'POST',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({message:`Write a short, appealing 2-3 sentence product description for a Rwanda marketplace listing. Product name: "${name}". Category: ${cat}. No markdown, no quotes, just the description text.`})});
     const data=await res.json();
     const desc=data.content?.[0]?.text?.trim();
@@ -2511,7 +2537,7 @@ async function sendAIMessage(){
   box.innerHTML+=`<div id="ai-typing" style="background:#fff;border-radius:8px;padding:10px 12px;font-size:13px;color:#767676;max-width:85%;">Thinking…</div>`;
   box.scrollTop=box.scrollHeight;
   try{
-    const response=await fetch('/.netlify/functions/ai',{
+    const response=await fetch('/api/ai',{
       method:'POST',
       headers:{'Content-Type':'application/json'},
       body:JSON.stringify({message:msg})
@@ -2528,6 +2554,24 @@ async function sendAIMessage(){
   }
 }
 </script>
+<!-- RESET PASSWORD (Supabase recovery link lands here) -->
+<div class="modal-bg" id="modal-reset-pass">
+  <div class="modal">
+    <div class="modal-hd">
+      <div class="modal-title">🔑 Set a New Password</div>
+      <button class="modal-close" onclick="closeModal('modal-reset-pass')">✕</button>
+    </div>
+    <div class="modal-body">
+      <p style="font-size:13px;color:var(--ink3);margin:0 0 14px;">Choose a new password for your SOKO account.</p>
+      <div class="fld"><label class="fld-lbl">New password</label><input class="fld-inp" id="rp-new" type="password" placeholder="At least 6 characters"/></div>
+      <div class="fld"><label class="fld-lbl">Confirm new password</label><input class="fld-inp" id="rp-confirm" type="password" placeholder="Repeat password" onkeydown="if(event.key==='Enter')submitNewPassword()"/></div>
+    </div>
+    <div class="modal-footer">
+      <button class="bx bx-g" onclick="submitNewPassword()">Update Password</button>
+    </div>
+  </div>
+</div>
+
 <!-- AI CHAT BUTTON -->
 <div id="ai-fab" onclick="toggleAIChat()" style="position:fixed;bottom:24px;left:24px;z-index:9999;width:52px;height:52px;border-radius:50%;background:linear-gradient(135deg,#131921,#067D62);box-shadow:0 4px 16px rgba(0,0,0,.3);display:flex;align-items:center;justify-content:center;cursor:pointer;font-size:22px;" title="Ask AI">🤖</div>
 
