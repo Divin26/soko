@@ -1322,7 +1322,7 @@ async function submitKYC(){
   alert('Submitting to database...');
   if(sb){
     try{
-      const{data,error}=await sb.from('kyc_submissions').insert([{user_id:currentUser.email,name:n,id_number:i,id_image:kycImageData,submitted_at:new Date().toISOString(),status:'pending'}]);
+      const{data,error}=await sb.from('kyc_requests').insert([{user_id:currentUser.email,phone:currentUser.phone||null,name:n,id_number:i,id_image:kycImageData,submitted_at:new Date().toISOString(),status:'pending'}]);
       if(error){alert('DB Error: '+error.message);return;}
       
       await sb.from('users').update({status:'pending'}).eq('email',currentUser.email);
