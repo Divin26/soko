@@ -1,8 +1,13 @@
 # SOKO
 
 A marketplace for Rwanda — buyers browse and order, sellers list products and
-withdraw earnings, payments are held in escrow, sellers pass KYC verification,
-and admins approve KYC, manage orders and set the platform commission.
+withdraw earnings, payments are held in escrow, and sellers pass KYC
+verification.
+
+This repository is the **customer-facing site** (buyers and sellers). The
+**admin console** lives in its own repository, `soko-admin`, and deploys
+separately. Both point at the same Supabase project, so they always agree on
+state — they meet only in the database.
 
 ## How it's put together
 
@@ -11,7 +16,8 @@ self-contained file:
 
 ```
 public/
-  soko.html      ← the entire app: markup, CSS and JS inline (~2.6k lines)
+  soko.html      ← the whole site: buyer + seller + auth, markup/CSS/JS inline
+                    (the admin console was split out into the `soko-admin` repo)
 api/
   ai.js          ← Vercel function: proxies Gemini so the API key stays server-side
 supabase/
