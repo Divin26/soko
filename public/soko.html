@@ -1476,8 +1476,8 @@ function renderHeroPicks(){
   el.innerHTML=picks.map((p,i)=>{
     const image=Array.isArray(p.images)?p.images[0]:'';
     const visual=image?`<img src="${image}" alt="${p.name||'Product'}"/>`:`<span>${p.emoji||'✳'}</span>`;
-    const id=JSON.stringify(String(p.id));
-    return `<button class="hero-pick" onclick="showProduct(${id})" aria-label="View ${p.name||'product'}"><div class="hero-pick-visual">${visual}</div><div class="hero-pick-copy"><span>${getCat(p.cat)||'From the market'}</span><b>${p.name||'Product'}</b><em>RWF ${fmt(p.price)}</em></div><span class="hero-pick-arrow" aria-hidden="true">↗</span></button>`;
+    const id=safeInlineId(p.id);
+    return `<button class="hero-pick" onclick="showProduct('${id}')" aria-label="View ${p.name||'product'}"><div class="hero-pick-visual">${visual}</div><div class="hero-pick-copy"><span>${getCat(p.cat)||'From the market'}</span><b>${p.name||'Product'}</b><em>RWF ${fmt(p.price)}</em></div><span class="hero-pick-arrow" aria-hidden="true">↗</span></button>`;
   }).join('');
 }
 function renderCats(){
@@ -1497,9 +1497,9 @@ function renderProds(list,cid){
     const badge=p.badge?`<div class="prod-badge ${p.badge}">${p.badge==='hot'?'Top rated':p.badge==='new'?'New':'Sale'}</div>`:'';
     const images=Array.isArray(p.images)?p.images:[];
     const thumb=images[0]?`<img src="${images[0]}" alt="${p.name||'Product'}" loading="lazy"/>`:`<span>${p.emoji||'📦'}</span>`;
-    const productId=JSON.stringify(String(p.id)).replace(/"/g,'&quot;');
+    const productId=safeInlineId(p.id);
     const rating=Number(p.rating)||0,reviews=Number(p.reviews)||0;
-    return `<div class="prod-card"><div class="prod-thumb">${badge}${thumb}</div><div class="prod-info" onclick="showProduct(${productId})"><div class="prod-brand">${p.seller||'Local seller'}</div><div class="prod-name">${p.name||'Marketplace listing'}</div>${rating?`<div><span class="prod-stars">${stars(rating)}</span><span class="prod-rc">${reviews.toLocaleString()}</span></div>`:''}<div class="prod-price">RWF ${fmt(p.price)}</div></div><div style="padding:0 12px 12px;"><button class="btn-atc" onclick="addToCartGrid(event,${productId})">Add to cart</button></div></div>`;
+    return `<div class="prod-card"><div class="prod-thumb">${badge}${thumb}</div><div class="prod-info" onclick="showProduct('${productId}')"><div class="prod-brand">${p.seller||'Local seller'}</div><div class="prod-name">${p.name||'Marketplace listing'}</div>${rating?`<div><span class="prod-stars">${stars(rating)}</span><span class="prod-rc">${reviews.toLocaleString()}</span></div>`:''}<div class="prod-price">RWF ${fmt(p.price)}</div></div><div style="padding:0 12px 12px;"><button class="btn-atc" onclick="addToCartGrid(event,'${productId}')">Add to cart</button></div></div>`;
   }).join('');
 }
 function buildBecomeSeller(){
