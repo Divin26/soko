@@ -768,16 +768,17 @@ tr:hover td{background:var(--bg);}
   <!-- ACCOUNT DROPDOWN -->
   <div class="acct-dd" id="acct-dd">
     <div class="acct-dd-hdr">
-      <div class="acct-dd-name" id="acct-dd-name">Jean Mutoni</div>
-      <div class="acct-dd-role" id="acct-dd-role">Buyer Account</div>
+      <div class="acct-dd-name" id="acct-dd-name">Welcome to SOKO</div>
+      <div class="acct-dd-role" id="acct-dd-role">Guest account</div>
     </div>
-    <div class="acct-dd-item" onclick="buyerShowView('orders');closeAll()">📦 Your Orders</div>
-    <div class="acct-dd-item" onclick="buyerShowView('review');closeAll()">⭐ Write a Review</div>
-    <div class="acct-dd-item" onclick="buyerShowView('dispute');closeAll()">🛡️ Report a Problem</div>
+    <div class="acct-dd-item" id="acct-dd-guest" onclick="openAuthScreen('login')">🔐 Sign in or create an account</div>
+    <div class="acct-dd-item acct-authed-item" style="display:none;" onclick="buyerShowView('orders');closeAll()">📦 Your Orders</div>
+    <div class="acct-dd-item acct-authed-item" style="display:none;" onclick="buyerShowView('review');closeAll()">⭐ Write a Review</div>
+    <div class="acct-dd-item acct-authed-item" style="display:none;" onclick="buyerShowView('dispute');closeAll()">🛡️ Report a Problem</div>
     <div class="acct-dd-item" onclick="buyerShowView('become-seller');closeAll()">🏪 Sell on SOKO</div>
-    <div class="acct-dd-item" id="acct-dd-seller-switch" style="display:none;border-top:var(--border);color:var(--g);font-weight:600;" onclick="switchToSeller();closeAll()">📊 Go to Seller Dashboard</div>
-    <div class="acct-dd-item" onclick="toggleNotif();closeAcctDD()">🔔 Notifications</div>
-    <div class="acct-dd-item red" onclick="doLogout()">🚪 Sign Out</div>
+    <div class="acct-dd-item acct-authed-item" id="acct-dd-seller-switch" style="display:none;border-top:var(--border);color:var(--g);font-weight:600;" onclick="switchToSeller();closeAll()">📊 Go to Seller Dashboard</div>
+    <div class="acct-dd-item acct-authed-item" style="display:none;" onclick="toggleNotif();closeAcctDD()">🔔 Notifications</div>
+    <div class="acct-dd-item acct-authed-item red" style="display:none;" onclick="doLogout()">🚪 Sign Out</div>
   </div>
 
   <!-- NOTIFICATIONS PANEL -->
@@ -1362,6 +1363,7 @@ function handleKycDrop(e){
 }
 function loginSuccess(){
   currentUser={...signupData};
+  setAccountMenuState(true);
   document.getElementById('view-auth').classList.remove('active');
   if(currentUser.role==='seller'){document.getElementById('view-seller').classList.add('active');document.getElementById('acct-dd-seller-switch').style.display='none';buildSellerNav();loadProductsFromSupabase().then(()=>renderSeller('dashboard'));}
   else{
@@ -1386,6 +1388,8 @@ function switchToSeller(){
 async function doLogout(){
   if(sb){try{await sb.auth.signOut();}catch(e){console.log('signout:',e);}}
   currentUser=null;cart=[];signupData={};
+  setAccountMenuState(false);
+  closeAll();
   // Clear all views
   ['view-buyer','view-seller'].forEach(id=>{
     const el=document.getElementById(id);
@@ -1397,7 +1401,7 @@ async function doLogout(){
   // Clear OTP inputs
   ['otp1','otp2','otp3','otp4'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   // Clear login fields
-  ['login-email','login-phone','login-pass'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
+  ['login-identifier','login-pass'].forEach(id=>{const el=document.getElementById(id);if(el)el.value='';});
   closeAll();
   toast('You have signed out');
 }
@@ -1496,6 +1500,7 @@ function buildNotifs(){
 // BUYER NAVIGATION
 function buyerHome(){prevBuyerView=currentBuyerView;currentBuyerView='home';showBuyerSec('buyer-home');}
 function buyerShowView(v){
+  if(['orders','review','dispute'].includes(v)&&!currentUser){openAuthScreen('login');return;}
   prevBuyerView=currentBuyerView;currentBuyerView=v;
   const map={home:'buyer-home',shop:'buyer-shop',detail:'buyer-detail',cart:'buyer-cart',checkout:'buyer-checkout',orders:'buyer-orders','become-seller':'buyer-become-seller',dispute:'buyer-dispute',review:'buyer-review'};
   showBuyerSec(map[v]||'buyer-home');
@@ -1524,6 +1529,22 @@ function goBack(){
 }
 function focusSearch(){document.getElementById('search-inp')?.focus();}
 function bnavSet(btn){document.querySelectorAll('.bnav-item').forEach(b=>b.classList.remove('active'));btn.classList.add('active');}
+function setAccountMenuState(signedIn){
+  const guest=document.getElementById('acct-dd-guest');
+  if(guest)guest.style.display=signedIn?'none':'flex';
+  document.querySelectorAll('.acct-authed-item').forEach(item=>item.style.display=signedIn?'flex':'none');
+  const name=document.getElementById('acct-dd-name'),role=document.getElementById('acct-dd-role'),nav=document.getElementById('buyer-name-nav');
+  if(name)name.textContent=signedIn?(currentUser?.name||'Your account'):'Welcome to SOKO';
+  if(role)role.textContent=signedIn?`${(currentUser?.role||'buyer').replace(/^./,c=>c.toUpperCase())} Account`:'Guest account';
+  if(nav)nav.textContent=signedIn?(currentUser?.name||'').split(' ')[0]||'Account':'sign in';
+}
+function openAuthScreen(tab='login'){
+  closeAll();
+  document.getElementById('view-buyer').classList.remove('active');
+  document.getElementById('view-seller').classList.remove('active');
+  document.getElementById('view-auth').classList.add('active');
+  authTab(tab);
+}
 function toggleAcctDD(){document.getElementById('acct-dd').classList.toggle('open');document.getElementById('notif-panel').classList.remove('open');}
 function toggleNotif(){document.getElementById('notif-panel').classList.toggle('open');document.getElementById('acct-dd').classList.remove('open');}
 function toggleDrawer(){document.getElementById('all-drawer').classList.toggle('open');}
