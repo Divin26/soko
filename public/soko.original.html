@@ -940,13 +940,19 @@ tr:hover td{background:var(--bg);}
         <button class="back-btn" onclick="buyerShowView('cart')">← Back to Cart</button>
         <div class="breadcrumb"><a onclick="buyerShowView('cart')">Cart</a> › Checkout</div>
       </div>
-      <section class="checkout-unavailable">
-        <div class="checkout-unavailable-mark" aria-hidden="true">↗</div>
-        <span class="section-eyebrow">WE’RE GETTING THIS RIGHT</span>
-        <h2>Checkout is<br/><em>on its way.</em></h2>
-        <p>Online orders and payment aren’t connected yet. Visit a product page to contact its seller and arrange the details directly.</p>
-        <button class="hero-action-primary" onclick="buyerShowView('shop')">Back to the market <span aria-hidden="true">↗</span></button>
-      </section>
+      <div class="checkout-wrap">
+        <div class="checkout-main">
+          <section class="checkout-sec"><div class="checkout-sec-title">Where should the seller meet you?</div>
+            <div class="fld"><label class="fld-lbl" for="co-phone">Contact phone</label><input class="fld-inp" id="co-phone" type="tel" maxlength="24" placeholder="+250 7XX XXX XXX"/></div>
+            <div class="fld"><label class="fld-lbl" for="co-location">Location / address</label><input class="fld-inp" id="co-location" maxlength="120" placeholder="Neighbourhood, district, or pickup point"/></div>
+            <label class="del-opt sel" onclick="selDel(this)"><input type="radio" name="co-delivery" value="delivery" checked/> Delivery — seller confirms delivery cost</label>
+            <label class="del-opt" onclick="selDel(this)"><input type="radio" name="co-delivery" value="pickup"/> Pickup — agree on a pickup point with seller</label>
+          </section>
+          <section class="checkout-sec"><div class="checkout-sec-title">Payment</div><p style="margin:0;color:var(--ink3);line-height:1.6;">MTN MoMo and Airtel Money are being connected. This creates an unpaid order request; SOKO will not collect or hold money yet. Please wait for the seller to confirm the item and payment details.</p></section>
+          <section class="checkout-sec"><div class="checkout-sec-title">Review items</div><div id="co-summary"></div></section>
+        </div>
+        <aside class="checkout-sidebar"><div class="checkout-sec-title">Order total</div><div id="co-total"></div><button class="btn-place" id="place-order-btn" onclick="placeOrder()">Place order request</button><p style="font-size:11px;color:var(--ink3);line-height:1.5;margin:8px 0 0;">Items are not reserved and payment is not collected until provider checkout is enabled.</p></aside>
+      </div>
     </div>
 
     <!-- ── ORDERS ─────────────────────────────────────────────── -->
@@ -968,23 +974,28 @@ tr:hover td{background:var(--bg);}
         <!-- KYC FORM (shown when logged in) -->
         <div id="become-seller-kyc" style="display:none;">
           <div style="font-size:20px;font-weight:700;margin-bottom:20px;">Complete Your ID Verification</div>
-          <p style="color:var(--ink3);margin-bottom:20px;">Upload a clear photo of your national ID to start selling. Review times will be shown once the verification process is connected.</p>
+          <p style="color:var(--ink3);margin-bottom:12px;">Send a seller application for review. Your ID image and number are stored privately and visible only to you and authorised reviewers.</p>
+          <div id="seller-application-status" role="status" style="margin:0 0 16px;"></div>
+          <button id="seller-approved-switch" class="btn-or btn-or-dk" style="display:none;margin:8px 0 16px;padding:10px 16px;" onclick="switchToSeller()">Open Seller Central →</button>
+          <div id="seller-application-fields">
+          <div class="fld"><label class="fld-lbl" for="seller-store-name">Shop name</label><input class="fld-inp" id="seller-store-name" maxlength="80" placeholder="The name customers will see"/></div>
           
-          <div class="fld"><label class="fld-lbl">Full Name</label><input class="fld-inp" id="kyc-name" placeholder="Your full name"/></div>
-          <div class="fld"><label class="fld-lbl">ID Number</label><input class="fld-inp" id="kyc-id" placeholder="Your national ID number"/></div>
+          <div class="fld"><label class="fld-lbl" for="kyc-name">Full legal name</label><input class="fld-inp" id="kyc-name" maxlength="120" placeholder="Your full name"/></div>
+          <div class="fld"><label class="fld-lbl" for="kyc-id">National ID number</label><input class="fld-inp" id="kyc-id" maxlength="64" autocomplete="off" placeholder="Your national ID number"/></div>
           
           <div class="fld">
             <label class="fld-lbl">Upload ID Photo</label>
             <div id="kyc-upload-box" style="border:2px dashed var(--border);border-radius:var(--r8);padding:40px 24px;text-align:center;cursor:pointer;background:var(--bg2);transition:all 0.2s;" onmouseenter="this.style.background='var(--bg3)'" onmouseleave="this.style.background='var(--bg2)'" ondrop="handleKycDrop(event)" ondragover="event.preventDefault();event.stopPropagation();this.style.borderColor='var(--or)';this.style.background='var(--abg)'" ondragleave="this.style.borderColor='var(--border)';this.style.background='var(--bg2)'" onclick="document.getElementById('kyc-file-input').click()">
               <div style="font-size:36px;margin-bottom:8px;">📸</div>
               <div style="font-size:15px;font-weight:600;color:var(--ink);margin-bottom:4px;">Click or drag photo here</div>
-              <div style="font-size:12px;color:var(--ink3);">JPEG, PNG or GIF (max 5MB)</div>
+              <div style="font-size:12px;color:var(--ink3);">JPEG, PNG or WebP · max 5MB</div>
               <input type="file" id="kyc-file-input" accept="image/*" style="display:none;" onchange="handleKycUpload(this.files[0])"/>
             </div>
             <div id="kyc-preview-area" style="margin-top:12px;"></div>
           </div>
           
-          <button class="btn-or btn-or-dk" style="width:100%;padding:12px;margin-top:12px;" disabled title="Seller verification will be available when the service is connected.">Seller verification is being connected</button>
+          <button class="btn-or btn-or-dk" id="seller-application-submit" style="width:100%;padding:12px;margin-top:12px;" onclick="submitSellerApplication()">Submit seller application</button>
+          </div>
         </div>
         <!-- LOGIN PROMPT (shown for guests) -->
         <div id="become-seller-login" style="display:none;text-align:center;padding:32px;">
@@ -995,7 +1006,7 @@ tr:hover td{background:var(--bg);}
             <div style="padding:12px;background:var(--gbg);border-radius:var(--r4);"><div style="font-size:12px;font-weight:600;color:var(--g);">✓ Add your products</div><div style="font-size:11px;color:var(--ink3);margin-top:4px;">Use clear photos and details.</div></div>
             <div style="padding:12px;background:var(--gbg);border-radius:var(--r4);"><div style="font-size:12px;font-weight:600;color:var(--g);">✓ Meet your buyers</div><div style="font-size:11px;color:var(--ink3);margin-top:4px;">Answer questions directly.</div></div>
           </div>
-          <button class="btn-or btn-or-dk" style="width:auto;padding:12px 28px;" onclick="document.getElementById('view-auth').classList.add('active');document.getElementById('view-buyer').classList.remove('active');authTab('login');">Sign In to Sell →</button>
+          <button class="btn-or btn-or-dk" style="width:auto;padding:12px 28px;" onclick="startSellerSignIn()">Sign In to Sell →</button>
         </div>
       </div>
     </div>
@@ -1082,6 +1093,7 @@ tr:hover td{background:var(--bg);}
       <select style="padding:5px;background:rgba(255,255,255,.1);border:none;color:#fff;border-radius:3px;font-size:12px;outline:none;" onchange="applyLang(this.value)">
         <option value="en">EN</option><option value="fr">FR</option><option value="rw">RW</option>
       </select>
+      <button style="padding:8px 12px;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.24);border-radius:4px;color:#fff;font-size:12px;font-weight:700;cursor:pointer;" onclick="switchToBuyer()">🛍 Shop as buyer</button>
       <button style="padding:8px 18px;background:var(--r);border:none;border-radius:4px;color:#fff;font-size:13px;font-weight:700;cursor:pointer;" onclick="doLogout()">🚪 Sign Out</button>
     </div>
   </div>
@@ -1236,11 +1248,11 @@ function hydrateCart(){
   persistCart();updateCartBadge();
 }
 let cart=readSavedCart().map(item=>({...item,name:'Loading item…',price:0,emoji:'📦',images:[],seller:'Seller'})),currentUser=null,lang='en',selectedRole='buyer';
-let commissionRate=4;
+let commissionRateBps=null,commissionSettingsReady=false,currentMode='buyer',sellerSignInRequested=false;
 let currentBuyerView='home',prevBuyerView='home',activeProductId=null;
 let editingOrderId=null,editingPayoutId=null,pickedStar=0,signupData={};
 let currentShopList=[...PRODUCTS],currentLocation='Kigali, Rwanda';
-let prodImages=[],kycImageData=null;
+let prodImages=[],kycImageData=null,kycImageBlob=null;
 
 // UTILS
 const toast=(msg,type)=>{const t=document.getElementById('toast');t.textContent=msg;t.className=type?'show '+type:'show';clearTimeout(t._t);t._t=setTimeout(()=>t.classList.remove('show'),2800);};
@@ -1251,6 +1263,25 @@ const stars=r=>'★'.repeat(Math.round(r))+'☆'.repeat(5-Math.round(r));
 const fmt=n=>Number(n).toLocaleString();
 const closeAll=()=>{document.getElementById('acct-dd').classList.remove('open');document.getElementById('notif-panel').classList.remove('open');document.getElementById('all-drawer').classList.remove('open');};
 const closeAcctDD=()=>document.getElementById('acct-dd').classList.remove('open');
+
+async function loadMarketplaceSettings(){
+  if(!sb)return false;
+  const{data,error}=await sb.from('platform_settings').select('commission_rate_bps').eq('id',true).maybeSingle();
+  if(!error&&data){commissionRateBps=Number(data.commission_rate_bps);commissionSettingsReady=Number.isInteger(commissionRateBps);}
+  if(error)console.warn('Marketplace fee settings unavailable:',error.message);
+  if(commissionSettingsReady&&currentMode==='buyer'&&currentBuyerView==='checkout')renderCoSummary();
+  if(!window.sokoSettingsChannel){
+    window.sokoSettingsChannel=sb.channel('soko-platform-settings')
+      .on('postgres_changes',{event:'UPDATE',schema:'public',table:'platform_settings'},payload=>{
+        const next=Number(payload.new?.commission_rate_bps);
+        if(Number.isInteger(next)){commissionRateBps=next;commissionSettingsReady=true;}
+        if(currentMode==='seller'&&document.querySelector('#seller-content .seller-page-title')?.textContent==='Earnings')renderSeller('earnings');
+        if(currentMode==='buyer'&&currentBuyerView==='checkout')renderCoSummary();
+      }).subscribe();
+  }
+  return commissionSettingsReady;
+}
+function commissionPercentText(){return commissionRateBps===null?'Loading':`${(commissionRateBps/100).toFixed(commissionRateBps%100?2:0)}%`;}
 
 document.querySelectorAll('.modal-bg').forEach(b=>b.addEventListener('click',function(e){if(e.target===this)this.classList.remove('open');}));
 document.addEventListener('click',e=>{
@@ -1263,6 +1294,7 @@ window.addEventListener('DOMContentLoaded',()=>{
   setTimeout(()=>{const ls=document.getElementById('loading-screen');if(ls)ls.classList.add('hidden');},1500);
   buildBuyerHome();
   loadProductsFromSupabase().then(()=>buildBuyerHome());
+  loadMarketplaceSettings();
   // Password recovery: Supabase returns the user with #access_token=…&type=recovery.
   // onAuthStateChange covers the PKCE (?code=) variant, the hash check covers implicit.
   const inRecovery=/[?#&]type=recovery/.test(window.location.hash+window.location.search);
@@ -1305,13 +1337,13 @@ async function doLogin(){
   }
   if(error){toast(error.message,'r');return;}
   const userId=data.user?.id||data.session?.user?.id;
-  let{data:profile}=await sb.from('users').select('id,name,email,phone,role,verified,status,auth_id,created_at').eq('auth_id',userId).single();
+  let{data:profile}=await sb.from('users').select('id,name,email,phone,role,verified,status,auth_id,created_at,store_name,whatsapp,location').eq('auth_id',userId).single();
   if(!profile){
     const email=data.user?.email||data.session?.user?.email||identifier;
-    const{data:np}=await sb.from('users').insert([{name:email.split('@')[0],email,auth_id:userId,role:'buyer',verified:false,status:'active'}]).select('id,name,email,phone,role,verified,status,auth_id,created_at').single();
+    const{data:np}=await sb.from('users').insert([{name:email.split('@')[0],email,auth_id:userId,role:'buyer',verified:false,status:'active'}]).select('id,name,email,phone,role,verified,status,auth_id,created_at,store_name,whatsapp,location').single();
     profile=np;
   }
-  if(profile){signupData={name:profile.name,email:profile.email,phone:profile.phone||'',role:profile.role,_ctx:'login'};loginSuccess();}
+  if(profile){signupData={id:profile.id,name:profile.name,email:profile.email,phone:profile.phone||'',role:profile.role,verified:!!profile.verified,status:profile.status,store_name:profile.store_name,whatsapp:profile.whatsapp,location:profile.location,_ctx:'login'};loginSuccess();}
   else{await sb.auth.signOut();toast('Your account profile could not be loaded. Please contact support.','r');}
 }
 async function doSignup(){
@@ -1326,7 +1358,7 @@ async function doSignup(){
     if(error){toast(error.message,'r');return;}
     const{data:profile,error:profileError}=await sb.from('users').insert([{name:fn+' '+ln,email,phone:phone||null,role:'buyer',auth_id:data.user.id,verified:false,status:'active'}]).select().single();
     if(profileError){toast('Account creation failed: '+profileError.message,'r');console.error('profile insert error:',profileError);return;}
-    signupData={name:profile.name,email:profile.email,phone:profile.phone||'',role:profile.role,_ctx:'signup'};
+    signupData={id:profile.id,name:profile.name,email:profile.email,phone:profile.phone||'',role:profile.role,verified:!!profile.verified,status:profile.status,store_name:profile.store_name,whatsapp:profile.whatsapp,location:profile.location,_ctx:'signup'};
     loginSuccess();
     return;
   }
@@ -1335,37 +1367,11 @@ async function doSignup(){
   loginSuccess();
 }
 function handleKycUpload(file){
-  console.log('handleKycUpload called with file:', file);
-  if(!file){
-    console.warn('No file provided');
-    toast('No file selected','r');
-    return;
-  }
-  if(!file.type.startsWith('image/')){
-    console.warn('File is not an image:', file.type);
-    toast('Please select an image file','r');
-    return;
-  }
-  console.log('Reading file:', file.name, 'size:', file.size);
+  if(!file)return;
+  if(!['image/jpeg','image/png','image/webp'].includes(file.type)||file.size>5*1024*1024){toast('Choose a JPEG, PNG or WebP image under 5MB.','r');return;}
   const reader=new FileReader();
-  reader.addEventListener('load',function(){
-    console.log('File loaded successfully');
-    kycImageData=reader.result;
-    console.log('kycImageData set, length:', kycImageData.length);
-    const preview=document.getElementById('kyc-preview-area');
-    console.log('preview element:', preview);
-    if(preview){
-      const img=`<div style="text-align:center;padding:16px;"><img src="${kycImageData}" style="max-height:120px;border-radius:8px;border:2px solid var(--g);"/><div style="font-size:13px;color:var(--g);font-weight:600;margin-top:12px;">✓ Photo uploaded</div></div>`;
-      preview.innerHTML=img;
-      console.log('Preview updated');
-    }
-    toast('✓ Photo ready to submit','g');
-  });
-  reader.addEventListener('error',function(){
-    console.error('FileReader error');
-    toast('Failed to read file','r');
-  });
-  reader.readAsDataURL(file);
+  reader.onload=()=>{kycImageData=reader.result;kycImageBlob=file;const preview=document.getElementById('kyc-preview-area');if(preview)preview.innerHTML=`<div style="text-align:center;padding:16px;"><img src="${kycImageData}" alt="ID document preview" style="max-height:120px;border-radius:8px;border:2px solid var(--g);"/><div style="font-size:13px;color:var(--g);font-weight:600;margin-top:12px;">✓ Photo ready to upload</div></div>`;};
+  reader.onerror=()=>toast('Could not read this image.','r');reader.readAsDataURL(file);
 }
 function handleKycDrop(e){
   e.preventDefault();
@@ -1378,27 +1384,61 @@ function handleKycDrop(e){
 }
 function loginSuccess(){
   currentUser={...signupData};
+  currentMode='buyer';
   setAccountMenuState(true);
   document.getElementById('view-auth').classList.remove('active');
-  if(currentUser.role==='seller'){document.getElementById('view-seller').classList.add('active');document.getElementById('acct-dd-seller-switch').style.display='none';buildSellerNav();loadProductsFromSupabase().then(()=>renderSeller('dashboard'));}
-  else{
-    document.getElementById('view-buyer').classList.add('active');
-    document.getElementById('buyer-name-nav').textContent=currentUser.name.split(' ')[0];
-    document.getElementById('acct-dd-name').textContent=currentUser.name;
-    document.getElementById('acct-dd-seller-switch').style.display='block';
-    buildBuyerHome();
-  }
+  document.getElementById('view-buyer').classList.add('active');
+  document.getElementById('buyer-name-nav').textContent=(currentUser.name||'').split(' ')[0];
+  document.getElementById('acct-dd-name').textContent=currentUser.name||'Your account';
+  buildBuyerHome();
+  const wantsSell=sellerSignInRequested;sellerSignInRequested=false;
+  if(wantsSell&&currentUser.role==='seller'&&currentUser.verified&&currentUser.status==='active')switchToSeller();
+  else if(wantsSell)buyerShowView('become-seller');
+  else if(currentUser.role==='seller'&&currentUser.verified&&currentUser.status==='active')switchToSeller();
   toast('Welcome, '+currentUser.name.split(' ')[0]+'! 👋','g');
 }
 function switchToSeller(){
-  if(currentUser.role==='seller'){
-    document.getElementById('view-buyer').classList.remove('active');
-    document.getElementById('view-seller').classList.add('active');
-    buildSellerNav();
-    loadProductsFromSupabase().then(()=>renderSeller('dashboard'));
-  }else{
-    toast('Your seller account is still pending approval','o');
-  }
+  if(!currentUser){startSellerSignIn();return;}
+  (async()=>{
+    if(sb){const{data:{user:authUser}}=await sb.auth.getUser();if(authUser){const{data:profile}=await sb.from('users').select('id,name,email,phone,role,verified,status,store_name,whatsapp,location').eq('auth_id',authUser.id).single();if(profile)currentUser={...currentUser,...profile};}}
+    if(currentUser.role==='seller'&&currentUser.verified&&currentUser.status==='active'){
+      currentMode='seller';document.getElementById('view-buyer').classList.remove('active');document.getElementById('view-seller').classList.add('active');setAccountMenuState(true);buildSellerNav();loadProductsFromSupabase().then(()=>renderSeller('dashboard'));return;
+    }
+    buyerShowView('become-seller');
+  })().catch(error=>toast(error.message||'Seller access could not be checked.','r'));
+}
+function switchToBuyer(){
+  if(!currentUser)return;
+  currentMode='buyer';document.getElementById('view-seller').classList.remove('active');document.getElementById('view-buyer').classList.add('active');setAccountMenuState(true);buildBuyerHome();buyerShowView('home');
+}
+function startSellerSignIn(){sellerSignInRequested=true;openAuthScreen('login');}
+function setSellerApplicationMessage(message){const el=document.getElementById('seller-application-status');if(el)el.textContent=message;}
+async function loadSellerApplicationState(){
+  if(!sb||!currentUser?.id)return;
+  const{data,error}=await sb.from('kyc_requests').select('status,name').eq('user_id',currentUser.id).maybeSingle();
+  if(error){setSellerApplicationMessage('Your application status could not be loaded. Please try again.');return;}
+  const fields=document.getElementById('seller-application-fields');if(!fields)return;
+  const approvedSwitch=document.getElementById('seller-approved-switch');if(approvedSwitch)approvedSwitch.style.display=data?.status==='approved'?'inline-flex':'none';
+  if(data?.status==='pending'||data?.status==='approved'){
+    fields.style.display='none';setSellerApplicationMessage(data.status==='pending'?'Your application is under review. We’ll let you know when it is reviewed.':'Your shop is approved. Open Seller Central to manage your listings.');
+  }else{fields.style.display='block';setSellerApplicationMessage(data?.status==='rejected'?'Your last application was declined. You can update your details and apply again.':'');}
+}
+async function submitSellerApplication(){
+  if(!sb||!currentUser){toast('Sign in before applying to sell.','r');return;}
+  const shop=document.getElementById('seller-store-name').value.trim(),name=document.getElementById('kyc-name').value.trim(),idNumber=document.getElementById('kyc-id').value.trim(),button=document.getElementById('seller-application-submit');
+  if(shop.length<2||name.length<3||idNumber.length<5||!kycImageBlob){toast('Enter your shop name, legal name, ID number, and upload an ID image.','r');return;}
+  if(!window.createImageBitmap||!document.createElement('canvas').toBlob){toast('This browser cannot securely prepare the ID image. Try a current browser.','r');return;}
+  button.disabled=true;button.textContent='Preparing private upload…';
+  try{
+    const auth=await sb.auth.getUser();const authUser=auth.data?.user;if(auth.error||!authUser)throw new Error('Please sign in again.');
+    const bitmap=await createImageBitmap(kycImageBlob);const scale=Math.min(1,1800/Math.max(bitmap.width,bitmap.height));const canvas=document.createElement('canvas');canvas.width=Math.max(1,Math.round(bitmap.width*scale));canvas.height=Math.max(1,Math.round(bitmap.height*scale));canvas.getContext('2d').drawImage(bitmap,0,0,canvas.width,canvas.height);bitmap.close();
+    const blob=await new Promise(resolve=>canvas.toBlob(resolve,'image/webp',.82));if(!blob)throw new Error('Could not convert the image.');
+    const path=`${authUser.id}/${crypto.randomUUID()}.webp`;const upload=await sb.storage.from('seller-id-documents').upload(path,blob,{contentType:'image/webp',upsert:false});if(upload.error)throw upload.error;
+    const profileUpdate=await sb.from('users').update({store_name:shop}).eq('id',currentUser.id);if(profileUpdate.error){await sb.storage.from('seller-id-documents').remove([path]);throw profileUpdate.error;}
+    const{data,error}=await sb.rpc('submit_seller_application',{p_full_name:name,p_id_number:idNumber,p_id_image_path:path});if(error){await sb.storage.from('seller-id-documents').remove([path]);throw error;}
+    currentUser.store_name=shop;currentUser.kycStatus='pending';await loadSellerApplicationState();toast('Seller application submitted for review.','g');
+  }catch(error){setSellerApplicationMessage(error.message||'Application could not be submitted.');toast(error.message||'Application could not be submitted.','r');}
+  finally{button.disabled=false;button.textContent='Submit seller application';}
 }
 async function doLogout(){
   if(sb){try{await sb.auth.signOut();}catch(e){console.log('signout:',e);}}
@@ -1425,8 +1465,8 @@ async function restoreSession(){
   try{
     const{data:{session}}=await sb.auth.getSession();
     if(!session)return;
-    const{data:profile}=await sb.from('users').select('id,name,email,phone,role,verified,status,auth_id,created_at').eq('auth_id',session.user.id).single();
-    if(profile){signupData={name:profile.name,email:profile.email,phone:profile.phone||'',role:profile.role,_ctx:'login'};loginSuccess();}
+    const{data:profile}=await sb.from('users').select('id,name,email,phone,role,verified,status,auth_id,created_at,store_name,whatsapp,location').eq('auth_id',session.user.id).single();
+    if(profile){signupData={id:profile.id,name:profile.name,email:profile.email,phone:profile.phone||'',role:profile.role,verified:!!profile.verified,status:profile.status,store_name:profile.store_name,whatsapp:profile.whatsapp,location:profile.location,_ctx:'login'};loginSuccess();}
   }catch(e){console.log('Session restore:',e);}
 }
 function showPasswordReset(){
@@ -1520,13 +1560,18 @@ function buyerShowView(v){
   const map={home:'buyer-home',shop:'buyer-shop',detail:'buyer-detail',cart:'buyer-cart',checkout:'buyer-checkout',orders:'buyer-orders','become-seller':'buyer-become-seller',dispute:'buyer-dispute',review:'buyer-review'};
   showBuyerSec(map[v]||'buyer-home');
   if(v==='cart')renderCart();
-  if(v==='orders')renderOrders();
-  if(v==='checkout'){if(!cart.length){buyerShowView('cart');return;}renderCoSummary();}
+  if(v==='orders')loadBuyerOrders();
+  if(v==='checkout'){if(!cart.length){buyerShowView('cart');return;}const phone=document.getElementById('co-phone');if(phone&&!phone.value)phone.value=currentUser?.phone||'';const location=document.getElementById('co-location');if(location&&!location.value)location.value=currentUser?.location||'';renderCoSummary();}
   if(v==='shop')renderShopPage(currentShopList,'All Products');
   if(v==='become-seller'){
-    if(currentUser&&currentUser.email){
+    if(currentUser){
       document.getElementById('become-seller-kyc').style.display='block';
       document.getElementById('become-seller-login').style.display='none';
+      if(currentUser.role==='seller'&&currentUser.verified&&currentUser.status==='active'){
+        document.getElementById('seller-application-fields').style.display='none';
+        setSellerApplicationMessage('Your seller account is approved. Switch to Seller Central to manage your shop.');
+        document.getElementById('seller-approved-switch').style.display='inline-flex';
+      }else loadSellerApplicationState();
     }else{
       document.getElementById('become-seller-kyc').style.display='none';
       document.getElementById('become-seller-login').style.display='block';
@@ -1552,6 +1597,9 @@ function setAccountMenuState(signedIn){
   if(name)name.textContent=signedIn?(currentUser?.name||'Your account'):'Welcome to SOKO';
   if(role)role.textContent=signedIn?`${(currentUser?.role||'buyer').replace(/^./,c=>c.toUpperCase())} Account`:'Guest account';
   if(nav)nav.textContent=signedIn?(currentUser?.name||'').split(' ')[0]||'Account':'sign in';
+  const sellerSwitch=document.getElementById('acct-dd-seller-switch');
+  if(sellerSwitch)sellerSwitch.style.display=signedIn&&currentUser?.role==='seller'&&currentUser?.verified&&currentUser?.status==='active'&&currentMode==='buyer'?'flex':'none';
+  if(sellerSwitch)sellerSwitch.innerHTML=currentMode==='seller'?'🛍 Shop as buyer':'📊 Go to Seller Dashboard';
 }
 function openAuthScreen(tab='login'){
   closeAll();
@@ -1673,25 +1721,46 @@ function renderCart(){
 function cartQty(id,d){const item=cart.find(c=>String(c.id)===String(id));if(item){item.qty=Math.max(1,Math.min(99,item.qty+d));persistCart();updateCartBadge();renderCart();}}
 function cartRemove(id){cart=cart.filter(c=>String(c.id)!==String(id));persistCart();updateCartBadge();renderCart();}
 function renderCoSummary(){
-  const sub=cart.reduce((a,c)=>a+c.price*c.qty,0);
   const el=document.getElementById('co-summary');if(!el)return;
-  el.innerHTML=cart.map(item=>`<div class="co-row"><span>${item.emoji} ${item.name.slice(0,22)}… ×${item.qty}</span><span style="font-weight:600;color:var(--ink);">RWF ${fmt(item.price*item.qty)}</span></div>`).join('')+
-  `<div class="co-row"><span>Subtotal</span><span>RWF ${fmt(sub)}</span></div><div class="co-row"><span>Delivery</span><span>Confirm with seller</span></div><div class="co-row total"><span>Item total</span><span>RWF ${fmt(sub)}</span></div>`;
+  const place=document.getElementById('place-order-btn');
+  if(!commissionSettingsReady){el.textContent='Loading the current SOKO fee…';const total=document.getElementById('co-total');if(total)total.textContent='Please wait';if(place)place.disabled=true;return;}
+  if(place)place.disabled=false;
+  const sub=cart.reduce((a,c)=>a+c.price*c.qty,0);
+  const rate=commissionRateBps,buyerRate=Math.ceil(rate/2),sellerRate=Math.floor(rate/2),buyerFee=cart.reduce((a,c)=>a+Math.round(c.price*c.qty*buyerRate/10000),0),sellerFee=cart.reduce((a,c)=>a+Math.round(c.price*c.qty*sellerRate/10000),0);
+  el.innerHTML=cart.map(item=>`<div class="co-row"><span>${item.emoji} ${item.name.slice(0,22)} ×${item.qty}</span><span style="font-weight:600;color:var(--ink);">RWF ${fmt(item.price*item.qty)}</span></div>`).join('')+
+  `<div class="co-row"><span>Items subtotal</span><span>RWF ${fmt(sub)}</span></div><div class="co-row"><span>Buyer fee (${(buyerRate/100).toFixed(buyerRate%100?2:0)}%)</span><span>RWF ${fmt(buyerFee)}</span></div><div class="co-row"><span>Seller fee (${(sellerRate/100).toFixed(sellerRate%100?2:0)}%)</span><span>RWF ${fmt(sellerFee)}</span></div><div class="co-row"><span>Delivery</span><span>Confirmed with seller</span></div>`;
+  const total=document.getElementById('co-total');if(total)total.innerHTML=`<div class="co-row"><span>Items</span><span>RWF ${fmt(sub)}</span></div><div class="co-row"><span>Buyer fee</span><span>RWF ${fmt(buyerFee)}</span></div><div class="co-row total"><span>Due when payment is connected</span><span>RWF ${fmt(sub+buyerFee)}</span></div>`;
 }
 function selPay(el){document.querySelectorAll('.checkout-sec .pay-opt').forEach(o=>{o.classList.remove('sel');const r=o.querySelector('input');if(r)r.checked=false;});el.classList.add('sel');const r=el.querySelector('input');if(r)r.checked=true;}
 function selDel(el){document.querySelectorAll('.checkout-sec .del-opt').forEach(o=>o.classList.remove('sel'));el.classList.add('sel');}
-function placeOrder(){
-  if(!currentUser||!currentUser.email){
-    toast('Please sign in to complete your order','r');
-    document.getElementById('view-buyer').classList.remove('active');
-    document.getElementById('view-auth').classList.add('active');
-    authTab('login');
-    return;
-  }
-  toast('Online checkout is not connected yet. Please contact the seller from the product page.','r');
+async function placeOrder(){
+  if(!currentUser||!sb){toast('Sign in to place an order request.','r');openAuthScreen('login');return;}
+  if(!commissionSettingsReady&&!(await loadMarketplaceSettings())){toast('SOKO’s current commission could not be loaded. Try again shortly.','r');return;}
+  const location=document.getElementById('co-location')?.value.trim(),phone=document.getElementById('co-phone')?.value.trim(),delivery=document.querySelector('input[name="co-delivery"]:checked')?.value;
+  if(!location||location.length<2){toast('Add your location or pickup point.','r');return;}
+  if(!phone||phone.replace(/\D/g,'').length<7||phone.replace(/\D/g,'').length>15){toast('Enter a contact phone the seller can reach.','r');return;}
+  if(!delivery||!cart.length){toast('Your cart is empty.','r');return;}
+  const button=document.getElementById('place-order-btn');button.disabled=true;button.textContent='Creating order…';
+  try{
+    const checkoutId=sessionStorage.getItem('soko-checkout-id')||crypto.randomUUID();sessionStorage.setItem('soko-checkout-id',checkoutId);
+    const{data,error}=await sb.rpc('create_order_request_with_contact',{p_checkout_id:checkoutId,p_items:cart.map(i=>({product_id:String(i.id),quantity:i.qty})),p_buyer_location:location,p_delivery_method:delivery,p_buyer_phone:phone});
+    if(error)throw error;
+    sessionStorage.removeItem('soko-checkout-id');cart=[];persistCart();updateCartBadge();
+    const check=await sb.from('orders').select('*').eq('checkout_id',checkoutId).eq('buyer_id',currentUser.id).order('created_at',{ascending:true});
+    if(!check.error)ORDERS=mapOrderRows(check.data||[]);else console.warn('Order created; refresh order history to load its lines.',check.error);
+    toast(`Order request placed. ${fmt(data.buyer_total)} RWF is due after payment is connected. No payment was collected.`, 'g');
+    buyerShowView('orders');
+  }catch(error){toast(error.message||'The order could not be placed. Please refresh your cart and try again.','r');}
+  finally{button.disabled=false;button.textContent='Place order request';}
 }
 
 // ORDERS
+function mapOrderRows(rows){return rows.map(o=>({id:o.id,checkoutId:o.checkout_id,productId:o.product_id,product:o.product_name||'Product',qty:o.quantity||1,total:o.buyer_total??o.total??0,subtotal:o.items_subtotal??o.total??0,buyerFee:o.buyer_fee||0,seller:o.seller_name||'Seller',buyer:o.buyer_name||'Buyer',phone:o.buyer_phone||'',date:(o.created_at||'').slice(0,10),status:o.status||'awaiting_payment',escrow:o.escrow_status||'not_started',paymentStatus:o.payment_status||'legacy_unverified'}));}
+async function loadBuyerOrders(){
+  if(!sb||!currentUser?.id){ORDERS=[];renderOrders();return;}
+  const{data,error}=await sb.from('orders').select('*').eq('buyer_id',currentUser.id).order('created_at',{ascending:false}).limit(50);
+  if(error){toast('Your orders could not be loaded.','r');return;}ORDERS=mapOrderRows(data||[]);renderOrders();
+}
 function renderOrders(){
   const el=document.getElementById('orders-content');if(!el)return;
   if(!ORDERS.length){el.innerHTML=`<div style="text-align:center;padding:60px;color:var(--ink3);"><div style="font-size:48px;margin-bottom:12px;">📦</div><div style="font-size:18px;font-weight:600;">No orders yet</div></div>`;return;}
@@ -1710,9 +1779,9 @@ function renderOrders(){
       <div class="order-card-body">
         <div class="order-thumb">${thumb}</div>
         <div style="flex:1;">
-          <div class="order-status ${scls}">${o.status==='delivered'?'Delivered':o.status==='shipped'?'On the way':o.status==='confirmed'?'Confirmed':o.status==='cancelled'?'Cancelled':'Pending'}</div>
+          <div class="order-status ${scls}">${o.status==='delivered'?'Delivered':o.status==='shipped'?'On the way':o.status==='confirmed'?'Confirmed':o.status==='cancelled'?'Cancelled':o.status==='awaiting_payment'?'Awaiting payment setup':'Pending'}</div>
           <div style="font-size:14px;font-weight:600;margin-bottom:5px;">${o.product} × ${o.qty}</div>
-          <span class="ep ${ecls}">🔒 ${o.escrow}</span>
+          <span class="ep ${ecls}">${o.paymentStatus==='not_started'?'Payment not collected':o.escrow==='held'?'Escrow held':o.escrow==='released'?'Escrow released':'Payment status: '+o.paymentStatus}</span>
         </div>
         <div style="display:flex;flex-direction:column;gap:6px;">
           ${o.status==='shipped'?`<button class="bx bx-g" style="padding:7px 12px;" onclick="confirmOrderDelivery('${o.id}')">Confirm Receipt</button>`:''}
@@ -1723,7 +1792,7 @@ function renderOrders(){
     </div>`;
   }).join('');
 }
-function confirmOrderDelivery(id){const o=ORDERS.find(x=>x.id===id);if(o){o.status='delivered';o.escrow='released';}toast('✅ Delivery confirmed!','g');renderOrders();}
+function confirmOrderDelivery(){toast('Order tracking and delivery confirmation are not connected yet.','o');}
 function pickStar(n){pickedStar=n;document.querySelectorAll('#star-row span').forEach((s,i)=>s.textContent=i<n?'★':'☆');}
 
 // LOCATION
@@ -1780,10 +1849,10 @@ function sellerNavClick(btn,id){document.querySelectorAll('.snav-item').forEach(
 function renderSeller(section){
   const el=document.getElementById('seller-content');if(!el)return;
   const badge=document.getElementById('seller-kyc-badge');
-  if(badge){badge.textContent=currentUser?.kycSubmitted?'⏳ KYC Pending':'Seller status unavailable';badge.style.background='rgba(255,255,255,.12)';}
+  if(badge){badge.textContent=currentUser?.verified&&currentUser?.role==='seller'?'✓ Verified seller':'Seller verification pending';badge.style.background='rgba(255,255,255,.12)';}
   if(section==='dashboard')el.innerHTML=sellerDashHTML();
   else if(section==='products')el.innerHTML=sellerProdsHTML();
-  else if(section==='orders')el.innerHTML=sellerOrdersHTML();
+  else if(section==='orders'){ORDERS=[];el.innerHTML=sellerOrdersHTML();loadSellerOrders();}
   else if(section==='earnings')el.innerHTML=sellerEarnHTML();
   else if(section==='profile')el.innerHTML=sellerProfileHTML();
 }
@@ -1795,68 +1864,80 @@ function sellerDashHTML(){
   </section></div>`;
 }
 function sellerProdsHTML(){
+  const ownProducts=PRODUCTS.filter(p=>String(p.sellerId)===String(currentUser?.id));
   return `<div class="seller-page-hdr"><div class="seller-page-title">My Products</div><button class="bx bx-g" style="padding:8px 16px;font-size:13px;" onclick="prodImages=[];renderProdPreviews();openModal('modal-add-product')">+ Add Product</button></div>
   <div class="seller-content"><div class="tbl-wrap"><div class="tbl-scroll"><table><thead><tr><th>Image</th><th>Product</th><th>Category</th><th>Price</th><th>Stock</th><th>Status</th></tr></thead>
-  <tbody>${PRODUCTS.slice(0,12).map(p=>`<tr>
+  <tbody>${ownProducts.length?ownProducts.map(p=>`<tr>
     <td><div style="width:44px;height:44px;background:var(--bg2);border-radius:var(--r4);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:24px;">${(p.images&&p.images.length)?`<img src="${p.images[0]}" style="width:100%;height:100%;object-fit:cover;"/>`:p.emoji}</div></td>
     <td style="font-weight:600;">${p.name.slice(0,28)}…</td><td>${getCat(p.cat)}</td>
     <td style="font-weight:700;">RWF ${fmt(p.price)}</td>
     <td>${p.stock}</td><td><span class="pill ${p.stock>5?'pill-g':p.stock>0?'pill-a':'pill-r'}">${p.stock>5?'In stock':p.stock>0?'Low':'Out'}</span></td>
-  </tr>`).join('')}</tbody></table></div></div></div>`;
+  </tr>`).join(''):'<tr><td colspan="6" style="padding:28px;text-align:center;color:var(--ink3);">Your shop is ready. Add your first listing to start selling.</td></tr>'}</tbody></table></div></div></div>`;
 }
 function sellerOrdersHTML(){
   return `<div class="seller-page-hdr"><div class="seller-page-title">Incoming Orders</div></div>
-  <div class="seller-content"><div class="tbl-wrap"><div class="tbl-scroll"><table><thead><tr><th>Order ID</th><th>Product</th><th>Buyer</th><th>Phone</th><th>Total</th><th>Escrow</th><th>Status</th><th>Action</th></tr></thead>
-  <tbody>${ORDERS.slice(0,8).map(o=>`<tr>
+  <div class="seller-content"><div class="tbl-wrap"><div class="tbl-scroll"><table><thead><tr><th>Order ID</th><th>Product</th><th>Buyer</th><th>Phone</th><th>Buyer Total</th><th>Payment</th><th>Status</th><th>Action</th></tr></thead>
+  <tbody>${ORDERS.length?ORDERS.slice(0,8).map(o=>`<tr>
     <td style="font-family:monospace;font-weight:700;">${o.id}</td><td>${o.product.slice(0,18)}…</td><td>${o.buyer}</td>
     <td style="color:var(--b);">${o.phone}</td><td style="font-weight:700;">RWF ${fmt(o.total)}</td>
-    <td><span class="ep ${o.escrow==='held'?'ep-held':o.escrow==='released'?'ep-rel':'ep-frz'}">🔒 ${o.escrow}</span></td>
-    <td><span class="pill ${o.status==='delivered'?'pill-g':o.status==='shipped'?'pill-b':o.status==='cancelled'?'pill-r':'pill-a'}">${o.status}</span></td>
+    <td>${o.paymentStatus==='not_started'?'Payment not collected':o.escrow==='held'?'Escrow held':o.escrow}</td>
+    <td><span class="pill ${o.status==='delivered'?'pill-g':o.status==='shipped'?'pill-b':o.status==='cancelled'?'pill-r':'pill-a'}">${o.status==='awaiting_payment'?'Awaiting payment setup':o.status}</span></td>
     <td>${o.status==='pending'?`<button class="bx bx-b" onclick="markShipped('${o.id}');renderSeller('orders')">Mark Shipped</button>`:'—'}</td>
-  </tr>`).join('')}</tbody></table></div></div></div>`;
+  </tr>`).join(''):'<tr><td colspan="8" style="padding:28px;text-align:center;color:var(--ink3);">No orders have been placed for your shop.</td></tr>'}</tbody></table></div></div></div>`;
+}
+async function loadSellerOrders(){
+  if(!sb||!currentUser?.id)return;const{data,error}=await sb.from('orders').select('*').eq('seller_id',currentUser.id).order('created_at',{ascending:false}).limit(50);
+  if(error){toast('Your incoming orders could not be loaded.','r');return;}ORDERS=mapOrderRows(data||[]);const el=document.getElementById('seller-content');if(currentMode==='seller'&&el)el.innerHTML=sellerOrdersHTML();
 }
 function sellerEarnHTML(){
   return `<div class="seller-page-hdr"><div class="seller-page-title">Earnings</div></div>
-    <div class="seller-content"><section class="seller-setup-card"><span>◷</span><div><div class="seller-setup-title">Payouts are not connected yet.</div><p>We’ll show your real order totals and available balance here once SOKO’s order and payment services are ready.</p></div></section></div>`;
+    <div class="seller-content"><section class="seller-setup-card"><span>◷</span><div><div class="seller-setup-title">SOKO fee: ${commissionPercentText()} total</div><p>The fee is split evenly between buyer and seller. At today’s rate, you pay ${(commissionRateBps===null?'…':(Math.floor(commissionRateBps/2)/100).toFixed(commissionRateBps%200?2:0))}% of an order subtotal. Payouts are not connected yet.</p></div></section></div>`;
 }
 function sellerProfileHTML(){
   return `<div class="seller-page-hdr"><div class="seller-page-title">Store Profile</div></div>
   <div class="seller-content" style="max-width:600px;">
     <div style="background:var(--w);border:var(--border);border-radius:var(--r8);padding:20px;margin-bottom:14px;box-shadow:var(--sh);">
       <div style="font-size:16px;font-weight:700;margin-bottom:14px;border-bottom:var(--border);padding-bottom:10px;">Store Details</div>
-      <div class="fld"><label class="fld-lbl">Store name</label><input class="fld-inp" value="${currentUser?.name||'My Store RW'}"/></div>
-      <div class="fld"><label class="fld-lbl">Phone</label><input class="fld-inp" value="${currentUser?.phone||'+250 7XX XXX XXX'}"/></div>
-      <div class="fld"><label class="fld-lbl">WhatsApp</label><input class="fld-inp" placeholder="+250 7XX XXX XXX"/></div>
-      <div class="fld"><label class="fld-lbl">Location</label><input class="fld-inp" placeholder="Kigali, Rwanda"/></div>
-      <button class="bx bx-g" style="padding:9px 20px;font-size:13px;" onclick="toast('Shop profile editing is not connected yet','r')">Save Changes</button>
+      <div class="fld"><label class="fld-lbl" for="seller-profile-store">Store name</label><input class="fld-inp" id="seller-profile-store" maxlength="80" value="${escapeImageAttribute(currentUser?.store_name||'')}"/></div>
+      <div class="fld"><label class="fld-lbl" for="seller-profile-phone">Phone</label><input class="fld-inp" id="seller-profile-phone" value="${escapeImageAttribute(currentUser?.phone||'')}" disabled/></div>
+      <div class="fld"><label class="fld-lbl" for="seller-profile-whatsapp">WhatsApp</label><input class="fld-inp" id="seller-profile-whatsapp" maxlength="32" value="${escapeImageAttribute(currentUser?.whatsapp||'')}" placeholder="+250 7XX XXX XXX"/></div>
+      <div class="fld"><label class="fld-lbl" for="seller-profile-location">Location</label><input class="fld-inp" id="seller-profile-location" maxlength="120" value="${escapeImageAttribute(currentUser?.location||'')}" placeholder="District, Rwanda"/></div>
+      <button class="bx bx-g" style="padding:9px 20px;font-size:13px;" onclick="saveSellerProfile()">Save Changes</button>
     </div>
     <div style="background:var(--w);border:var(--border);border-radius:var(--r8);padding:20px;box-shadow:var(--sh);">
       <div style="font-size:16px;font-weight:700;margin-bottom:12px;">KYC Status</div>
-      <span class="pill ${currentUser?.kycSubmitted?'pill-a':'pill-gray'}">${currentUser?.kycSubmitted?'Pending review':'Status unavailable'}</span>
-      <p style="font-size:13px;color:var(--ink3);margin-top:10px;line-height:1.6;">Verification status and seller profile updates will be shown when those services are connected.</p>
+      <span class="pill pill-g">Verified</span>
+      <p style="font-size:13px;color:var(--ink3);margin-top:10px;line-height:1.6;">Seller access is linked to your SOKO account. You can switch back to shopping at any time.</p>
     </div>
   </div>`;
 }
-function markShipped(id){const o=ORDERS.find(x=>x.id===id);if(o){o.status='shipped';toast('✓ Order marked as shipped','g');}}
+async function saveSellerProfile(){
+  if(!sb||!currentUser?.id)return;const store=document.getElementById('seller-profile-store').value.trim(),whatsapp=document.getElementById('seller-profile-whatsapp').value.trim(),location=document.getElementById('seller-profile-location').value.trim();
+  if(store.length<2){toast('Enter a store name.','r');return;}
+  const{error}=await sb.from('users').update({store_name:store,whatsapp:whatsapp||null,location:location||null}).eq('id',currentUser.id);
+  if(error){toast('Could not save your shop profile: '+error.message,'r');return;}
+  Object.assign(currentUser,{store_name:store,whatsapp,location});toast('Shop profile saved.','g');
+}
+function markShipped(){toast('Shipping updates will be available after payment confirmation is connected.','o');}
 async function addSellerProduct(){
   const name=document.getElementById('mp-name').value.trim();
   const price=parseInt(document.getElementById('mp-price').value);
-  const stock=parseInt(document.getElementById('mp-stock').value)||10;
+  const stock=parseInt(document.getElementById('mp-stock').value,10);
   const cat=document.getElementById('mp-cat').value;
   const emoji=document.getElementById('mp-emoji').value||'📦';
   const desc=document.getElementById('mp-desc').value||'';
-  if(!name||!price){toast('Product name and price are required','r');return;}
+  if(!name||!Number.isInteger(price)||price<1||!Number.isInteger(stock)||stock<0){toast('Enter a product name, whole-number price, and stock of 0 or more.','r');return;}
   const{data:{user:authUser}}=await sb.auth.getUser();
   if(!authUser){toast('Please sign in again before adding a product.','r');return;}
   const{data:profile,error:profileError}=await sb.from('users').select('id,role').eq('auth_id',authUser.id).single();
-  if(profileError||!profile||profile.role!=='seller'){toast('Your account is not approved for seller listings.','r');return;}
+  if(profileError||!profile||profile.role!=='seller'||!currentUser?.verified||currentUser?.status!=='active'){toast('Your account is not approved for seller listings.','r');return;}
   toast('Uploading images…');
   let imageUrls=[];
   for(let i=0;i<prodImages.length;i++){
     const img=prodImages[i];
     const blob=img.blob||await(await fetch(img.url)).blob();
-    const ext=blob.type.split('/')[1]||'jpg';
-    const fileName=`products/${Date.now()}_${i}.${ext}`;
+    const ext=blob.type==='image/webp'?'webp':blob.type==='image/png'?'png':'jpg';
+    const fileName=`${authUser.id}/products/${crypto.randomUUID()}.${ext}`;
     const{data,error}=await sb.storage.from('product-images').upload(fileName,blob,{contentType:blob.type,upsert:false});
     if(error){toast('Image upload failed: '+error.message,'r');return;}
     const{data:urlData}=sb.storage.from('product-images').getPublicUrl(fileName);
@@ -1866,7 +1947,7 @@ async function addSellerProduct(){
   const{data,error}=await sb.from('products').insert([{
     name,category:cat,cat,price,stock,emoji,description:desc,
     images:imageUrls,badge:'new',
-    seller_name:currentUser?.name||'My Store',seller:currentUser?.name||'My Store',
+    seller_name:currentUser?.store_name||currentUser?.name||'My Store',seller:currentUser?.store_name||currentUser?.name||'My Store',
     seller_phone:currentUser?.phone||'',seller_id:profile.id,
     active:true,
   }]).select().single();
@@ -1874,7 +1955,7 @@ async function addSellerProduct(){
   PRODUCTS.unshift({
     id:data.id,name:data.name,cat:data.cat||data.category,price:data.price,
     stock:data.stock,emoji:data.emoji,images:normalizeProductImages(data.images),rating:0,reviews:0,
-    seller:data.seller_name||data.seller,sellerPhone:data.seller_phone||'',
+    seller:data.seller_name||data.seller,sellerId:data.seller_id,sellerPhone:data.seller_phone||'',
     desc:data.description||'',badge:'new',
   });
   prodImages=[];closeModal('modal-add-product');renderSeller('products');
@@ -1889,7 +1970,7 @@ async function loadProductsFromSupabase(){
   PRODUCTS=data.map(p=>({
     id:p.id,name:p.name,cat:p.cat||p.category,price:p.price,stock:p.stock,
     emoji:p.emoji||'📦',images:normalizeProductImages(p.images),rating:p.rating||0,
-    reviews:p.reviews_count||p.reviews||0,seller:p.seller_name||p.seller||'Seller',
+    reviews:p.reviews_count||p.reviews||0,seller:p.seller_name||p.seller||'Seller',sellerId:p.seller_id||null,
     sellerPhone:p.seller_phone||'',desc:p.description||'',badge:p.badge||'',
   }));
   hydrateCart();
