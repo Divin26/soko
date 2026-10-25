@@ -635,6 +635,9 @@ tr:hover td{background:var(--bg);}
 .cat-card .cat-icon{height:78px;width:100%;display:grid;place-items:center;overflow:hidden;border-radius:5px;background:rgba(255,255,255,.32);font-size:34px;margin:0 0 12px;}.cat-card .cat-icon img{width:100%;height:100%;object-fit:cover;filter:saturate(1.12);transition:transform .3s;}.cat-card:hover .cat-icon img{transform:scale(1.07);}.cat-arrow{position:absolute!important;right:11px;bottom:12px;font-size:15px;font-weight:800;opacity:.7;}
 @media(max-width:768px){.cat-card .cat-icon{height:58px;margin-bottom:9px;}.cat-arrow{right:7px;bottom:8px;font-size:12px;}}
 @media(max-width:480px){.cat-card .cat-icon{height:72px;}}
+.checkout-unavailable{max-width:780px;margin:70px auto 90px;padding:clamp(28px,6vw,62px);background:#E8FF61;color:#23132F;border-radius:10px;position:relative;overflow:hidden;box-shadow:10px 10px 0 #5B3BAA;}.checkout-unavailable:after{content:'SOKO';position:absolute;right:-12px;bottom:-45px;font:800 clamp(90px,18vw,190px)/1 var(--font2);letter-spacing:-.1em;color:rgba(35,19,47,.06);}.checkout-unavailable-mark{position:absolute;right:35px;top:24px;font:800 45px/1 var(--font2);color:#FF5B35;transform:rotate(14deg);}.checkout-unavailable h2{font:700 clamp(44px,7vw,74px)/.92 var(--font2);letter-spacing:-.08em;margin:15px 0;position:relative;z-index:1;}.checkout-unavailable h2 em{font-style:normal;color:#FF5B35;}.checkout-unavailable p{max-width:480px;color:#55465E;line-height:1.7;margin:0 0 22px;position:relative;z-index:1;}.checkout-unavailable .hero-action-primary{position:relative;z-index:1;background:#23132F;box-shadow:0 7px 0 rgba(35,19,47,.16);}@media(max-width:768px){.checkout-unavailable{margin:40px 18px 60px;}}
+.seller-setup-card{max-width:900px;min-height:190px;margin:14px 0;padding:clamp(24px,5vw,44px);display:flex;align-items:center;gap:22px;background:#E8FF61;color:#23132F;border-radius:10px;box-shadow:8px 8px 0 #5B3BAA;}.seller-setup-card>span{flex:0 0 62px;width:62px;height:62px;display:grid;place-items:center;border-radius:50%;background:#FF5B35;color:#fff;font-size:30px;}.seller-setup-title{font:700 clamp(28px,4vw,42px)/1 var(--font2);letter-spacing:-.06em;margin-bottom:10px;}.seller-setup-card p{max-width:560px;color:#55465E;line-height:1.6;font-size:13px;}.seller-setup-card .bx{flex-shrink:0;border-radius:5px!important;}
+@media(max-width:768px){.seller-setup-card{align-items:flex-start;flex-direction:column;gap:14px;}}
 </style>
 </head>
 <body>
@@ -653,16 +656,14 @@ tr:hover td{background:var(--bg);}
 <div class="auth-page">
   <div class="auth-hdr">
     <div class="auth-logo">SO<span>KO</span></div>
-    <div class="auth-tag">🇷🇼 Rwanda's marketplace · Escrow-protected · verified sellers</div>
+    <div class="auth-tag">🇷🇼 Rwanda’s marketplace · Find local things · Meet local shops</div>
   </div>
   <div class="auth-body">
     <div class="auth-side">
-      <div class="auth-side-title">Why choose SOKO?</div>
-      <div class="auth-feat"><div class="af-icon">🔒</div><div><div class="af-title">Escrow-Protected Payments</div><div class="af-desc">Your money is held safely and only released when you confirm delivery.</div></div></div>
-      <div class="auth-feat"><div class="af-icon">✅</div><div><div class="af-title">KYC-Verified Sellers</div><div class="af-desc">Every seller submits a National ID. You always know who you're buying from.</div></div></div>
-      <div class="auth-feat"><div class="af-icon">🏍️</div><div><div class="af-title">Fast Local Delivery</div><div class="af-desc">Moto delivery across Kigali and major cities. Food, electronics, fashion — same day.</div></div></div>
-      <div class="auth-feat"><div class="af-icon">📲</div><div><div class="af-title">MTN MoMo & Airtel Money</div><div class="af-desc">Pay the way Rwanda pays. Mobile money, cash on delivery, or card.</div></div></div>
-      <div class="auth-trust"><span>🇷🇼 Made in Rwanda</span><span>🔒 Escrow-protected</span><span>🪪 ID-verified sellers</span><span>📲 Payouts to MoMo</span></div>
+      <div class="auth-side-title">A market with room for you.</div>
+      <div class="auth-feat"><div class="af-icon">✳</div><div><div class="af-title">Find something unexpected</div><div class="af-desc">Explore products listed by shops and sellers around Rwanda.</div></div></div>
+      <div class="auth-feat"><div class="af-icon">🏪</div><div><div class="af-title">Bring your shop along</div><div class="af-desc">Create a seller account and add your product listings.</div></div></div>
+      <div class="auth-feat"><div class="af-icon">🤝</div><div><div class="af-title">Talk to the seller</div><div class="af-desc">Product pages include seller contact details so you can ask questions directly.</div></div></div>
     </div>
     <div class="auth-form-wrap">
       <div class="auth-tabs">
@@ -830,9 +831,9 @@ tr:hover td{background:var(--bg);}
         <div class="hero-art" aria-label="Illustration of Kigali hills and a local marketplace">
           <div class="hero-art-sun"></div>
           <div class="hero-spark hero-spark-one">✳</div><div class="hero-spark hero-spark-two">✳</div>
-          <div class="hero-art-note"><span>THE GOOD STUFF</span><b>Picked by the people who know it best.</b></div>
+          <div class="hero-art-note"><span>THE GOOD STUFF</span><b>Fresh finds from the market.</b></div>
           <div class="hero-picks" id="hero-picks" aria-label="A few picks from the marketplace"></div>
-          <div class="hero-stamp"><span>✳</span><b>MADE<br/>OF HERE</b><small>RWANDA</small></div>
+          <div class="hero-stamp"><span>✳</span><b>THE<br/>GOOD STUFF</b><small>RWANDA</small></div>
         </div>
       </section>
 
@@ -924,88 +925,13 @@ tr:hover td{background:var(--bg);}
         <button class="back-btn" onclick="buyerShowView('cart')">← Back to Cart</button>
         <div class="breadcrumb"><a onclick="buyerShowView('cart')">Cart</a> › Checkout</div>
       </div>
-      <div class="checkout-wrap">
-        <div class="checkout-main">
-          <!-- Step 1: Address -->
-          <div class="checkout-sec">
-            <div class="checkout-sec-title">1. Delivery address</div>
-            <div class="fld-row">
-              <div class="fld"><label class="fld-lbl">Full name</label><input class="fld-inp" id="co-name" placeholder="Jean Mutoni"/></div>
-              <div class="fld"><label class="fld-lbl">Phone</label><input class="fld-inp" id="co-phone" placeholder="+250 7XX XXX XXX"/></div>
-            </div>
-            <div class="fld"><label class="fld-lbl">Street address</label><input class="fld-inp" id="co-addr" placeholder="KG 7 Ave, Kimironko"/></div>
-            <div class="fld-row">
-              <div class="fld"><label class="fld-lbl">City</label><input class="fld-inp" id="co-city" placeholder="Kigali"/></div>
-              <div class="fld"><label class="fld-lbl">Sector</label><input class="fld-inp" id="co-sector" placeholder="Kimironko"/></div>
-            </div>
-          </div>
-          <!-- Step 2: Delivery -->
-          <div class="checkout-sec">
-            <div class="checkout-sec-title">2. Delivery method</div>
-            <div class="del-opt sel" onclick="selDel(this)">
-              <input type="radio" style="accent-color:var(--or);" checked/>
-              <span style="font-size:22px;">🏍️</span>
-              <div><div style="font-size:14px;font-weight:700;">Moto Delivery</div><div style="font-size:12px;color:var(--ink3);">500–2,000 RWF · 1–3 hours</div></div>
-            </div>
-            <div class="del-opt" onclick="selDel(this)">
-              <input type="radio" style="accent-color:var(--or);"/>
-              <span style="font-size:22px;">📍</span>
-              <div><div style="font-size:14px;font-weight:700;">Pickup Point</div><div style="font-size:12px;color:var(--ink3);">Free · Collect at our office</div></div>
-            </div>
-          </div>
-          <!-- Step 3: Payment -->
-          <div class="checkout-sec">
-            <div class="checkout-sec-title">3. Payment method</div>
-            <div class="pay-opt sel" onclick="selPay(this)">
-              <input type="radio" style="accent-color:var(--or);" checked/>
-              <span style="font-size:24px;">📲</span>
-              <div><div style="font-size:14px;font-weight:700;">MTN Mobile Money</div><div style="font-size:12px;color:var(--ink3);">Dial *182# — instant</div></div>
-            </div>
-            <div class="pay-opt" onclick="selPay(this)">
-              <input type="radio" style="accent-color:var(--or);"/>
-              <span style="font-size:24px;">📱</span>
-              <div><div style="font-size:14px;font-weight:700;">Airtel Money</div><div style="font-size:12px;color:var(--ink3);">Dial *185# to pay</div></div>
-            </div>
-            <div class="pay-opt" onclick="selPay(this)">
-              <input type="radio" style="accent-color:var(--or);"/>
-              <span style="font-size:24px;">💵</span>
-              <div><div style="font-size:14px;font-weight:700;">Cash on Delivery</div><div style="font-size:12px;color:var(--ink3);">Pay when you receive</div></div>
-            </div>
-            <div class="pay-opt" onclick="selPay(this)">
-              <input type="radio" style="accent-color:var(--or);"/>
-              <span style="font-size:24px;">💳</span>
-              <div><div style="font-size:14px;font-weight:700;">Debit / Credit Card</div><div style="font-size:12px;color:var(--ink3);">Visa or Mastercard</div></div>
-            </div>
-          </div>
-        </div>
-        <!-- Checkout Sidebar -->
-        <div class="checkout-sidebar">
-          <div style="font-size:17px;font-weight:700;margin-bottom:14px;">Order Summary</div>
-          <div id="co-summary"></div>
-        <div class="escrow-box" style="margin-top:12px;">Online payment is not available yet. Contact the seller to arrange payment and delivery.</div>
-          <button class="btn-place" onclick="placeOrder()">Place your order →</button>
-          <div style="font-size:11px;color:var(--ink4);margin-top:8px;text-align:center;">Secure checkout powered by SOKO Escrow</div>
-        </div>
-      </div>
-    </div>
-
-    <!-- ── ORDER SUCCESS ──────────────────────────────────────── -->
-    <div id="buyer-success" style="display:none;">
-      <div class="success-wrap">
-        <div class="success-icon">✓</div>
-        <div class="success-title">Order Placed! 🎉</div>
-        <div style="font-size:14px;color:var(--ink3);margin-bottom:14px;">This checkout is not connected to a payment provider yet.</div>
-        <div class="success-ref" id="success-ref">ORD-0000</div>
-        <div class="tracker">
-          <div style="font-size:14px;font-weight:700;margin-bottom:14px;">🔒 Escrow Status</div>
-          <div class="tracker-step"><div class="td pending">1</div><div><div style="font-size:13px;font-weight:600;">Payment</div><div style="font-size:11px;color:var(--ink4);">Payment status will appear here when checkout is connected.</div></div></div>
-          <div class="tracker-step"><div class="td active">⏳</div><div><div style="font-size:13px;font-weight:600;">Seller Ships Order</div><div style="font-size:11px;color:var(--ink4);">Awaiting dispatch</div></div></div>
-          <div class="tracker-step"><div class="td pending">○</div><div><div style="font-size:13px;font-weight:600;">You Confirm Delivery</div><div style="font-size:11px;color:var(--ink4);">Tap button when received</div></div></div>
-          <div class="tracker-step"><div class="td pending">○</div><div><div style="font-size:13px;font-weight:600;">Funds Released to Seller</div><div style="font-size:11px;color:var(--ink4);">Payment released to seller</div></div></div>
-        </div>
-        <button class="btn-confirm-del" onclick="confirmDelivery()">✓ I Received My Order — Release Payment</button>
-        <button style="padding:11px 24px;border-radius:24px;border:var(--border);background:var(--w);font-size:14px;cursor:pointer;display:block;margin:8px auto 0;" onclick="buyerHome()">Continue Shopping</button>
-      </div>
+      <section class="checkout-unavailable">
+        <div class="checkout-unavailable-mark" aria-hidden="true">↗</div>
+        <span class="section-eyebrow">WE’RE GETTING THIS RIGHT</span>
+        <h2>Checkout is<br/><em>on its way.</em></h2>
+        <p>Online orders and payment aren’t connected yet. Visit a product page to contact its seller and arrange the details directly.</p>
+        <button class="hero-action-primary" onclick="buyerShowView('shop')">Back to the market <span aria-hidden="true">↗</span></button>
+      </section>
     </div>
 
     <!-- ── ORDERS ─────────────────────────────────────────────── -->
@@ -1027,7 +953,7 @@ tr:hover td{background:var(--bg);}
         <!-- KYC FORM (shown when logged in) -->
         <div id="become-seller-kyc" style="display:none;">
           <div style="font-size:20px;font-weight:700;margin-bottom:20px;">Complete Your ID Verification</div>
-          <p style="color:var(--ink3);margin-bottom:20px;">Upload a clear photo of your national ID to start selling. We'll review and approve within 4 hours.</p>
+          <p style="color:var(--ink3);margin-bottom:20px;">Upload a clear photo of your national ID to start selling. Review times will be shown once the verification process is connected.</p>
           
           <div class="fld"><label class="fld-lbl">Full Name</label><input class="fld-inp" id="kyc-name" placeholder="Your full name"/></div>
           <div class="fld"><label class="fld-lbl">ID Number</label><input class="fld-inp" id="kyc-id" placeholder="Your national ID number"/></div>
@@ -1043,7 +969,7 @@ tr:hover td{background:var(--bg);}
             <div id="kyc-preview-area" style="margin-top:12px;"></div>
           </div>
           
-          <button class="btn-or btn-or-dk" style="width:100%;padding:12px;margin-top:12px;" onclick="submitKYC()">Submit for Verification</button>
+          <button class="btn-or btn-or-dk" style="width:100%;padding:12px;margin-top:12px;" disabled title="Seller verification will be available when the service is connected.">Seller verification is being connected</button>
         </div>
         <!-- LOGIN PROMPT (shown for guests) -->
         <div id="become-seller-login" style="display:none;text-align:center;padding:32px;">
@@ -1051,8 +977,8 @@ tr:hover td{background:var(--bg);}
           <h1 style="font-family:var(--font2);font-size:26px;font-weight:800;margin-bottom:10px;">Start Selling on SOKO</h1>
           <p style="color:var(--ink3);font-size:14px;max-width:460px;margin:0 auto 24px;">Join Rwanda’s local marketplace. Upload clear product photos, set your prices, and connect with buyers.</p>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;text-align:left;margin-bottom:24px;">
-            <div style="padding:12px;background:var(--gbg);border-radius:var(--r4);"><div style="font-size:12px;font-weight:600;color:var(--g);">✓ Escrow Protected</div><div style="font-size:11px;color:var(--ink3);margin-top:4px;">Your money is safe</div></div>
-            <div style="padding:12px;background:var(--gbg);border-radius:var(--r4);"><div style="font-size:12px;font-weight:600;color:var(--g);">✓ ID Verified</div><div style="font-size:11px;color:var(--ink3);margin-top:4px;">4-hour approval</div></div>
+            <div style="padding:12px;background:var(--gbg);border-radius:var(--r4);"><div style="font-size:12px;font-weight:600;color:var(--g);">✓ Add your products</div><div style="font-size:11px;color:var(--ink3);margin-top:4px;">Use clear photos and details.</div></div>
+            <div style="padding:12px;background:var(--gbg);border-radius:var(--r4);"><div style="font-size:12px;font-weight:600;color:var(--g);">✓ Meet your buyers</div><div style="font-size:11px;color:var(--ink3);margin-top:4px;">Answer questions directly.</div></div>
           </div>
           <button class="btn-or btn-or-dk" style="width:auto;padding:12px 28px;" onclick="document.getElementById('view-auth').classList.add('active');document.getElementById('view-buyer').classList.remove('active');authTab('login');">Sign In to Sell →</button>
         </div>
@@ -1081,7 +1007,7 @@ tr:hover td{background:var(--bg);}
           </div>
           <div class="fld"><label class="fld-lbl">Order ID</label><input class="fld-inp" id="dispute-order" placeholder="ORD-XXXX"/></div>
           <div class="fld"><label class="fld-lbl">Description</label><textarea class="fld-inp fld-ta" id="dispute-desc" placeholder="Describe the issue in detail…"></textarea></div>
-          <button class="btn-or btn-or-dk" onclick="submitDispute()">Submit Report →</button>
+          <button class="btn-or btn-or-dk" disabled title="Support reports are being connected.">Support reports are being connected</button>
         </div>
       </div>
     </div>
@@ -1107,7 +1033,7 @@ tr:hover td{background:var(--bg);}
           </div>
           <div class="fld"><label class="fld-lbl">Headline (optional)</label><input class="fld-inp" id="review-title" placeholder="What's most important to know?"/></div>
           <div class="fld"><label class="fld-lbl">Review (optional)</label><textarea class="fld-inp fld-ta" id="review-text" placeholder="What did you like or dislike?"></textarea></div>
-          <button class="btn-or btn-or-dk" onclick="submitReview()">Submit Review</button>
+          <button class="btn-or btn-or-dk" disabled title="Customer reviews are being connected.">Customer reviews are being connected</button>
         </div>
       </div>
     </div>
@@ -1136,7 +1062,7 @@ tr:hover td{background:var(--bg);}
 <div class="view" id="view-seller">
   <div class="seller-topnav">
     <div class="seller-logo">SO<span>KO</span> Seller Central</div>
-    <span class="seller-badge" id="seller-kyc-badge">⏳ KYC Pending</span>
+    <span class="seller-badge" id="seller-kyc-badge">Seller status unavailable</span>
     <div style="margin-left:auto;display:flex;gap:8px;align-items:center;">
       <select style="padding:5px;background:rgba(255,255,255,.1);border:none;color:#fff;border-radius:3px;font-size:12px;outline:none;" onchange="applyLang(this.value)">
         <option value="en">EN</option><option value="fr">FR</option><option value="rw">RW</option>
@@ -1244,51 +1170,6 @@ tr:hover td{background:var(--bg);}
     <div class="modal-footer">
       <button class="bx bx-ghost" onclick="closeModal('modal-location')">Cancel</button>
       <button class="bx bx-g" style="padding:9px 20px;" onclick="saveLocation()">Save Location</button>
-    </div>
-  </div>
-</div>
-
-<!-- WITHDRAWAL REQUEST MODAL -->
-<div class="modal-bg" id="modal-withdraw">
-  <div class="modal">
-    <div class="modal-hd">
-      <div class="modal-title">💸 Request Payout</div>
-      <button class="modal-close" onclick="closeModal('modal-withdraw')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div style="background:var(--gbg);border:1px solid var(--gb);border-radius:var(--r8);padding:16px;margin-bottom:16px;text-align:center;">
-        <div style="font-size:11px;color:var(--gd);text-transform:uppercase;font-weight:700;margin-bottom:6px;">Available for Payout</div>
-        <div style="font-family:var(--font2);font-size:32px;font-weight:800;color:var(--gd);" id="withdraw-available">0 RWF</div>
-        <div style="font-size:11px;color:var(--ink3);margin-top:4px;">Payout processing is not connected yet.</div>
-      </div>
-      <div class="fld">
-        <label class="fld-lbl">Amount to withdraw (RWF)</label>
-        <input class="fld-inp" id="withdraw-amount" type="number" placeholder="e.g. 50000" oninput="validateWithdrawAmount(this.value)"/>
-        <div id="withdraw-amount-hint" style="font-size:11px;color:var(--ink3);margin-top:4px;"></div>
-      </div>
-      <div class="fld">
-        <label class="fld-lbl">Payout method</label>
-        <select class="fld-sel" id="withdraw-method">
-          <option value="MTN MoMo">📲 MTN Mobile Money</option>
-          <option value="Airtel Money">📱 Airtel Money</option>
-          <option value="Bank Transfer">🏦 Bank Transfer</option>
-        </select>
-      </div>
-      <div class="fld">
-        <label class="fld-lbl">Phone / Account number</label>
-        <input class="fld-inp" id="withdraw-phone" placeholder="+250 7XX XXX XXX"/>
-      </div>
-      <div class="fld">
-        <label class="fld-lbl">Note (optional)</label>
-        <input class="fld-inp" id="withdraw-note" placeholder="e.g. Weekly payout request"/>
-      </div>
-      <div style="background:var(--abg);border:1px solid var(--ab);border-radius:var(--r4);padding:10px 12px;font-size:12px;color:#8B5E00;">
-        ⏱️ Payout requests are processed by the SOKO admin within <strong>1–2 business days</strong>. You will receive an SMS confirmation once sent.
-      </div>
-    </div>
-    <div class="modal-footer">
-      <button class="bx bx-ghost" onclick="closeModal('modal-withdraw')">Cancel</button>
-      <button style="padding:10px 24px;background:var(--g);border:none;border-radius:var(--r4);color:#fff;font-size:14px;font-weight:700;cursor:pointer;" onclick="submitWithdrawModal()">Submit Request →</button>
     </div>
   </div>
 </div>
@@ -1461,41 +1342,6 @@ function handleKycDrop(e){
     handleKycUpload(files[0]);
   }
 }
-async function submitKYC(){
-  const nameInput=document.querySelector('input[placeholder="Your full name"]');
-  const idInput=document.querySelector('input[placeholder="Your national ID number"]');
-  
-  const n=nameInput?.value?.trim() || '';
-  const i=idInput?.value?.trim() || '';
-  
-  alert(`Checking:\nName="${n}"\nID="${i}"\nPhoto=${kycImageData?'YES':'NO'}`);
-  
-  if(!n||n.length<2){alert('Name empty or too short');return;}
-  if(!i||i.length<5){alert('ID empty or too short');return;}
-  if(!kycImageData){alert('No photo uploaded');return;}
-  if(!currentUser||!currentUser.email){alert('Not logged in');return;}
-  
-  alert('Submitting to database...');
-  if(sb){
-    try{
-      const{data,error}=await sb.from('kyc_requests').insert([{user_id:currentUser.email,phone:currentUser.phone||null,name:n,id_number:i,id_image:kycImageData,submitted_at:new Date().toISOString(),status:'pending'}]);
-      if(error){alert('DB Error: '+error.message);return;}
-      
-      await sb.from('users').update({status:'pending'}).eq('email',currentUser.email);
-      currentUser.status='pending';
-      buyerShowView('home');
-      alert('✓ KYC Submitted! Waiting for admin review.');
-      return;
-    }catch(err){
-      alert('Error: '+err.message);
-      return;
-    }
-  }
-  KYC.push({id:'kyc-'+(KYC.length+1),name:n,idNum:i,date:new Date().toISOString().slice(0,10),status:'pending',idImage:kycImageData});
-  currentUser.status='pending';
-  buyerShowView('home');
-  alert('✓ KYC Submitted!');
-}
 function loginSuccess(){
   currentUser={...signupData};
   document.getElementById('view-auth').classList.remove('active');
@@ -1638,7 +1484,7 @@ function buildNotifs(){
 function buyerHome(){prevBuyerView=currentBuyerView;currentBuyerView='home';showBuyerSec('buyer-home');}
 function buyerShowView(v){
   prevBuyerView=currentBuyerView;currentBuyerView=v;
-  const map={home:'buyer-home',shop:'buyer-shop',detail:'buyer-detail',cart:'buyer-cart',checkout:'buyer-checkout',success:'buyer-success',orders:'buyer-orders','become-seller':'buyer-become-seller',dispute:'buyer-dispute',review:'buyer-review'};
+  const map={home:'buyer-home',shop:'buyer-shop',detail:'buyer-detail',cart:'buyer-cart',checkout:'buyer-checkout',orders:'buyer-orders','become-seller':'buyer-become-seller',dispute:'buyer-dispute',review:'buyer-review'};
   showBuyerSec(map[v]||'buyer-home');
   if(v==='cart')renderCart();
   if(v==='orders')renderOrders();
@@ -1685,7 +1531,6 @@ function showProduct(id){
   const hasPics=p.images&&p.images.length;
   const mainHtml=hasPics?`<img src="${p.images[0]}" style="width:100%;height:100%;object-fit:contain;"/>`:`<span style="font-size:130px;">${p.emoji}</span>`;
   const thumbsHtml=(hasPics?p.images.slice(0,4):[p.emoji,p.emoji,p.emoji]).map((img,i)=>`<div class="detail-thumb ${i===0?'active':''}" onclick="swapImg(this,'${img}',${hasPics})">${hasPics?`<img src="${img}"/>`:`<span style="font-size:20px;">${img}</span>`}</div>`).join('');
-  const revs=[{u:'Jean M.',s:5,t:'Excellent product! Fast delivery.',d:'May 5, 2025'},{u:'Marie C.',s:4,t:'Good quality, exactly as described.',d:'May 3, 2025'},{u:'Eric H.',s:5,t:'Very happy. Will buy again!',d:'April 28, 2025'}];
   document.getElementById('detail-crumb').innerHTML=`<a onclick="buyerHome()">Home</a> › <a onclick="filterCat('${p.cat}')">${getCat(p.cat)}</a> › ${p.name.slice(0,40)}…`;
   document.getElementById('detail-content').innerHTML=`
     <div class="detail-wrap">
@@ -1704,28 +1549,20 @@ function showProduct(id){
       </div>
       <div class="buy-box">
         <div class="buy-box-price">RWF ${fmt(p.price)}</div>
-        <div style="font-size:13px;margin-bottom:4px;">Moto delivery <b style="color:var(--b);">in Kigali</b></div>
-        <div style="font-size:12px;color:var(--b);cursor:pointer;margin-bottom:10px;" onclick="openModal('modal-location')">📍 Delivering to ${currentLocation.split(',')[0]}</div>
+        <div style="font-size:13px;margin-bottom:10px;">Contact the seller to arrange delivery or pickup.</div>
         <div class="buy-box-stock">${p.stock>0?'In Stock':'Out of Stock'}</div>
         ${p.stock>0?`<div style="font-size:12px;font-weight:600;margin-bottom:6px;">Qty:</div>
         <div class="qty-ctrl"><button class="qty-btn" onclick="changeQty(-1)">−</button><span class="qty-num" id="detail-qty">1</span><button class="qty-btn" onclick="changeQty(1)">+</button></div>
         <button class="btn-atcr" onclick="addDetailToCart(${JSON.stringify(String(p.id))})">Add to Cart</button>
         <button class="btn-buynow" onclick="buyNow(${JSON.stringify(String(p.id))})">Buy Now</button>`:''}
         <div class="buy-box-seller">Sold by <span>${p.seller}</span></div>
-        <div class="contact-btns">
+        ${p.sellerPhone?`<div class="contact-btns">
           <a href="tel:${p.sellerPhone}" class="btn-contact">📞 Call</a>
           <a href="https://wa.me/${p.sellerPhone.replace(/\s/g,'')}" class="btn-contact" target="_blank">💬 WhatsApp</a>
-        </div>
+        </div>`:'<div class="contact-btns"><span class="btn-contact" aria-disabled="true">Seller contact details unavailable</span></div>'}
       </div>
     </div>
-    <div class="reviews-sec">
-      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;padding-bottom:12px;border-bottom:var(--border);">
-        <div style="font-size:19px;font-weight:700;">Customer reviews</div>
-        <div style="text-align:right;"><div style="font-size:34px;color:var(--or);">${p.rating}</div><div style="color:var(--or);">${stars(p.rating)}</div><div style="font-size:12px;color:var(--ink3);">out of 5</div></div>
-      </div>
-      ${revs.map(r=>`<div class="rev-card"><div class="rev-hdr"><div class="rev-avatar">${r.u[0]}</div><div style="font-size:13px;font-weight:700;">${r.u}</div><span style="color:var(--or);">${stars(r.s)}</span></div><div style="font-size:13px;color:var(--ink2);line-height:1.6;">${r.t}</div><div style="font-size:11px;color:var(--ink4);margin-top:4px;">Reviewed ${r.d}</div></div>`).join('')}
-      <div style="margin-top:14px;"><button class="bx bx-ghost" style="padding:8px 16px;font-size:13px;" onclick="buyerShowView('review')">Write a review</button></div>
-    </div>`;
+    <div class="reviews-sec"><div style="font-size:19px;font-weight:700;margin-bottom:8px;">Reviews</div><p style="font-size:13px;color:var(--ink3);">Customer reviews will appear here once the review service is connected.</p></div>`;
 }
 function swapImg(thumb,src,isReal){document.querySelectorAll('.detail-thumb').forEach(t=>t.classList.remove('active'));thumb.classList.add('active');const m=document.getElementById('detail-main');if(m)m.innerHTML=isReal?`<img src="${src}" style="width:100%;height:100%;object-fit:contain;"/>`:`<span style="font-size:130px;">${src}</span>`;}
 function changeQty(d){const el=document.getElementById('detail-qty');if(el)el.textContent=Math.max(1,Math.min(10,parseInt(el.textContent)+d));}
@@ -1787,7 +1624,6 @@ function placeOrder(){
   }
   toast('Online checkout is not connected yet. Please contact the seller from the product page.','r');
 }
-function confirmDelivery(){toast('Order tracking will be available once checkout is connected.','r');}
 
 // ORDERS
 function renderOrders(){
@@ -1822,15 +1658,7 @@ function renderOrders(){
   }).join('');
 }
 function confirmOrderDelivery(id){const o=ORDERS.find(x=>x.id===id);if(o){o.status='delivered';o.escrow='released';}toast('✅ Delivery confirmed!','g');renderOrders();}
-function submitDispute(){
-  const t=document.getElementById('dispute-type').value,o=document.getElementById('dispute-order').value.trim(),d=document.getElementById('dispute-desc').value.trim();
-  if(!o||!d){toast('Please fill all fields','r');return;}
-  DISPUTES.push({id:'DSP-'+DISPUTES.length,buyer:currentUser?.name||'User',orderId:o,type:t,desc:d,status:'open',escrowAction:'frozen',date:new Date().toISOString().slice(0,10)});
-  const ord=ORDERS.find(x=>x.id===o);if(ord)ord.escrow='frozen';
-  toast('✓ Report submitted. Escrow frozen.','g');buyerShowView('orders');
-}
 function pickStar(n){pickedStar=n;document.querySelectorAll('#star-row span').forEach((s,i)=>s.textContent=i<n?'★':'☆');}
-function submitReview(){if(!pickedStar){toast('Please select a star rating','r');return;}toast('✓ Review submitted. Thank you!','g');buyerShowView('orders');}
 
 // LOCATION
 function locPreview(val){const el=document.getElementById('loc-preview');if(el)el.textContent=val||'Kigali, Rwanda';}
@@ -1874,7 +1702,7 @@ function sellerNavClick(btn,id){document.querySelectorAll('.snav-item').forEach(
 function renderSeller(section){
   const el=document.getElementById('seller-content');if(!el)return;
   const badge=document.getElementById('seller-kyc-badge');
-  if(badge){badge.textContent=currentUser?.kycSubmitted?'⏳ KYC Pending':'✓ Verified';badge.style.background=currentUser?.kycSubmitted?'rgba(255,153,0,.18)':'rgba(0,200,100,.18)';}
+  if(badge){badge.textContent=currentUser?.kycSubmitted?'⏳ KYC Pending':'Seller status unavailable';badge.style.background='rgba(255,255,255,.12)';}
   if(section==='dashboard')el.innerHTML=sellerDashHTML();
   else if(section==='products')el.innerHTML=sellerProdsHTML();
   else if(section==='orders')el.innerHTML=sellerOrdersHTML();
@@ -1882,32 +1710,19 @@ function renderSeller(section){
   else if(section==='profile')el.innerHTML=sellerProfileHTML();
 }
 function sellerDashHTML(){
-  return `<div class="seller-page-hdr"><div class="seller-page-title">Dashboard</div><span style="font-size:13px;color:var(--ink3);">${new Date().toLocaleDateString('en-RW',{weekday:'short',month:'long',day:'numeric'})}</span></div>
-  <div class="seller-content">
-    <div class="metric-grid">
-      <div class="metric-card"><div class="metric-lbl">Revenue (Net)</div><div class="metric-val">139,300 <span style="font-size:13px;font-weight:400;color:var(--ink3);">RWF</span></div><div class="metric-sub">After platform fee</div></div>
-      <div class="metric-card"><div class="metric-lbl">Total Orders</div><div class="metric-val mc-g">12</div><div class="metric-sub">3 pending shipment</div></div>
-      <div class="metric-card"><div class="metric-lbl">In Escrow</div><div class="metric-val mc-o">45,000 RWF</div><div class="metric-sub">Awaiting confirmation</div></div>
-      <div class="metric-card"><div class="metric-lbl">Avg. Rating</div><div class="metric-val">4.7 ⭐</div><div class="metric-sub">23 reviews</div></div>
-    </div>
-    <div class="tbl-wrap"><div class="tbl-hdr"><div class="tbl-hdr-title">Recent Orders</div></div>
-    <div class="tbl-scroll"><table><thead><tr><th>Order ID</th><th>Product</th><th>Buyer</th><th>Total</th><th>You Get</th><th>Escrow</th><th>Status</th><th>Action</th></tr></thead>
-    <tbody>${ORDERS.slice(0,5).map(o=>`<tr>
-      <td style="font-family:monospace;font-weight:700;">${o.id}</td><td>${o.product.slice(0,18)}…</td><td>${o.buyer}</td>
-      <td style="font-weight:700;">RWF ${fmt(o.total)}</td><td style="color:var(--gd);font-weight:700;">RWF ${fmt(o.sellerNet)}</td>
-      <td><span class="ep ${o.escrow==='held'?'ep-held':o.escrow==='released'?'ep-rel':'ep-frz'}">🔒 ${o.escrow}</span></td>
-      <td><span class="pill ${o.status==='delivered'?'pill-g':o.status==='shipped'?'pill-b':o.status==='cancelled'?'pill-r':'pill-a'}">${o.status}</span></td>
-      <td>${o.status==='pending'?`<button class="bx bx-b" onclick="markShipped('${o.id}');renderSeller('dashboard')">Ship</button>`:'—'}</td>
-    </tr>`).join('')}</tbody></table></div></div>
-  </div>`;
+  return `<div class="seller-page-hdr"><div class="seller-page-title">Your shop</div></div>
+  <div class="seller-content"><section class="seller-setup-card">
+    <span>✳</span><div><div class="seller-setup-title">Make this space yours.</div><p>Add products to your shop and keep your details up to date. Order and earnings summaries will appear here when those services are connected.</p></div>
+    <button class="bx bx-g" onclick="renderSeller('products')">View my listings ↗</button>
+  </section></div>`;
 }
 function sellerProdsHTML(){
   return `<div class="seller-page-hdr"><div class="seller-page-title">My Products</div><button class="bx bx-g" style="padding:8px 16px;font-size:13px;" onclick="prodImages=[];renderProdPreviews();openModal('modal-add-product')">+ Add Product</button></div>
-  <div class="seller-content"><div class="tbl-wrap"><div class="tbl-scroll"><table><thead><tr><th>Image</th><th>Product</th><th>Category</th><th>Price</th><th>You Get (98%)</th><th>Stock</th><th>Status</th></tr></thead>
+  <div class="seller-content"><div class="tbl-wrap"><div class="tbl-scroll"><table><thead><tr><th>Image</th><th>Product</th><th>Category</th><th>Price</th><th>Stock</th><th>Status</th></tr></thead>
   <tbody>${PRODUCTS.slice(0,12).map(p=>`<tr>
     <td><div style="width:44px;height:44px;background:var(--bg2);border-radius:var(--r4);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:24px;">${(p.images&&p.images.length)?`<img src="${p.images[0]}" style="width:100%;height:100%;object-fit:cover;"/>`:p.emoji}</div></td>
     <td style="font-weight:600;">${p.name.slice(0,28)}…</td><td>${getCat(p.cat)}</td>
-    <td style="font-weight:700;">RWF ${fmt(p.price)}</td><td style="color:var(--gd);font-weight:700;">RWF ${fmt(Math.round(p.price*0.98))}</td>
+    <td style="font-weight:700;">RWF ${fmt(p.price)}</td>
     <td>${p.stock}</td><td><span class="pill ${p.stock>5?'pill-g':p.stock>0?'pill-a':'pill-r'}">${p.stock>5?'In stock':p.stock>0?'Low':'Out'}</span></td>
   </tr>`).join('')}</tbody></table></div></div></div>`;
 }
@@ -1923,42 +1738,8 @@ function sellerOrdersHTML(){
   </tr>`).join('')}</tbody></table></div></div></div>`;
 }
 function sellerEarnHTML(){
-  return `<div class="seller-page-hdr"><div class="seller-page-title">Earnings & Payouts</div></div>
-  <div class="seller-content">
-    <div class="earn-card">
-      <div class="earn-lbl">Total Earnings (Net)</div><div class="earn-val">139,300 <span style="font-size:14px;color:rgba(255,255,255,.35);">RWF</span></div>
-      <div style="font-size:12px;color:rgba(255,255,255,.4);">After platform fee deduction</div>
-      <div class="earn-grid">
-        <div class="earn-item"><div class="earn-item-lbl">In Escrow</div><div class="earn-item-val o">45,000 RWF</div></div>
-        <div class="earn-item" style="cursor:pointer;" onclick="openWithdrawModal()">
-  <div class="earn-item-lbl">Ready for Payout</div>
-  <div class="earn-item-val g">94,300 RWF</div>
-  <div style="font-size:10px;color:rgba(255,255,255,.5);margin-top:4px;">Tap to withdraw →</div>
-</div>
-      </div>
-      <div style="background:rgba(0,150,80,.1);border:1px solid rgba(0,150,80,.2);border-radius:var(--r4);padding:10px 14px;margin-top:14px;font-size:12px;color:rgba(255,255,255,.65);">💳 SOKO settles weekly via MTN MoMo or bank. Funds release after buyer confirms delivery.
-      </div>
-      <button onclick="openWithdrawModal()" style="width:100%;margin-top:14px;padding:13px;background:linear-gradient(to bottom,#00C878,#00A85E);border:none;border-radius:var(--r4);color:#fff;font-size:15px;font-weight:700;cursor:pointer;box-shadow:0 4px 14px rgba(0,168,94,.3);">
-        💸 Request Payout
-      </button>
-      <div style="display:none;"></div>
-    </div>
-    <div class="tbl-wrap"><div class="tbl-hdr"><div class="tbl-hdr-title">Earnings History</div></div>
-    <div class="tbl-scroll"><table><thead><tr><th>Order ID</th><th>Product</th><th>Date</th><th>Gross</th><th>Platform Fee</th><th>You Receive</th><th>Escrow</th></tr></thead>
-    <tbody>${ORDERS.filter(o=>o.status!=='cancelled').slice(0,6).map(o=>`<tr>
-      <td style="font-family:monospace;">${o.id}</td><td>${o.product.slice(0,16)}…</td>
-      <td style="color:var(--ink3);">${o.date}</td><td>RWF ${fmt(o.total)}</td>
-      <td style="color:var(--r);">-RWF ${fmt(o.commission)}</td>
-      <td style="font-weight:700;color:${o.escrow==='released'?'var(--g)':'var(--a)'};">RWF ${fmt(o.sellerNet)}</td>
-      <td><span class="ep ${o.escrow==='held'?'ep-held':o.escrow==='released'?'ep-rel':'ep-frz'}">${o.escrow}</span></td>
-    </tr>`).join('')}</tbody></table></div></div>
-    <div class="tbl-wrap"><div style="padding:16px;">
-      <div style="display:flex;justify-content:space-between;font-size:13px;padding:9px 0;border-bottom:var(--border2);"><span>Buyer pays</span><span style="font-weight:700;">100%</span></div>
-      <div style="display:flex;justify-content:space-between;font-size:13px;padding:9px 0;border-bottom:var(--border2);color:var(--r);"><span>Platform fee (2%)</span><span style="font-weight:700;">-2%</span></div>
-      <div style="display:flex;justify-content:space-between;font-size:13px;padding:9px 0;color:var(--gd);font-weight:700;"><span>You receive</span><span>98% of sale price</span></div>
-      <div style="background:var(--gbg);border-radius:var(--r4);padding:12px;margin-top:12px;font-size:12px;color:var(--gd);">Example: 20,000 RWF sale → You receive <strong>19,600 RWF</strong></div>
-    </div></div>
-  </div>`;
+  return `<div class="seller-page-hdr"><div class="seller-page-title">Earnings</div></div>
+    <div class="seller-content"><section class="seller-setup-card"><span>◷</span><div><div class="seller-setup-title">Payouts are not connected yet.</div><p>We’ll show your real order totals and available balance here once SOKO’s order and payment services are ready.</p></div></section></div>`;
 }
 function sellerProfileHTML(){
   return `<div class="seller-page-hdr"><div class="seller-page-title">Store Profile</div></div>
@@ -1969,12 +1750,12 @@ function sellerProfileHTML(){
       <div class="fld"><label class="fld-lbl">Phone</label><input class="fld-inp" value="${currentUser?.phone||'+250 7XX XXX XXX'}"/></div>
       <div class="fld"><label class="fld-lbl">WhatsApp</label><input class="fld-inp" placeholder="+250 7XX XXX XXX"/></div>
       <div class="fld"><label class="fld-lbl">Location</label><input class="fld-inp" placeholder="Kigali, Rwanda"/></div>
-      <button class="bx bx-g" style="padding:9px 20px;font-size:13px;" onclick="toast('✓ Profile saved','g')">Save Changes</button>
+      <button class="bx bx-g" style="padding:9px 20px;font-size:13px;" onclick="toast('Shop profile editing is not connected yet','r')">Save Changes</button>
     </div>
     <div style="background:var(--w);border:var(--border);border-radius:var(--r8);padding:20px;box-shadow:var(--sh);">
       <div style="font-size:16px;font-weight:700;margin-bottom:12px;">KYC Status</div>
-      <span class="pill ${currentUser?.kycSubmitted?'pill-a':'pill-g'}">${currentUser?.kycSubmitted?'⏳ Pending Admin Review':'✓ Verified Seller'}</span>
-      <p style="font-size:13px;color:var(--ink3);margin-top:10px;line-height:1.6;">${currentUser?.kycSubmitted?"Your documents are under review. You'll receive an SMS once approved.":'Your identity has been verified. You can list products and receive payments.'}</p>
+      <span class="pill ${currentUser?.kycSubmitted?'pill-a':'pill-gray'}">${currentUser?.kycSubmitted?'Pending review':'Status unavailable'}</span>
+      <p style="font-size:13px;color:var(--ink3);margin-top:10px;line-height:1.6;">Verification status and seller profile updates will be shown when those services are connected.</p>
     </div>
   </div>`;
 }
@@ -2003,7 +1784,7 @@ async function addSellerProduct(){
   toast('Saving product…');
   const{data,error}=await sb.from('products').insert([{
     name,category:cat,cat,price,stock,emoji,description:desc,
-    images:imageUrls,badge:'new',rating:5.0,reviews_count:0,reviews:0,
+    images:imageUrls,badge:'new',
     seller_name:currentUser?.name||'My Store',seller:currentUser?.name||'My Store',
     seller_phone:currentUser?.phone||'',seller_id:currentUser?.email||currentUser?.phone||'',
     active:true,
@@ -2011,7 +1792,7 @@ async function addSellerProduct(){
   if(error){toast('Failed to save product: '+error.message,'r');return;}
   PRODUCTS.unshift({
     id:data.id,name:data.name,cat:data.cat||data.category,price:data.price,
-    stock:data.stock,emoji:data.emoji,images:data.images||[],rating:5.0,reviews:0,
+    stock:data.stock,emoji:data.emoji,images:normalizeProductImages(data.images),rating:0,reviews:0,
     seller:data.seller_name||data.seller,sellerPhone:data.seller_phone||'',
     desc:data.description||'',badge:'new',
   });
@@ -2036,39 +1817,6 @@ function normalizeProductImages(value){
   if(typeof value!=='string'||!value.trim())return[];
   try{const parsed=JSON.parse(value);if(Array.isArray(parsed))return parsed.filter(v=>typeof v==='string'&&v.trim());}catch(e){}
   return[value.trim()];
-}
-function openWithdrawModal(){
-  const available=94300;
-  const el=document.getElementById('withdraw-available');
-  if(el)el.textContent=fmt(available)+' RWF';
-  document.getElementById('withdraw-amount').value='';
-  document.getElementById('withdraw-amount-hint').textContent='Enter amount between 1,000 and '+fmt(available)+' RWF';
-  document.getElementById('withdraw-phone').value='';
-  document.getElementById('withdraw-note').value='';
-  openModal('modal-withdraw');
-}
-
-function validateWithdrawAmount(val){
-  const hint=document.getElementById('withdraw-amount-hint');
-  if(!hint)return;
-  const n=parseInt(val);
-  if(!val)hint.textContent='Enter amount between 1,000 and 94,300 RWF';
-  else if(n<1000)hint.textContent='⚠️ Minimum withdrawal is 1,000 RWF';
-  else if(n>94300)hint.textContent='⚠️ Exceeds available balance';
-  else hint.textContent='✓ Amount looks good';
-}
-
-function submitWithdrawModal(){
-  const amount=parseInt(document.getElementById('withdraw-amount').value);
-  const phone=document.getElementById('withdraw-phone').value.trim();
-  const method=document.getElementById('withdraw-method').value;
-  const note=document.getElementById('withdraw-note').value.trim();
-  if(!amount||amount<1000){toast('Enter a valid amount (min 1,000 RWF)','r');return;}
-  if(amount>94300){toast('Amount exceeds available balance','r');return;}
-  if(!phone){toast('Enter your Mobile Money number','r');return;}
-  PAYOUTS.unshift({id:'PAY-'+(PAYOUTS.length+1).toString().padStart(3,'0'),seller:currentUser?.name||'Seller',phone,amount,ordersCount:0,method,status:'pending',date:new Date().toISOString().slice(0,10)});
-  closeModal('modal-withdraw');
-  toast('✓ Withdrawal request submitted. Admin will process within 24–48hrs.','g');
 }
 // AI CHAT
 function toggleAIChat(){
