@@ -1220,7 +1220,22 @@ let PAYOUTS=[];
 let DISPUTES=[];
 
 // STATE
-let cart=[],currentUser=null,lang='en',selectedRole='buyer';
+const CART_STORAGE_KEY='soko.cart.v1';
+function readSavedCart(){
+  try{
+    const saved=JSON.parse(localStorage.getItem(CART_STORAGE_KEY)||'[]');
+    if(!Array.isArray(saved))return[];
+    return saved.filter(item=>item&&typeof item.id==='string'&&Number.isInteger(item.qty)&&item.qty>0&&item.qty<=99).map(item=>({id:item.id,qty:item.qty}));
+  }catch(e){return[];}
+}
+function persistCart(){
+  try{localStorage.setItem(CART_STORAGE_KEY,JSON.stringify(cart.map(({id,qty})=>({id:String(id),qty}))));}catch(e){console.warn('Cart could not be saved in this browser.');}
+}
+function hydrateCart(){
+  cart=cart.map(item=>{const product=PRODUCTS.find(p=>String(p.id)===String(item.id));return product?{...product,qty:item.qty}:null;}).filter(Boolean);
+  persistCart();updateCartBadge();
+}
+let cart=readSavedCart().map(item=>({...item,name:'Loading item…',price:0,emoji:'📦',images:[],seller:'Seller'})),currentUser=null,lang='en',selectedRole='buyer';
 let commissionRate=4;
 let currentBuyerView='home',prevBuyerView='home',activeProductId=null;
 let editingOrderId=null,editingPayoutId=null,pickedStar=0,signupData={};
@@ -1387,7 +1402,7 @@ function switchToSeller(){
 }
 async function doLogout(){
   if(sb){try{await sb.auth.signOut();}catch(e){console.log('signout:',e);}}
-  currentUser=null;cart=[];signupData={};
+  currentUser=null;signupData={};
   setAccountMenuState(false);
   closeAll();
   // Clear all views
@@ -1621,8 +1636,8 @@ function buyNow(id){addDetailToCart(id);buyerShowView('checkout');}
 function addToCartGrid(e,id){e.stopPropagation();const p=PRODUCTS.find(x=>x.id===id);if(!p)return;doAddToCart(p,1);toast('✓ Added to cart','g');}
 
 // CART
-function doAddToCart(p,qty=1){const ex=cart.find(c=>c.id===p.id);if(ex)ex.qty+=qty;else cart.push({id:p.id,name:p.name,price:p.price,emoji:p.emoji,images:p.images||[],qty,seller:p.seller});updateCartBadge();}
-function updateCartBadge(){document.getElementById('cart-badge').textContent=cart.reduce((a,c)=>a+c.qty,0);}
+function doAddToCart(p,qty=1){const safeQty=Math.max(1,Math.min(99,parseInt(qty,10)||1));const ex=cart.find(c=>String(c.id)===String(p.id));if(ex)ex.qty=Math.min(99,ex.qty+safeQty);else cart.push({id:p.id,name:p.name,price:p.price,emoji:p.emoji,images:p.images||[],qty:safeQty,seller:p.seller});persistCart();updateCartBadge();}
+function updateCartBadge(){const badge=document.getElementById('cart-badge');if(badge)badge.textContent=cart.reduce((a,c)=>a+c.qty,0);}
 function renderCart(){
   const iw=document.getElementById('cart-items'),sw=document.getElementById('cart-summary');
   if(!cart.length){iw.innerHTML=`<div class="cart-panel" style="text-align:center;padding:50px 20px;"><div style="font-size:80px;margin-bottom:14px;">🛒</div><h2 style="font-size:22px;font-weight:400;margin-bottom:8px;">Your cart is empty</h2><p style="color:var(--ink3);margin-bottom:20px;">Discover great deals on SOKO</p><button class="btn-checkout" style="width:auto;padding:12px 24px;" onclick="buyerHome()">Continue shopping</button></div>`;sw.innerHTML='';return;}
@@ -1654,8 +1669,8 @@ function renderCart(){
     <button class="btn-checkout" onclick="buyerShowView('checkout')">Proceed to checkout</button>
     <div style="font-size:11px;color:var(--ink4);margin-top:8px;text-align:center;">Review your order before confirming.</div>`;
 }
-function cartQty(id,d){const item=cart.find(c=>c.id===id);if(item){item.qty=Math.max(1,item.qty+d);updateCartBadge();renderCart();}}
-function cartRemove(id){cart=cart.filter(c=>c.id!==id);updateCartBadge();renderCart();}
+function cartQty(id,d){const item=cart.find(c=>String(c.id)===String(id));if(item){item.qty=Math.max(1,Math.min(99,item.qty+d));persistCart();updateCartBadge();renderCart();}}
+function cartRemove(id){cart=cart.filter(c=>String(c.id)!==String(id));persistCart();updateCartBadge();renderCart();}
 function renderCoSummary(){
   const sub=cart.reduce((a,c)=>a+c.price*c.qty,0);
   const el=document.getElementById('co-summary');if(!el)return;
@@ -1876,6 +1891,7 @@ async function loadProductsFromSupabase(){
     reviews:p.reviews_count||p.reviews||0,seller:p.seller_name||p.seller||'Seller',
     sellerPhone:p.seller_phone||'',desc:p.description||'',badge:p.badge||'',
   }));
+  hydrateCart();
 }
 function normalizeProductImages(value){
   const validUrl=v=>typeof v==='string'&&/^https?:\/\//i.test(v.trim());
