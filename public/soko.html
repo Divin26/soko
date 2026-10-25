@@ -5,7 +5,7 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>SOKO — Rwanda's Marketplace</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=Syne:wght@500;600;700;800&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
@@ -592,7 +592,49 @@ tr:hover td{background:var(--bg);}
 @media(max-width:768px){.topnav{padding:8px 14px;min-height:62px;}.tnav-logo{font-size:25px;}.tnav-search{order:5;flex:0 0 100%;max-width:none;margin:4px 0 1px;height:42px;}.tnav-scat{display:none;}.tnav-sinp{height:40px;}.tnav-sbtn{height:34px;width:34px;}.sell-nav-cta{padding:9px 12px;font-size:11px;}.market-strip{padding:7px 14px;gap:10px;font-size:9px;overflow:hidden;white-space:nowrap;}.market-strip span+span:before{margin-right:4px;}.market-strip-location{display:none!important;}.subnav{padding:0 10px;height:39px;}.snav{font-size:11px;padding:6px 9px;}.home-hero{grid-template-columns:1fr;padding:35px 18px 35px;gap:25px;}.hero-title{font-size:clamp(48px,12vw,74px);margin:18px 0 14px;}.hero-desc{font-size:14px;line-height:1.65;}.hero-art{height:340px;min-height:300px;max-height:360px;border-radius:48% 48% 22px 22px / 23% 23% 22px 22px;}.hero-picks{width:min(210px,49%);right:11px;top:13px;}.hero-pick{grid-template-columns:44px 1fr;padding:6px;gap:7px;}.hero-pick-visual{width:44px;height:44px;font-size:23px;}.hero-art-note{left:15px;bottom:17px;}.hero-stamp{right:13px;bottom:13px;width:74px;height:74px;}.market-categories,.market-products{padding-left:18px;padding-right:18px;}.section-heading{align-items:flex-start;}.section-heading h2{font-size:29px;}.section-heading .text-link{font-size:10px;}.cat-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;}.cat-card{padding:14px 7px 12px;border-radius:12px;}.cat-card .cat-icon{font-size:23px;margin-bottom:6px;}.cat-card .cat-name{font-size:10px;}.prod-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;}.prod-info{padding:9px 9px 3px;}.prod-name{font-size:11px;}.prod-price{font-size:17px;}.home-community{grid-template-columns:1fr;margin:0 14px 35px;}.community-art{min-height:190px;}.community-copy{padding:25px 23px 28px;}.community-copy h2{font-size:40px;}.storefront-footer{padding:22px 18px 27px;}}
 @media(max-width:480px){.tnav-link:nth-child(1),.tnav-link:nth-child(2){display:none;}.tnav-right{gap:3px;}.tnav-cart{padding:3px 6px;}.tnav-cart span{font-size:17px!important;}.sell-nav-cta{font-size:10px;padding:8px 9px;}.market-strip span:nth-child(3){display:none;}.hero-action-primary,.hero-action-secondary{padding:12px 15px;font-size:11px;}.hero-art{height:285px;min-height:285px;}.hero-picks{width:58%;}.hero-pick:nth-child(3){display:none;}.hero-art-note b{font-size:16px;}.hero-stamp{width:65px;height:65px;}.section-heading{gap:8px;}.section-heading h2{font-size:25px;}.section-heading .text-link{max-width:95px;text-align:right;white-space:normal;line-height:1.35;}.cat-grid{grid-template-columns:repeat(4,minmax(0,1fr));}.prod-thumb{font-size:44px;}.prod-price{font-size:16px;}}
 
-
+/* A louder, more joyful SOKO market identity. */
+:root{--or:#FF5B35;--ordk:#E94725;--or2:#FFB19A;--nv:#23132F;--nv2:#372044;--g:#087E6B;--gd:#066653;--a:#E8FF61;--abg:#F5FFD0;--bg:#FFF9EE;--bg2:#F4EBDD;--bg3:#E8D9C8;--w:#FFFEFA;--border:1px solid #E6DCCE;--border2:1px solid #F0E6D7;--font:'DM Sans',sans-serif;--font2:'Syne',sans-serif;}
+.topnav{height:76px;padding:0 clamp(18px,5vw,72px);background:#23132F;color:#fff;border-bottom:1px solid rgba(255,255,255,.1);box-shadow:none;}
+.tnav-logo{font:800 31px/1 var(--font2);letter-spacing:-2px;color:#fff;}.tnav-logo span{color:var(--a)!important;}
+.tnav-loc-top,.tnav-link-top{color:rgba(255,255,255,.54);}.tnav-loc-bot,.tnav-link-bot{color:#fff;}
+.tnav-search{height:45px;border:1px solid rgba(255,255,255,.18);background:#342341;box-shadow:none;}.tnav-search:focus-within{border-color:var(--a);box-shadow:0 0 0 3px rgba(232,255,97,.15);}
+.tnav-scat{background:#3C2A48;color:#F5EAF8;border:0;}.tnav-sinp{color:#fff;}.tnav-sinp::placeholder{color:rgba(255,255,255,.46);}.tnav-sbtn{background:var(--a);color:var(--nv);}.tnav-sbtn:hover{background:#D7F047;}
+.tnav-link,.tnav-cart{color:#fff;}.tnav-link:hover,.tnav-cart:hover{background:rgba(255,255,255,.09);border-color:rgba(255,255,255,.1);}.tnav-cart span,.tnav-cart #cart-badge{color:var(--a)!important;}
+.tnav-lang{background:#342341;color:#fff;border-color:rgba(255,255,255,.2);}.sell-nav-cta{background:var(--a);color:var(--nv);border-radius:7px;padding:12px 16px;font-size:12px;}.sell-nav-cta:hover{background:#D7F047;}
+.market-strip{background:#E8FF61;color:#23132F;min-height:35px;padding:8px clamp(18px,5vw,72px);font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.11em;}.market-strip i{background:#FF5B35;}.market-strip span+span:before{border-color:rgba(35,19,47,.22);}.market-strip-location b{color:#FF5B35;}
+.subnav{height:45px;padding:0 clamp(18px,5vw,72px);background:#FFF9EE;gap:5px;border-bottom:1px solid #EADFCF;}.snav{color:#45344D;border-radius:5px;font-size:11px;font-weight:700;}.snav:first-child{background:#23132F;color:#E8FF61;}.snav:hover{background:#F1E6D6;border-color:transparent;color:#23132F;}
+.storefront-home{background:#FFF9EE;}
+.home-hero{max-width:none;min-height:650px;padding:clamp(54px,7vw,100px) clamp(24px,7vw,108px) 78px;grid-template-columns:minmax(330px,.84fr) minmax(420px,1.16fr);gap:clamp(30px,6vw,98px);background:#23132F;position:relative;isolation:isolate;overflow:hidden;}
+.home-hero:before{content:'';position:absolute;z-index:-1;width:760px;height:760px;right:-16%;top:-73%;border-radius:50%;border:1px solid rgba(232,255,97,.16);box-shadow:0 0 0 54px rgba(232,255,97,.025),0 0 0 108px rgba(232,255,97,.025),0 0 0 162px rgba(232,255,97,.025);}
+.home-hero:after{content:'SOKO';position:absolute;z-index:-1;right:2%;bottom:-.37em;font:800 clamp(140px,23vw,340px)/.8 var(--font2);letter-spacing:-.11em;color:rgba(255,255,255,.025);pointer-events:none;}
+.hero-copy{max-width:610px;}.hero-kicker{background:rgba(232,255,97,.09);border:1px solid rgba(232,255,97,.3);border-radius:5px;color:var(--a);padding:8px 10px;font-size:9px;letter-spacing:.13em;}.hero-kicker span{background:var(--a);color:var(--nv);border-radius:3px;}
+.hero-title{font:700 clamp(54px,7.2vw,100px)/.96 var(--font2);letter-spacing:-.075em;color:#FFF9EE;margin:24px 0 21px;max-width:640px;}.hero-title em{font-style:normal;color:var(--a);position:relative;white-space:nowrap;}.hero-title em:after{content:'';position:absolute;height:8px;background:#FF5B35;left:2px;right:0;bottom:-8px;transform:rotate(-2deg);border-radius:8px;}
+.hero-desc{font-size:15px;line-height:1.72;color:rgba(255,249,238,.69);max-width:430px;margin-bottom:28px;}.hero-action-primary,.hero-action-secondary{border-radius:7px;padding:15px 19px;font-size:12px;}.hero-action-primary{background:#FF5B35;color:white;box-shadow:0 8px 0 rgba(255,91,53,.15);}.hero-action-primary:hover{background:#E94725;transform:translateY(-3px);}.hero-action-secondary{border-color:rgba(255,255,255,.3);color:#FFF9EE;background:rgba(255,255,255,.04);}.hero-action-secondary:hover{background:rgba(255,255,255,.12);}
+.hero-footnote{color:rgba(255,249,238,.56);font-size:10px;text-transform:uppercase;letter-spacing:.11em;}.hero-footnote-mark{color:var(--a);font-size:20px;}
+.hero-art{height:clamp(380px,43vw,540px);min-height:380px;border-radius:18px 105px 18px 18px;background:linear-gradient(145deg,#FF5B35 0%,#FF8C4C 47%,#E8FF61 100%);box-shadow:14px 14px 0 #4A2A56;overflow:hidden;isolation:isolate;}
+.hero-art:before{content:'';position:absolute;inset:0;z-index:-1;opacity:.2;background:repeating-linear-gradient(45deg,transparent 0 19px,rgba(35,19,47,.38) 20px 22px,transparent 23px 40px),repeating-linear-gradient(-45deg,transparent 0 25px,rgba(255,249,238,.42) 26px 28px,transparent 29px 52px);mask-image:linear-gradient(135deg,#000 0%,transparent 68%);}
+.hero-art:after{content:'';position:absolute;z-index:-1;width:420px;height:420px;border-radius:50%;right:-115px;top:-150px;border:1px solid rgba(35,19,47,.24);box-shadow:0 0 0 26px rgba(35,19,47,.05),0 0 0 52px rgba(35,19,47,.05),0 0 0 78px rgba(35,19,47,.05);}
+.hero-art-sun{width:134px;height:134px;right:auto;left:10%;top:9%;background:var(--a);box-shadow:0 0 0 16px rgba(232,255,97,.16),0 0 58px rgba(232,255,97,.34);}
+.hero-art-note{z-index:4;left:24px;bottom:22px;text-shadow:none;color:#23132F;}.hero-art-note span{color:#23132F;background:var(--a);padding:5px 7px;border-radius:3px;font-size:8px;}.hero-art-note b{max-width:210px;font:700 16px/1.12 var(--font2);}
+.hero-stamp{z-index:4;background:#23132F;color:#E8FF61;right:22px;bottom:19px;transform:rotate(9deg);width:83px;height:83px;border-radius:7px;box-shadow:7px 7px 0 rgba(255,249,238,.38);}.hero-stamp span{color:#FF5B35;}.hero-stamp b{font:800 10px/1.05 var(--font2);}.hero-stamp small{font-size:7px;letter-spacing:.13em;}
+.hero-picks{z-index:2;inset:0;width:auto;display:block;}.hero-pick{position:absolute;display:flex;flex-direction:column;gap:0;padding:0;border:5px solid #FFF9EE;border-radius:10px;background:#FFF9EE;box-shadow:0 18px 34px rgba(35,19,47,.25);overflow:hidden;backdrop-filter:none;cursor:pointer;transition:transform .25s,box-shadow .25s;}.hero-pick:hover{box-shadow:0 26px 40px rgba(35,19,47,.33);z-index:5;}
+.hero-pick:nth-child(1){left:28%;top:15%;width:44%;height:68%;transform:rotate(-4deg);z-index:3;}.hero-pick:nth-child(1):hover{transform:rotate(-1deg) translateY(-7px);}.hero-pick:nth-child(2){right:7%;top:12%;width:30%;height:42%;transform:rotate(6deg);z-index:2;}.hero-pick:nth-child(2):hover{transform:rotate(2deg) translateY(-7px);}.hero-pick:nth-child(3){left:7%;bottom:13%;width:32%;height:43%;transform:rotate(4deg);z-index:2;}.hero-pick:nth-child(3):hover{transform:rotate(1deg) translateY(-7px);}
+.hero-pick-visual{width:100%;height:auto;min-height:0;flex:1;border-radius:5px;background:linear-gradient(135deg,#E8FF61,#F9C57A);font-size:46px;}.hero-pick-visual img{width:100%;height:100%;object-fit:cover;}.hero-pick-copy{padding:8px 9px 6px;display:grid;grid-template-columns:1fr auto;align-items:center;gap:3px;}.hero-pick-copy span{grid-column:1/-1;color:#7B687E;font-size:7px;letter-spacing:.14em;}.hero-pick-copy b{font:700 10px/1.2 var(--font2);color:#23132F;display:-webkit-box;-webkit-line-clamp:1;}.hero-pick-copy em{font:800 9px/1 var(--font);color:#087E6B;white-space:nowrap;}.hero-pick-arrow{position:absolute;right:6px;top:6px;width:24px;height:24px;display:grid;place-items:center;border-radius:50%;background:#E8FF61;color:#23132F;font-size:13px;font-weight:800;}
+.hero-empty-card{position:absolute;left:27%;top:22%;width:47%;height:55%;border:1px solid rgba(35,19,47,.24);border-radius:50% 50% 12px 12px;background:linear-gradient(160deg,rgba(255,249,238,.72),rgba(255,249,238,.2));display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;color:#23132F;transform:rotate(-5deg);}.hero-empty-card strong{font:800 clamp(24px,4vw,48px)/.9 var(--font2);letter-spacing:-.08em;}.hero-empty-card span{margin-top:10px;font-size:8px;letter-spacing:.18em;text-transform:uppercase;font-weight:800;}
+.market-categories,.market-products{max-width:1500px;padding:58px clamp(22px,6vw,90px) 52px;}.section-eyebrow{color:#FF5B35;font-size:9px;letter-spacing:.17em;}.section-heading{align-items:flex-end;margin-bottom:25px;}.section-heading h2{font:700 clamp(32px,4vw,54px)/.98 var(--font2);letter-spacing:-.07em;color:#23132F;}.section-heading p{color:#776C78;font-size:13px;margin-top:10px;}.text-link{color:#23132F;text-transform:uppercase;letter-spacing:.08em;font-size:10px;}.text-link span{color:#FF5B35;}
+.cat-grid{grid-template-columns:repeat(7,minmax(0,1fr));gap:12px;}.cat-card{min-height:142px;padding:18px 15px 15px;text-align:left;border:0;border-radius:8px;color:#23132F;box-shadow:0 5px 0 rgba(35,19,47,.12);}.cat-card:before{right:-8px;top:auto;bottom:-30px;width:102px;height:102px;background:rgba(255,255,255,.28);}.cat-card:nth-child(7n+1){background:#E8FF61;}.cat-card:nth-child(7n+2){background:#FF7556;color:white;}.cat-card:nth-child(7n+3){background:#7F61F7;color:white;}.cat-card:nth-child(7n+4){background:#FFCA6E;}.cat-card:nth-child(7n+5){background:#5ED8C0;}.cat-card:nth-child(7n+6){background:#ED9BD9;}.cat-card:nth-child(7n){background:#92BBF7;}.cat-card .cat-icon{font-size:31px;margin-bottom:20px;filter:none;}.cat-card .cat-name{font:700 12px/1.12 var(--font2);max-width:90px;}.cat-card:hover{transform:translateY(-6px) rotate(-1deg);box-shadow:0 11px 0 rgba(35,19,47,.13);border:0;}
+.market-products{padding-top:35px;padding-bottom:72px;}.prod-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:16px;}.prod-card{border:1px solid #EEE3D5;border-radius:9px;background:#FFFEFA;box-shadow:0 3px 0 rgba(35,19,47,.055);overflow:hidden;}.prod-card:hover{border-color:#B5A4C0;transform:translateY(-5px) rotate(-.4deg);box-shadow:0 13px 25px rgba(35,19,47,.11);}.prod-thumb{aspect-ratio:1.12;background:#F1E5D4;font-size:62px;}.prod-info{padding:13px 14px 5px;}.prod-brand{font-size:9px;letter-spacing:.12em;color:#88788B;}.prod-name{font-size:13px;line-height:1.35;color:#23132F;min-height:35px;}.prod-price{font:700 20px/1.2 var(--font2);color:#087E6B;letter-spacing:-.03em;}.btn-atc{background:#23132F;border-radius:5px;font-size:10px;text-transform:uppercase;letter-spacing:.08em;padding:11px;}.btn-atc:hover{background:#FF5B35;}
+.hero-pick:focus-visible,.cat-card:focus-visible,.hero-action-primary:focus-visible,.hero-action-secondary:focus-visible{outline:3px solid #087E6B;outline-offset:3px;}.home-community{max-width:1500px;margin:0 auto 68px;padding:0 clamp(22px,6vw,90px);background:transparent;border-radius:0;gap:0;}
+.community-art{min-height:320px;border-radius:10px 0 0 10px;background:radial-gradient(circle at 58% 45%,#FF7556 0 8%,transparent 8.5%),repeating-linear-gradient(135deg,#5B3BAA 0 22px,#6948BA 22px 44px);}.community-art:before{border:2px solid rgba(232,255,97,.58);width:330px;height:330px;left:20%;top:10%;transform:rotate(20deg) scaleY(.8);}.community-art:after{border:0;width:170px;height:170px;left:38%;top:31%;background:radial-gradient(circle,#E8FF61 0 4px,transparent 5px);background-size:24px 24px;opacity:.75;}.community-pin{left:48%;top:40%;background:#E8FF61;color:#23132F;box-shadow:0 0 0 12px rgba(232,255,97,.2),0 12px 28px rgba(35,19,47,.3);}.community-dot{background:#FFF9EE;box-shadow:0 0 0 7px rgba(255,249,238,.17);}.community-road{border-color:rgba(232,255,97,.64);}
+.community-copy{border-radius:0 10px 10px 0;padding:clamp(30px,5vw,68px);background:#E8FF61;}.community-copy .section-eyebrow{color:#6B44D9;}.community-copy h2{font:700 clamp(43px,5vw,64px)/.9 var(--font2);letter-spacing:-.08em;color:#23132F;}.community-copy h2 em{color:#FF5B35;}.community-copy p{max-width:410px;color:#53445B;font-size:14px;line-height:1.7;}.community-copy .hero-action-secondary{color:#23132F;border-color:#23132F;background:transparent;border-radius:6px;text-transform:uppercase;letter-spacing:.07em;font-size:10px;}
+.storefront-footer{background:#23132F;border-top:7px solid #FF5B35;padding:34px clamp(22px,6vw,90px);}.footer-brand{font:800 30px/1 var(--font2);letter-spacing:-2px;}.footer-brand span{color:#E8FF61;}.footer-links button:hover{color:#E8FF61;}.prod-grid>div[style*="grid-column"]{background:#F4EBDD;border:1px dashed #B7A6B7;border-radius:8px;color:#6F5E72!important;min-height:190px;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+@media(max-width:1000px){.home-hero{min-height:560px;padding-left:5vw;padding-right:5vw;grid-template-columns:minmax(0,.92fr) minmax(0,1.08fr);gap:4vw;}.hero-title{font-size:clamp(52px,7vw,78px);}.hero-art{height:420px;min-height:360px;}.cat-grid{grid-template-columns:repeat(4,minmax(0,1fr));}.prod-grid{grid-template-columns:repeat(3,minmax(0,1fr));}}
+@media(max-width:768px){.topnav{padding:10px 15px;}.tnav-logo{font-size:25px;}.tnav-loc{display:none;}.tnav-right{margin-left:auto;}.tnav-link{padding:4px 6px;}.tnav-search{order:5;flex:0 0 100%;}.market-strip{padding:8px 15px;font-size:8px;}.market-strip span:nth-child(3){display:none;}.subnav{overflow:auto;white-space:nowrap;}.home-hero{grid-template-columns:1fr;padding:48px 20px 56px;gap:37px;}.hero-title{font-size:clamp(60px,13vw,92px);}.hero-desc{font-size:14px;}.hero-art{height:390px;min-height:360px;max-height:430px;border-radius:14px 70px 14px 14px;}.market-categories,.market-products{padding:43px 18px 38px;}.section-heading{align-items:flex-end;gap:10px;}.section-heading h2{font-size:32px;}.cat-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;}.cat-card{min-height:112px;padding:13px 10px;}.cat-card .cat-icon{font-size:25px;margin-bottom:12px;}.cat-card .cat-name{font-size:10px;}.prod-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:10px;}.prod-info{padding:10px 10px 4px;}.prod-name{font-size:11px;}.prod-price{font-size:17px;}.home-community{grid-template-columns:1fr;margin:0 18px 45px;padding:0;}.community-art{min-height:190px;border-radius:9px 9px 0 0;}.community-copy{padding:30px 24px 34px;border-radius:0 0 9px 9px;}.community-copy h2{font-size:47px;}}
+@media(max-width:480px){.tnav-link:nth-child(1),.tnav-link:nth-child(2){display:none;}.hero-action-primary,.hero-action-secondary{padding:13px 14px;font-size:10px;}.hero-art{height:300px;min-height:300px;}.hero-pick{border-width:3px;border-radius:7px;}.hero-pick-copy{padding:5px 5px 4px;}.hero-pick-copy span{font-size:6px;}.hero-pick-copy b{font-size:8px;}.hero-pick-copy em{font-size:7px;}.hero-pick-arrow{width:19px;height:19px;font-size:11px;}.hero-art-note{left:12px;bottom:12px;}.hero-art-note b{font-size:12px;max-width:140px;}.hero-stamp{width:63px;height:63px;right:10px;bottom:11px;}.cat-grid{grid-template-columns:repeat(2,minmax(0,1fr));}.cat-card{min-height:96px;}.cat-card .cat-icon{margin-bottom:8px;}.section-heading h2{font-size:29px;}.section-heading .text-link{max-width:90px;white-space:normal;text-align:right;line-height:1.4;}}
+@media(prefers-reduced-motion:reduce){.hero-pick,.cat-card,.prod-card{transition:none}}
+.cat-card .cat-icon{height:78px;width:100%;display:grid;place-items:center;overflow:hidden;border-radius:5px;background:rgba(255,255,255,.32);font-size:34px;margin:0 0 12px;}.cat-card .cat-icon img{width:100%;height:100%;object-fit:cover;filter:saturate(1.12);transition:transform .3s;}.cat-card:hover .cat-icon img{transform:scale(1.07);}.cat-arrow{position:absolute!important;right:11px;bottom:12px;font-size:15px;font-weight:800;opacity:.7;}
+@media(max-width:768px){.cat-card .cat-icon{height:58px;margin-bottom:9px;}.cat-arrow{right:7px;bottom:8px;font-size:12px;}}
+@media(max-width:480px){.cat-card .cat-icon{height:72px;}}
 </style>
 </head>
 <body>
@@ -776,41 +818,27 @@ tr:hover td{background:var(--bg);}
     <div id="buyer-home" class="storefront-home">
       <section class="home-hero" aria-labelledby="hero-title">
         <div class="hero-copy">
-          <div class="hero-kicker"><span>RW</span> A marketplace, close to home</div>
-          <h1 class="hero-title" id="hero-title">Good finds.<br/><em>Closer to home.</em></h1>
-          <p class="hero-desc" id="hero-desc">Discover everyday essentials, fresh food, local fashion and more from sellers across Rwanda.</p>
+          <div class="hero-kicker"><span>RW</span> A different kind of marketplace</div>
+          <h1 class="hero-title" id="hero-title">Find a little<br/><em>wonder.</em></h1>
+          <p class="hero-desc" id="hero-desc">From the things you need to the things you didn’t know you were looking for. Meet Rwanda’s next great find.</p>
           <div class="hero-btns">
-            <button class="hero-action-primary" onclick="buyerShowView('shop')">Explore the market <span aria-hidden="true">→</span></button>
-            <button class="hero-action-secondary" onclick="buyerShowView('become-seller')">I’m a seller</button>
+            <button class="hero-action-primary" onclick="buyerShowView('shop')">Find your thing <span aria-hidden="true">↗</span></button>
+            <button class="hero-action-secondary" onclick="buyerShowView('become-seller')">Open your shop <span aria-hidden="true">↗</span></button>
           </div>
-          <div class="hero-footnote"><span class="hero-footnote-mark">✳</span> Find something good. Keep it local.</div>
+          <div class="hero-footnote"><span class="hero-footnote-mark">✳</span> Local finds. Unexpected joy.</div>
         </div>
         <div class="hero-art" aria-label="Illustration of Kigali hills and a local marketplace">
           <div class="hero-art-sun"></div>
-          <svg class="kigali-illustration" viewBox="0 0 760 480" role="img" aria-label="Layered green hills and Kigali rooftops at sunset">
-            <path fill="#D9A45E" d="M0 246 105 189l79 31 95-92 103 79 88-99 98 88 83-77 109 64v297H0z" opacity=".45"/>
-            <path fill="#6E9C70" d="m0 269 102-42 94 31 93-67 78 42 97-99 98 80 87-34 111 56v244H0z"/>
-            <path fill="#39775D" d="m0 320 91-45 86 27 92-58 89 53 97-73 82 45 99-65 124 71v205H0z"/>
-            <path fill="#194F3F" d="m0 365 91-45 84 32 90-48 97 40 97-62 90 43 92-53 119 58v193H0z"/>
-            <g fill="#F5E8C9" opacity=".92">
-              <path d="M79 276h42v54H79zM135 257h37v64h-37zM207 287h49v47h-49zM280 250h36v66h-36zM331 274h59v54h-59zM417 230h42v74h-42zM480 269h43v57h-43zM548 246h52v69h-52zM628 284h43v55h-43z"/>
-            </g>
-            <g fill="#C86B43">
-              <path d="m76 276 24-19 25 19zM202 287l29-21 30 21zM325 274l35-24 36 24zM474 269l28-20 29 20zM542 246l32-23 33 23z"/>
-            </g>
-            <g fill="#F4D9A7" opacity=".86"><path d="M81 289h7v9h-7zm15 0h7v9h-7zm15 0h7v9h-7zM215 298h7v9h-7zm16 0h7v9h-7zM339 286h8v9h-8zm17 0h8v9h-8zm17 0h8v9h-8zM429 244h8v11h-8zm17 0h8v11h-8zM559 262h8v10h-8zm17 0h8v10h-8z"/></g>
-            <path d="M-10 405c97-31 147 7 240-13s122 12 218-9 197 19 323-14" fill="none" stroke="#E7A93B" stroke-width="5" stroke-linecap="round" opacity=".9"/>
-            <circle cx="635" cy="111" r="47" fill="#F7D78F" opacity=".8"/>
-          </svg>
-          <div class="hero-art-note"><span>01 / 07</span><b>Made for everyday life in Rwanda</b></div>
+          <div class="hero-spark hero-spark-one">✳</div><div class="hero-spark hero-spark-two">✳</div>
+          <div class="hero-art-note"><span>THE GOOD STUFF</span><b>Picked by the people who know it best.</b></div>
           <div class="hero-picks" id="hero-picks" aria-label="A few picks from the marketplace"></div>
-          <div class="hero-stamp"><span>✳</span><b>LOCAL<br/>FINDS</b><small>from Rwanda</small></div>
+          <div class="hero-stamp"><span>✳</span><b>MADE<br/>OF HERE</b><small>RWANDA</small></div>
         </div>
       </section>
 
       <section class="market-categories" aria-labelledby="categories-title">
         <div class="section-heading">
-          <div><span class="section-eyebrow">START SOMEWHERE</span><h2 id="categories-title">What are you looking for?</h2></div>
+          <div><span class="section-eyebrow">TAKE A LITTLE LOOK</span><h2 id="categories-title">Go on. Get curious.</h2></div>
           <button class="text-link" onclick="buyerShowView('shop')">Browse everything <span>→</span></button>
         </div>
         <div class="cat-grid" id="cat-grid"></div>
@@ -818,7 +846,7 @@ tr:hover td{background:var(--bg);}
 
       <section class="market-products" aria-labelledby="trending-title">
         <div class="section-heading">
-          <div><span class="section-eyebrow">FROM THE MARKET</span><h2 id="trending-title">Good things, found here.</h2><p>Browse what local sellers have listed.</p></div>
+          <div><span class="section-eyebrow">THE MARKET, RIGHT NOW</span><h2 id="trending-title">Things worth finding.</h2><p>Fresh listings from sellers around Rwanda.</p></div>
           <button class="text-link" onclick="buyerShowView('shop')">View all products <span>→</span></button>
         </div>
         <div class="prod-grid" id="home-products"></div>
@@ -826,7 +854,7 @@ tr:hover td{background:var(--bg);}
 
       <section class="home-community">
         <div class="community-art" aria-hidden="true"><span class="community-orbit orbit-one"></span><span class="community-orbit orbit-two"></span><span class="community-pin">S</span><span class="community-dot dot-one"></span><span class="community-dot dot-two"></span><span class="community-dot dot-three"></span><span class="community-road"></span></div>
-        <div class="community-copy"><span class="section-eyebrow">THE GOOD STUFF IS ALREADY HERE</span><h2>Everyday finds.<br/><em>Rwanda-wide.</em></h2><p>Meet the people behind the products. Shop the things you need, and help local businesses grow.</p><button class="hero-action-secondary" onclick="buyerShowView('become-seller')">Bring your shop to SOKO <span>→</span></button></div>
+        <div class="community-copy"><span class="section-eyebrow">YOUR SHOP HAS A PLACE HERE</span><h2>Make a little<br/><em>noise.</em></h2><p>Give your best things a brighter place to be found. SOKO brings local shops and curious buyers together.</p><button class="hero-action-secondary" onclick="buyerShowView('become-seller')">Come sell with us <span>↗</span></button></div>
       </section>
 
       <footer class="storefront-footer"><div class="footer-brand">SO<span>KO</span></div><p>Made for everyday life in Rwanda.</p><div class="footer-links"><button onclick="buyerShowView('shop')">Browse the market</button><button onclick="buyerShowView('become-seller')">Sell on SOKO</button><button onclick="focusSearch()">Search</button></div><small>© <span id="footer-year"></span> SOKO Rwanda</small></footer>
@@ -1338,7 +1366,7 @@ function applyLang(l){
   renderCats();
   renderProds(PRODUCTS.slice(0,8),'home-products');
   const ht=document.getElementById('hero-title');
-  if(ht){if(l==='fr')ht.innerHTML="De belles trouvailles.<br/><em>Tout près de vous.</em>";else if(l==='rw')ht.innerHTML="Ibyiza byo hafi.<br/><em>Byegereye urugo.</em>";else ht.innerHTML="Good finds.<br/><em>Closer to home.</em>";}
+  if(ht){if(l==='fr')ht.innerHTML="Trouvez un peu<br/><em>de bonheur.</em>";else if(l==='rw')ht.innerHTML="Shaka ibitangaza<br/><em>bike.</em>";else ht.innerHTML="Find a little<br/><em>wonder.</em>";}
   const snItems=document.querySelectorAll('.snav');
   const sLbls=l==='fr'?['☰ Tout','🍎 Alimentation','📱 Électronique','👕 Vêtements','👟 Chaussures','🏠 Maison','💄 Beauté','⚽ Sports','🏪 Vendre']:l==='rw'?['☰ Byose','🍎 Ibiribwa','📱 Ikoranabuhanga','👕 Imyenda','👟 Ingofora','🏠 Urugo','💄 Ubwiza','⚽ Siporo','🏪 Gurisha']:['☰ All','🍎 Food & Drinks','📱 Electronics','👕 Clothes','👟 Shoes','🏠 Home','💄 Beauty','⚽ Sports','🏪 Sell on SOKO'];
   snItems.forEach((el,i)=>{if(sLbls[i])el.textContent=sLbls[i];});
@@ -1565,17 +1593,22 @@ function buildBuyerHome(){
 }
 function renderHeroPicks(){
   const el=document.getElementById('hero-picks');if(!el)return;
-  const picks=PRODUCTS.filter(p=>p&&p.active!==false).slice(0,3);
-  if(!picks.length){el.innerHTML=`<div class="hero-pick"><div class="hero-pick-visual">✳</div><div class="hero-pick-copy"><span>Local marketplace</span><b>Discover the latest listings</b></div></div>`;return;}
+  const picks=PRODUCTS.filter(p=>p&&p.active!==false&&Number(p.stock)!==0).slice(0,3);
+  if(!picks.length){el.innerHTML=`<div class="hero-empty-card"><strong>YOUR<br/>NEXT FIND</strong><span>is around here</span></div>`;return;}
   el.innerHTML=picks.map((p,i)=>{
     const image=Array.isArray(p.images)?p.images[0]:'';
-    const visual=image?`<img src="${image}" alt=""/>`:`<span>${p.emoji||'✳'}</span>`;
-    return `<div class="hero-pick"><div class="hero-pick-visual">${visual}</div><div class="hero-pick-copy"><span>${i===0?'In the market':'Local find'}</span><b>${p.name||'Marketplace listing'}</b></div></div>`;
+    const visual=image?`<img src="${image}" alt="${p.name||'Product'}"/>`:`<span>${p.emoji||'✳'}</span>`;
+    const id=JSON.stringify(String(p.id));
+    return `<button class="hero-pick" onclick="showProduct(${id})" aria-label="View ${p.name||'product'}"><div class="hero-pick-visual">${visual}</div><div class="hero-pick-copy"><span>${getCat(p.cat)||'From the market'}</span><b>${p.name||'Product'}</b><em>RWF ${fmt(p.price)}</em></div><span class="hero-pick-arrow" aria-hidden="true">↗</span></button>`;
   }).join('');
 }
 function renderCats(){
   const el=document.getElementById('cat-grid');if(!el)return;
-  el.innerHTML=CATS.map(c=>`<button class="cat-card" onclick="filterCat('${c.id}')"><div class="cat-icon">${c.icon}</div><div class="cat-name">${getCat(c.id)}</div></button>`).join('');
+  el.innerHTML=CATS.map(c=>{
+    const featured=PRODUCTS.find(p=>p.cat===c.id&&Array.isArray(p.images)&&p.images[0]);
+    const visual=featured?`<img src="${featured.images[0]}" alt="" loading="lazy"/>`:c.icon;
+    return `<button class="cat-card" onclick="filterCat('${c.id}')"><div class="cat-icon">${visual}</div><div class="cat-name">${getCat(c.id)}</div><span class="cat-arrow" aria-hidden="true">↗</span></button>`;
+  }).join('');
   const fc=document.getElementById('filter-cats');
   if(fc)fc.innerHTML=CATS.map(c=>`<div class="fopt"><input type="checkbox" onchange="filterCat('${c.id}')"/> ${c.icon} ${getCat(c.id)}</div>`).join('');
 }
