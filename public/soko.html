@@ -1601,8 +1601,8 @@ function showProduct(id){
         <div class="buy-box-stock">${p.stock>0?'In Stock':'Out of Stock'}</div>
         ${p.stock>0?`<div style="font-size:12px;font-weight:600;margin-bottom:6px;">Qty:</div>
         <div class="qty-ctrl"><button class="qty-btn" onclick="changeQty(-1)">−</button><span class="qty-num" id="detail-qty">1</span><button class="qty-btn" onclick="changeQty(1)">+</button></div>
-        <button class="btn-atcr" onclick="addDetailToCart(${JSON.stringify(String(p.id))})">Add to Cart</button>
-        <button class="btn-buynow" onclick="buyNow(${JSON.stringify(String(p.id))})">Buy Now</button>`:''}
+        <button class="btn-atcr" onclick="addDetailToCart('${safeInlineId(p.id)}')">Add to Cart</button>
+        <button class="btn-buynow" onclick="buyNow('${safeInlineId(p.id)}')">Buy Now</button>`:''}
         <div class="buy-box-seller">Sold by <span>${p.seller}</span></div>
         ${p.sellerPhone?`<div class="contact-btns">
           <a href="tel:${p.sellerPhone}" class="btn-contact">📞 Call</a>
@@ -1613,6 +1613,7 @@ function showProduct(id){
     <div class="reviews-sec"><div style="font-size:19px;font-weight:700;margin-bottom:8px;">Reviews</div><p style="font-size:13px;color:var(--ink3);">Customer reviews will appear here once the review service is connected.</p></div>`;
 }
 function escapeImageAttribute(value){return String(value).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function safeInlineId(value){return String(value).replace(/[^a-zA-Z0-9_-]/g,'');}
 function renderDetailGallery(){
   const gallery=window.activeDetailGallery;if(!gallery)return'';
   const {images,emoji,name}=gallery;
@@ -1652,13 +1653,13 @@ function renderCart(){
       <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
         <span style="font-size:12px;font-weight:600;">Qty:</span>
         <div style="display:flex;align-items:center;border:var(--border);border-radius:var(--r4);">
-          <button class="qty-btn" style="width:28px;height:28px;font-size:14px;" onclick="cartQty(${JSON.stringify(String(item.id))},-1)">−</button>
+          <button class="qty-btn" style="width:28px;height:28px;font-size:14px;" onclick="cartQty('${safeInlineId(item.id)}',-1)">−</button>
           <span style="width:32px;text-align:center;font-size:13px;font-weight:700;">${item.qty}</span>
-          <button class="qty-btn" style="width:28px;height:28px;font-size:14px;" onclick="cartQty(${JSON.stringify(String(item.id))},1)">+</button>
+          <button class="qty-btn" style="width:28px;height:28px;font-size:14px;" onclick="cartQty('${safeInlineId(item.id)}',1)">+</button>
         </div>
       </div>
       <div style="display:flex;gap:8px;margin-top:6px;">
-        <button style="padding:5px 10px;border:var(--border);border-radius:var(--r4);background:var(--bg2);font-size:12px;cursor:pointer;color:var(--b);" onclick="cartRemove(${JSON.stringify(String(item.id))})">Delete</button>
+        <button style="padding:5px 10px;border:var(--border);border-radius:var(--r4);background:var(--bg2);font-size:12px;cursor:pointer;color:var(--b);" onclick="cartRemove('${safeInlineId(item.id)}')">Delete</button>
       </div>
     </div>
     <div style="font-size:16px;font-weight:700;flex-shrink:0;">RWF ${fmt(item.price*item.qty)}</div>
