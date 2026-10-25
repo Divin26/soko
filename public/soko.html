@@ -5,14 +5,13 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0"/>
 <title>SOKO — Rwanda's Marketplace</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Outfit:wght@600;700;800;900&display=swap" rel="stylesheet"/>
+<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700;800&family=DM+Serif+Display&display=swap" rel="stylesheet"/>
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  /* brand — warm amber, our action colour */
-  --or:#E0912A;--ordk:#C2761B;--or2:#F2C879;
-  /* chrome — ink blue instead of near-black */
-  --nv:#122438;--nv2:#1B3348;
+  /* SOKO's own palette: market green, ripe tomato and warm paper */
+  --or:#F05B35;--ordk:#D94A29;--or2:#FFAC79;
+  --nv:#103C31;--nv2:#195342;
   /* money / success — emerald */
   --g:#0C7355;--g2:#0E9469;--gd:#085C43;--gbg:#E9F4EF;--gb:#AED9C8;
   /* alerts — terracotta */
@@ -20,18 +19,18 @@
   /* info — azure */
   --b:#2C6BAE;--bbg:#EDF3FA;--bb:#BBD3EA;
   /* accent aliases */
-  --a:#E0912A;--abg:#FCF5E8;--ab:#EFD7A4;
+  --a:#E7A93B;--abg:#FFF4D9;--ab:#EFD7A4;
   /* ink */
   --ink:#17222E;--ink2:#37424C;--ink3:#5A6672;--ink4:#78838D;
   /* surfaces — warm sand instead of cool grey */
-  --bg:#F3F1EC;--bg2:#EEEBE5;--bg3:#E1DCD3;
-  --w:#FFF;--border:1px solid #DDD7CD;--border2:1px solid #ECE8E1;
+  --bg:#F8F5ED;--bg2:#F0EBDD;--bg3:#E5DCC8;
+  --w:#FFFEFA;--border:1px solid #E2DCCF;--border2:1px solid #EEE9DF;
   /* softer geometry than the old 4/8/12 */
   --r4:6px;--r8:12px;--r12:18px;
   --sh:0 1px 2px rgba(23,34,46,.06),0 2px 6px rgba(23,34,46,.05);
   --shm:0 4px 14px rgba(23,34,46,.10);
   --shl:0 12px 36px rgba(23,34,46,.16);
-  --font:'Inter',sans-serif;--font2:'Outfit',sans-serif;
+  --font:'DM Sans',sans-serif;--font2:'DM Serif Display',Georgia,serif;
 }
 body{font-family:var(--font);background:var(--bg);color:var(--ink);font-size:14px;line-height:1.5;-webkit-font-smoothing:antialiased;}
 button{font-family:var(--font);cursor:pointer;}
@@ -460,6 +459,139 @@ tr:hover td{background:var(--bg);}
 .ai-gen-btn{padding:8px 14px;background:linear-gradient(135deg,#122438,#1d3461);color:#E0912A;border:1px solid #E0912A;border-radius:4px;font-size:12px;font-weight:700;cursor:pointer;margin-top:6px;width:100%;display:flex;align-items:center;justify-content:center;gap:6px;}
 .ai-gen-btn:disabled{opacity:.5;cursor:not-allowed;}
 
+/* SOKO storefront: a calm editorial canvas with a bright, local market heart. */
+.topnav{background:var(--w);color:var(--nv);height:72px;padding:0 clamp(18px,4vw,56px);gap:18px;border-bottom:1px solid rgba(16,60,49,.08);box-shadow:0 4px 18px rgba(30,53,43,.04);}
+.tnav-logo{font-size:30px;color:var(--nv);letter-spacing:-1.6px;padding:0 4px;}
+.tnav-logo span,.auth-logo span,.loading-logo span{color:var(--or);}
+.tnav-logo:hover{border-color:transparent;transform:translateY(-1px);}
+.tnav-loc{padding:4px 2px;min-width:105px;}
+.tnav-loc:hover{border-color:transparent;}
+.tnav-loc-top{color:var(--ink3);font-size:10px;}
+.tnav-loc-bot{color:var(--nv);font-size:12px;}
+.tnav-search{max-width:620px;height:44px;border:1px solid #DED9CC;border-radius:999px;overflow:hidden;background:#fff;box-shadow:inset 0 1px 2px rgba(15,44,36,.03);}
+.tnav-search:focus-within{border-color:var(--g);box-shadow:0 0 0 3px rgba(12,115,85,.1);}
+.tnav-scat{background:#F4F0E8;height:42px;border-right:1px solid #E6E0D5;padding:0 12px;border-radius:0;font-size:12px;}
+.tnav-sinp{height:42px;background:transparent;padding:0 16px;}
+.tnav-sbtn{height:36px;width:36px;margin:3px;border-radius:50%;background:var(--g);color:#fff;font-size:15px;}
+.tnav-sbtn:hover{background:var(--gd);}
+.tnav-right{gap:5px;}
+.tnav-link,.tnav-cart{color:var(--nv);border-radius:10px;padding:6px 9px;}
+.tnav-link:hover,.tnav-cart:hover{border-color:rgba(16,60,49,.15);background:#F5F2E9;}
+.tnav-link-top{color:var(--ink3);}
+.tnav-link-bot{color:var(--nv);}
+.tnav-cart span{color:var(--nv)!important;font-size:20px!important;}
+.tnav-cart #cart-badge{color:var(--g)!important;font-family:var(--font2);font-size:18px!important;}
+.tnav-lang{border-color:#E4DFD4;background:var(--w);color:var(--nv);}
+.tnav-lang option{background:var(--w);color:var(--nv);}
+.sell-nav-cta{border:0;border-radius:999px;padding:11px 16px;background:var(--g);color:#fff;font-weight:700;font-size:12px;white-space:nowrap;}
+.sell-nav-cta:hover{background:var(--gd);transform:translateY(-1px);}
+.market-strip{min-height:34px;padding:7px clamp(18px,4vw,56px);display:flex;align-items:center;gap:clamp(12px,3vw,36px);background:#EAF0E4;color:#36584A;font-size:11px;font-weight:600;letter-spacing:.01em;}
+.market-strip span{display:flex;align-items:center;gap:7px;}
+.market-strip span+span:before{content:'';height:14px;border-left:1px solid #C8D8C9;margin-right:clamp(4px,1.4vw,16px);}
+.market-strip i{width:7px;height:7px;border-radius:50%;background:var(--or);display:inline-block;}
+.market-strip-location{margin-left:auto;}
+.market-strip-location b{color:var(--or);}
+.subnav{background:var(--nv);height:42px;padding:0 clamp(18px,4vw,56px);gap:4px;}
+.snav{font-size:12px;font-weight:600;padding:6px 11px;border-radius:999px;color:rgba(255,255,255,.78);}
+.snav:hover{background:rgba(255,255,255,.1);border-color:transparent;color:#fff;}
+.main{padding-bottom:0;}
+.storefront-home{overflow:hidden;background:var(--bg);}
+.home-hero{max-width:1440px;margin:auto;padding:clamp(34px,5.2vw,74px) clamp(18px,5vw,72px) 58px;display:grid;grid-template-columns:minmax(320px,.9fr) minmax(420px,1.1fr);gap:clamp(24px,4vw,68px);align-items:center;}
+.hero-copy{max-width:570px;position:relative;z-index:1;}
+.hero-kicker,.section-eyebrow{display:inline-flex;align-items:center;gap:9px;color:var(--g);font-size:10px;font-weight:800;letter-spacing:.13em;text-transform:uppercase;}
+.hero-kicker{background:#EAF0E4;border:1px solid #DBE6D7;border-radius:999px;padding:8px 12px;letter-spacing:.08em;}
+.hero-kicker span{font-size:9px;color:#fff;letter-spacing:.08em;background:var(--g);padding:4px 6px;border-radius:6px;}
+.hero-title{font-family:var(--font2);font-size:clamp(45px,6.5vw,82px);line-height:.99;letter-spacing:-.045em;color:#173C32;font-weight:400;margin:23px 0 18px;}
+.hero-title em,.community-copy h2 em{font-style:normal;color:var(--or);}
+.hero-desc{font-size:16px;color:#586A5D;line-height:1.75;max-width:470px;margin:0 0 25px;}
+.hero-btns{display:flex;gap:11px;align-items:center;flex-wrap:wrap;}
+.hero-action-primary,.hero-action-secondary{display:inline-flex;align-items:center;justify-content:center;gap:14px;border-radius:999px;padding:13px 19px;font-size:13px;font-weight:700;transition:transform .16s,background .16s,box-shadow .16s;}
+.hero-action-primary{border:0;background:var(--or);color:#fff;box-shadow:0 5px 12px rgba(217,74,41,.18);}
+.hero-action-primary:hover{background:var(--ordk);transform:translateY(-2px);box-shadow:0 9px 18px rgba(217,74,41,.2);}
+.hero-action-secondary{border:1px solid #7B9B8B;color:var(--g);background:transparent;}
+.hero-action-secondary:hover{background:#EAF0E4;transform:translateY(-2px);}
+.hero-footnote{display:flex;align-items:center;gap:8px;margin-top:25px;color:#758173;font-size:11px;font-weight:600;letter-spacing:.02em;}
+.hero-footnote-mark{color:var(--or);font-size:17px;}
+.hero-art{height:clamp(340px,40vw,490px);min-height:340px;position:relative;isolation:isolate;border-radius:48% 48% 26px 26px / 34% 34% 26px 26px;overflow:hidden;background:linear-gradient(155deg,#E7B96D 0%,#E8D79D 34%,#B3C896 67%,#5A8B68 100%);box-shadow:0 20px 50px rgba(23,66,49,.11);}
+.hero-art:after{content:'';position:absolute;inset:0;z-index:-1;background:linear-gradient(0deg,rgba(13,60,45,.52),transparent 45%);}
+.hero-art-sun{position:absolute;width:120px;height:120px;right:14%;top:11%;border-radius:50%;background:#F8E5AE;box-shadow:0 0 45px rgba(250,232,177,.5);}
+.kigali-illustration{position:absolute;inset:0;width:100%;height:100%;}
+.hero-art-note{position:absolute;left:24px;bottom:22px;display:flex;flex-direction:column;gap:5px;color:white;text-shadow:0 1px 8px rgba(0,0,0,.2);}
+.hero-art-note span{font-size:9px;letter-spacing:.18em;font-weight:800;color:#FFE0A2;}
+.hero-art-note b{max-width:180px;font-family:var(--font2);font-size:19px;font-weight:400;line-height:1.12;}
+.hero-stamp{position:absolute;right:24px;bottom:21px;width:89px;height:89px;border-radius:50%;display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;background:#F4E6C9;color:var(--g);transform:rotate(8deg);box-shadow:0 5px 18px rgba(14,51,37,.16);}
+.hero-stamp span{font-size:14px;color:var(--or);line-height:1;}
+.hero-stamp b{font-size:10px;line-height:1.05;letter-spacing:.1em;}
+.hero-stamp small{font-size:8px;margin-top:3px;}
+.hero-picks{position:absolute;right:16px;top:16px;display:flex;flex-direction:column;gap:9px;width:min(210px,44%);}
+.hero-pick{background:rgba(255,254,250,.96);border:1px solid rgba(255,255,255,.85);border-radius:14px;padding:8px;display:grid;grid-template-columns:54px 1fr;gap:9px;align-items:center;box-shadow:0 6px 18px rgba(17,52,39,.14);backdrop-filter:blur(8px);}
+.hero-pick-visual{width:54px;height:54px;display:flex;align-items:center;justify-content:center;overflow:hidden;border-radius:9px;background:#EAF0E4;font-size:28px;}
+.hero-pick-visual img{width:100%;height:100%;object-fit:cover;}
+.hero-pick-copy{min-width:0;}
+.hero-pick-copy span{display:block;color:#718173;font-size:8px;text-transform:uppercase;letter-spacing:.1em;font-weight:800;margin-bottom:3px;}
+.hero-pick-copy b{display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;color:#214737;font-size:10px;line-height:1.28;}
+.market-categories,.market-products{max-width:1440px;margin:auto;padding:34px clamp(18px,5vw,72px) 38px;}
+.market-categories{padding-top:27px;}
+.section-heading{display:flex;justify-content:space-between;align-items:flex-end;gap:20px;margin-bottom:20px;}
+.section-heading h2{font-family:var(--font2);font-size:clamp(27px,3.5vw,39px);font-weight:400;color:#173C32;line-height:1.08;letter-spacing:-.025em;margin-top:7px;}
+.section-heading p{color:var(--ink3);font-size:13px;margin-top:7px;}
+.text-link{border:0;background:none;color:var(--g);font-size:12px;font-weight:700;white-space:nowrap;padding:8px 0;}
+.text-link span{display:inline-block;color:var(--or);padding-left:5px;transition:transform .15s;}
+.text-link:hover span{transform:translateX(4px);}
+.cat-grid{grid-template-columns:repeat(7,minmax(0,1fr));gap:11px;}
+.cat-card{position:relative;overflow:hidden;background:#FFFEFA;border:1px solid #E6E1D6;border-radius:15px;padding:17px 10px 15px;color:#365749;box-shadow:0 2px 5px rgba(34,63,45,.025);transition:transform .18s,border .18s,box-shadow .18s;}
+.cat-card:before{content:'';position:absolute;right:-24px;top:-28px;width:66px;height:66px;border-radius:50%;background:#EEF1E5;}
+.cat-card:hover{transform:translateY(-4px);border-color:#AFC6AF;box-shadow:0 10px 22px rgba(34,63,45,.08);}
+.cat-card>div{position:relative;}
+.cat-card .cat-icon{font-size:27px;margin-bottom:8px;filter:saturate(.84);}
+.cat-card .cat-name{font-size:11px;font-weight:700;line-height:1.25;}
+.market-products{padding-top:32px;padding-bottom:52px;}
+.prod-grid{grid-template-columns:repeat(auto-fill,minmax(170px,1fr));gap:14px;}
+.prod-card{border:1px solid #E8E2D6;border-radius:14px;background:#FFFEFA;box-shadow:0 4px 12px rgba(28,58,42,.035);transition:transform .18s,box-shadow .18s,border-color .18s;}
+.prod-card:hover{border-color:#C8D6C3;transform:translateY(-4px);box-shadow:0 12px 24px rgba(28,58,42,.1);}
+.prod-thumb{background:#F0EBDD;aspect-ratio:1.12;font-size:56px;}
+.prod-thumb img{transition:transform .45s;}
+.prod-card:hover .prod-thumb img{transform:scale(1.04);}
+.prod-badge{left:9px;top:9px;border-radius:999px;padding:4px 8px;background:var(--or);font-size:9px;text-transform:uppercase;letter-spacing:.04em;}
+.prod-badge.new{background:var(--g);}
+.prod-badge.sale{background:#D69735;}
+.prod-info{padding:12px 12px 4px;cursor:pointer;}
+.prod-brand{font-size:10px;font-weight:700;color:#748173;text-transform:uppercase;letter-spacing:.04em;}
+.prod-name{font-size:12px;font-weight:600;min-height:31px;color:#28493A;line-height:1.35;}
+.prod-stars{color:#D99628;font-size:11px;}
+.prod-rc{color:#788579;font-size:10px;}
+.prod-price{font-family:var(--font2);font-size:19px;color:#173C32;margin-top:7px;}
+.btn-atc{background:var(--or);border:0;border-radius:999px;color:#fff;font-size:11px;font-weight:700;padding:9px;margin:8px 0 0;}
+.btn-atc:hover{background:var(--ordk);}
+.home-community{max-width:1296px;margin:0 auto 54px;padding:0 clamp(18px,5vw,0px);display:grid;grid-template-columns:.9fr 1.1fr;min-height:275px;border-radius:22px;overflow:hidden;background:#E9E4D5;}
+.community-art{position:relative;min-height:260px;overflow:hidden;background:linear-gradient(150deg,#164C3D,#0F392F);}
+.community-art:before,.community-art:after{content:'';position:absolute;border:1px solid rgba(235,202,145,.35);border-radius:50%;width:420px;height:420px;left:-90px;top:-72px;transform:rotate(-28deg) scaleY(.45);}
+.community-art:after{width:310px;height:310px;left:50px;top:38px;border-color:rgba(235,202,145,.48);}
+.community-orbit{position:absolute;border-radius:50%;border:1px solid rgba(235,202,145,.28);transform:scaleY(.42) rotate(-28deg);}
+.orbit-one{width:580px;height:580px;left:-160px;top:-90px;}
+.orbit-two{width:210px;height:210px;left:215px;top:50px;border-color:rgba(235,202,145,.45);}
+.community-pin{position:absolute;left:48%;top:34%;width:50px;height:50px;display:flex;align-items:center;justify-content:center;border-radius:50% 50% 50% 12%;transform:rotate(-45deg);background:var(--or);color:white;font-family:var(--font2);font-size:24px;box-shadow:0 0 0 9px rgba(240,91,53,.13),0 7px 22px rgba(0,0,0,.2);}
+.community-pin:after{content:'S';transform:rotate(45deg);}
+.community-pin{font-size:0;}
+.community-dot{position:absolute;width:8px;height:8px;border-radius:50%;background:#F0CB7E;box-shadow:0 0 0 6px rgba(240,203,126,.13);}
+.dot-one{left:22%;top:28%;}.dot-two{left:73%;top:26%;}.dot-three{left:34%;top:72%;}
+.community-road{position:absolute;width:150%;height:76px;border-top:1px solid rgba(240,203,126,.48);border-bottom:1px solid rgba(240,203,126,.38);left:-18%;bottom:17%;transform:rotate(-18deg);}
+.community-copy{padding:clamp(27px,4vw,52px);display:flex;flex-direction:column;align-items:flex-start;justify-content:center;background:radial-gradient(ellipse at right top,#F6EBCF 0,transparent 56%),#F5F0E3;}
+.community-copy h2{font-family:var(--font2);font-weight:400;font-size:clamp(34px,4.1vw,49px);color:#173C32;line-height:.98;letter-spacing:-.035em;margin:13px 0;}
+.community-copy p{max-width:430px;color:#5A6B5F;font-size:13px;line-height:1.7;margin-bottom:20px;}
+.community-copy .hero-action-secondary{padding:10px 15px;font-size:11px;}
+.storefront-footer{padding:24px clamp(18px,5vw,72px) 28px;background:#103C31;color:rgba(255,255,255,.65);}
+.footer-brand{font-family:var(--font2);font-size:27px;color:#fff;letter-spacing:-1px;}
+.footer-brand span{color:#F3A273;}
+.storefront-footer p{font-size:11px;margin:5px 0 15px;}
+.footer-links{display:flex;gap:18px;flex-wrap:wrap;margin-bottom:15px;}
+.footer-links button{border:0;background:none;color:#E5ECDC;font-size:11px;font-weight:600;padding:4px 0;}
+.footer-links button:hover{color:#F5AA78;}
+.storefront-footer>small{font-size:9px;color:rgba(255,255,255,.42);}
+@media(max-width:1000px){.home-hero{grid-template-columns:1fr 1fr;gap:25px;padding-left:28px;padding-right:28px;}.hero-title{font-size:clamp(44px,6vw,68px);}.cat-grid{grid-template-columns:repeat(4,minmax(0,1fr));}.hero-art{min-height:320px;}.home-community{margin-left:24px;margin-right:24px;}}
+@media(max-width:768px){.topnav{padding:8px 14px;min-height:62px;}.tnav-logo{font-size:25px;}.tnav-search{order:5;flex:0 0 100%;max-width:none;margin:4px 0 1px;height:42px;}.tnav-scat{display:none;}.tnav-sinp{height:40px;}.tnav-sbtn{height:34px;width:34px;}.sell-nav-cta{padding:9px 12px;font-size:11px;}.market-strip{padding:7px 14px;gap:10px;font-size:9px;overflow:hidden;white-space:nowrap;}.market-strip span+span:before{margin-right:4px;}.market-strip-location{display:none!important;}.subnav{padding:0 10px;height:39px;}.snav{font-size:11px;padding:6px 9px;}.home-hero{grid-template-columns:1fr;padding:35px 18px 35px;gap:25px;}.hero-title{font-size:clamp(48px,12vw,74px);margin:18px 0 14px;}.hero-desc{font-size:14px;line-height:1.65;}.hero-art{height:340px;min-height:300px;max-height:360px;border-radius:48% 48% 22px 22px / 23% 23% 22px 22px;}.hero-picks{width:min(210px,49%);right:11px;top:13px;}.hero-pick{grid-template-columns:44px 1fr;padding:6px;gap:7px;}.hero-pick-visual{width:44px;height:44px;font-size:23px;}.hero-art-note{left:15px;bottom:17px;}.hero-stamp{right:13px;bottom:13px;width:74px;height:74px;}.market-categories,.market-products{padding-left:18px;padding-right:18px;}.section-heading{align-items:flex-start;}.section-heading h2{font-size:29px;}.section-heading .text-link{font-size:10px;}.cat-grid{grid-template-columns:repeat(4,minmax(0,1fr));gap:8px;}.cat-card{padding:14px 7px 12px;border-radius:12px;}.cat-card .cat-icon{font-size:23px;margin-bottom:6px;}.cat-card .cat-name{font-size:10px;}.prod-grid{grid-template-columns:repeat(2,minmax(0,1fr));gap:9px;}.prod-info{padding:9px 9px 3px;}.prod-name{font-size:11px;}.prod-price{font-size:17px;}.home-community{grid-template-columns:1fr;margin:0 14px 35px;}.community-art{min-height:190px;}.community-copy{padding:25px 23px 28px;}.community-copy h2{font-size:40px;}.storefront-footer{padding:22px 18px 27px;}}
+@media(max-width:480px){.tnav-link:nth-child(1),.tnav-link:nth-child(2){display:none;}.tnav-right{gap:3px;}.tnav-cart{padding:3px 6px;}.tnav-cart span{font-size:17px!important;}.sell-nav-cta{font-size:10px;padding:8px 9px;}.market-strip span:nth-child(3){display:none;}.hero-action-primary,.hero-action-secondary{padding:12px 15px;font-size:11px;}.hero-art{height:285px;min-height:285px;}.hero-picks{width:58%;}.hero-pick:nth-child(3){display:none;}.hero-art-note b{font-size:16px;}.hero-stamp{width:65px;height:65px;}.section-heading{gap:8px;}.section-heading h2{font-size:25px;}.section-heading .text-link{max-width:95px;text-align:right;white-space:normal;line-height:1.35;}.cat-grid{grid-template-columns:repeat(4,minmax(0,1fr));}.prod-thumb{font-size:44px;}.prod-price{font-size:16px;}}
+
 
 </style>
 </head>
@@ -571,6 +703,7 @@ tr:hover td{background:var(--bg);}
         <option value="fr">FR</option>
         <option value="rw">RW</option>
       </select>
+      <button class="sell-nav-cta" onclick="buyerShowView('become-seller')">Sell on SOKO <span aria-hidden="true">↗</span></button>
     </div>
    
 </div>
@@ -616,6 +749,13 @@ tr:hover td{background:var(--bg);}
     <div class="adw-item red" onclick="doLogout()">🚪 Sign Out</div>
   </div>
 
+  <div class="market-strip" aria-label="SOKO marketplace">
+    <span><i></i> Made for Rwanda</span>
+    <span>Local sellers</span>
+    <span>Everyday finds</span>
+    <span class="market-strip-location">Kigali <b>·</b> Rwanda</span>
+  </div>
+
   <!-- SUBNAV -->
   <div class="subnav">
     <div class="snav" id="all-menu-btn" onclick="toggleDrawer()">☰ All</div>
@@ -633,51 +773,63 @@ tr:hover td{background:var(--bg);}
   <div class="main" id="buyer-main">
 
     <!-- ── HOME ─────────────────────────────────────────────── -->
-    <div id="buyer-home">
-      <div class="hero">
-        <div class="hero-inner">
-          <div class="hero-eye">🇷🇼 Built in Rwanda, for Rwanda</div>
-          <div class="hero-title" id="hero-title">Everything you need,<br/>delivered with <em>confidence</em></div>
-          <div class="hero-desc" id="hero-desc">Food, electronics, fashion & more from KYC-verified Rwanda sellers. Every payment escrow-protected.</div>
+    <div id="buyer-home" class="storefront-home">
+      <section class="home-hero" aria-labelledby="hero-title">
+        <div class="hero-copy">
+          <div class="hero-kicker"><span>RW</span> A marketplace, close to home</div>
+          <h1 class="hero-title" id="hero-title">Good finds.<br/><em>Closer to home.</em></h1>
+          <p class="hero-desc" id="hero-desc">Discover everyday essentials, fresh food, local fashion and more from sellers across Rwanda.</p>
           <div class="hero-btns">
-            <button class="btn-hero btn-hero-p" onclick="focusSearch()">Shop Now →</button>
-            <button class="btn-hero btn-hero-s" onclick="buyerShowView('become-seller')">Start Selling</button>
+            <button class="hero-action-primary" onclick="buyerShowView('shop')">Explore the market <span aria-hidden="true">→</span></button>
+            <button class="hero-action-secondary" onclick="buyerShowView('become-seller')">I’m a seller</button>
           </div>
-          <div class="hero-stats">
-            <div><div class="hstat-v">🔒</div><div class="hstat-l">Escrow-protected</div></div>
-            <div><div class="hstat-v">🪪</div><div class="hstat-l">ID-verified sellers</div></div>
-            <div><div class="hstat-v">🏍️</div><div class="hstat-l">Kigali moto delivery</div></div>
-            <div><div class="hstat-v">📲</div><div class="hstat-l">MoMo &amp; Airtel Money</div></div>
-          </div>
+          <div class="hero-footnote"><span class="hero-footnote-mark">✳</span> Find something good. Keep it local.</div>
         </div>
-      </div>
-      <div class="trust-bar">
-        <div class="trust-item"><span style="font-size:17px;">🔒</span><span style="font-size:12px;font-weight:600;color:var(--ink2);">Escrow-protected payments</span></div>
-        <div class="trust-item"><span style="font-size:17px;">✅</span><span style="font-size:12px;font-weight:600;color:var(--ink2);">KYC-verified sellers</span></div>
-        <div class="trust-item"><span style="font-size:17px;">🏍️</span><span style="font-size:12px;font-weight:600;color:var(--ink2);">Fast moto delivery</span></div>
-        <div class="trust-item"><span style="font-size:17px;">📲</span><span style="font-size:12px;font-weight:600;color:var(--ink2);">MTN MoMo / Airtel Money</span></div>
-        <div class="trust-item"><span style="font-size:17px;">↩️</span><span style="font-size:12px;font-weight:600;color:var(--ink2);">Dispute protection</span></div>
-      </div>
-      <div class="sec">
-        <div class="sec-title">🔥 Today's Deals <span class="sec-sa" onclick="buyerShowView('shop')">See all →</span></div>
-        <div class="promo-grid" id="promo-grid"></div>
-      </div>
-      <div class="sec">
-        <div class="sec-title">Shop by Category <span class="sec-sa" onclick="buyerShowView('shop')">All →</span></div>
+        <div class="hero-art" aria-label="Illustration of Kigali hills and a local marketplace">
+          <div class="hero-art-sun"></div>
+          <svg class="kigali-illustration" viewBox="0 0 760 480" role="img" aria-label="Layered green hills and Kigali rooftops at sunset">
+            <path fill="#D9A45E" d="M0 246 105 189l79 31 95-92 103 79 88-99 98 88 83-77 109 64v297H0z" opacity=".45"/>
+            <path fill="#6E9C70" d="m0 269 102-42 94 31 93-67 78 42 97-99 98 80 87-34 111 56v244H0z"/>
+            <path fill="#39775D" d="m0 320 91-45 86 27 92-58 89 53 97-73 82 45 99-65 124 71v205H0z"/>
+            <path fill="#194F3F" d="m0 365 91-45 84 32 90-48 97 40 97-62 90 43 92-53 119 58v193H0z"/>
+            <g fill="#F5E8C9" opacity=".92">
+              <path d="M79 276h42v54H79zM135 257h37v64h-37zM207 287h49v47h-49zM280 250h36v66h-36zM331 274h59v54h-59zM417 230h42v74h-42zM480 269h43v57h-43zM548 246h52v69h-52zM628 284h43v55h-43z"/>
+            </g>
+            <g fill="#C86B43">
+              <path d="m76 276 24-19 25 19zM202 287l29-21 30 21zM325 274l35-24 36 24zM474 269l28-20 29 20zM542 246l32-23 33 23z"/>
+            </g>
+            <g fill="#F4D9A7" opacity=".86"><path d="M81 289h7v9h-7zm15 0h7v9h-7zm15 0h7v9h-7zM215 298h7v9h-7zm16 0h7v9h-7zM339 286h8v9h-8zm17 0h8v9h-8zm17 0h8v9h-8zM429 244h8v11h-8zm17 0h8v11h-8zM559 262h8v10h-8zm17 0h8v10h-8z"/></g>
+            <path d="M-10 405c97-31 147 7 240-13s122 12 218-9 197 19 323-14" fill="none" stroke="#E7A93B" stroke-width="5" stroke-linecap="round" opacity=".9"/>
+            <circle cx="635" cy="111" r="47" fill="#F7D78F" opacity=".8"/>
+          </svg>
+          <div class="hero-art-note"><span>01 / 07</span><b>Made for everyday life in Rwanda</b></div>
+          <div class="hero-picks" id="hero-picks" aria-label="A few picks from the marketplace"></div>
+          <div class="hero-stamp"><span>✳</span><b>LOCAL<br/>FINDS</b><small>from Rwanda</small></div>
+        </div>
+      </section>
+
+      <section class="market-categories" aria-labelledby="categories-title">
+        <div class="section-heading">
+          <div><span class="section-eyebrow">START SOMEWHERE</span><h2 id="categories-title">What are you looking for?</h2></div>
+          <button class="text-link" onclick="buyerShowView('shop')">Browse everything <span>→</span></button>
+        </div>
         <div class="cat-grid" id="cat-grid"></div>
-      </div>
-      <div class="sec">
-        <div class="sec-title">Featured Products <span class="sec-sa" onclick="buyerShowView('shop')">See all →</span></div>
+      </section>
+
+      <section class="market-products" aria-labelledby="trending-title">
+        <div class="section-heading">
+          <div><span class="section-eyebrow">FROM THE MARKET</span><h2 id="trending-title">Good things, found here.</h2><p>Browse what local sellers have listed.</p></div>
+          <button class="text-link" onclick="buyerShowView('shop')">View all products <span>→</span></button>
+        </div>
         <div class="prod-grid" id="home-products"></div>
-      </div>
-      <div class="sec">
-        <div class="sec-title">🍎 Fresh Food & Drinks <span class="sec-sa" onclick="filterCat('food')">See all →</span></div>
-        <div class="prod-grid" id="food-products"></div>
-      </div>
-      <div class="sec">
-        <div class="sec-title">📱 Electronics <span class="sec-sa" onclick="filterCat('electronics')">See all →</span></div>
-        <div class="prod-grid" id="elec-products"></div>
-      </div>
+      </section>
+
+      <section class="home-community">
+        <div class="community-art" aria-hidden="true"><span class="community-orbit orbit-one"></span><span class="community-orbit orbit-two"></span><span class="community-pin">S</span><span class="community-dot dot-one"></span><span class="community-dot dot-two"></span><span class="community-dot dot-three"></span><span class="community-road"></span></div>
+        <div class="community-copy"><span class="section-eyebrow">THE GOOD STUFF IS ALREADY HERE</span><h2>Everyday finds.<br/><em>Rwanda-wide.</em></h2><p>Meet the people behind the products. Shop the things you need, and help local businesses grow.</p><button class="hero-action-secondary" onclick="buyerShowView('become-seller')">Bring your shop to SOKO <span>→</span></button></div>
+      </section>
+
+      <footer class="storefront-footer"><div class="footer-brand">SO<span>KO</span></div><p>Made for everyday life in Rwanda.</p><div class="footer-links"><button onclick="buyerShowView('shop')">Browse the market</button><button onclick="buyerShowView('become-seller')">Sell on SOKO</button><button onclick="focusSearch()">Search</button></div><small>© <span id="footer-year"></span> SOKO Rwanda</small></footer>
     </div>
 
     <!-- ── SHOP ──────────────────────────────────────────────── -->
@@ -802,13 +954,7 @@ tr:hover td{background:var(--bg);}
         <div class="checkout-sidebar">
           <div style="font-size:17px;font-weight:700;margin-bottom:14px;">Order Summary</div>
           <div id="co-summary"></div>
-          <div class="escrow-box" style="margin-top:12px;">
-            <div class="escrow-box-title">🔒 Payment Protection</div>
-            <div class="escrow-step"><div class="escrow-dot">1</div><span>You pay → SOKO holds funds</span></div>
-            <div class="escrow-step"><div class="escrow-dot">2</div><span>Seller ships your order</span></div>
-            <div class="escrow-step"><div class="escrow-dot">3</div><span>You confirm receipt</span></div>
-            <div class="escrow-step"><div class="escrow-dot">4</div><span>2% service fee · payment released to seller</span></div>
-          </div>
+        <div class="escrow-box" style="margin-top:12px;">Online payment is not available yet. Contact the seller to arrange payment and delivery.</div>
           <button class="btn-place" onclick="placeOrder()">Place your order →</button>
           <div style="font-size:11px;color:var(--ink4);margin-top:8px;text-align:center;">Secure checkout powered by SOKO Escrow</div>
         </div>
@@ -820,11 +966,11 @@ tr:hover td{background:var(--bg);}
       <div class="success-wrap">
         <div class="success-icon">✓</div>
         <div class="success-title">Order Placed! 🎉</div>
-        <div style="font-size:14px;color:var(--ink3);margin-bottom:14px;">Payment secured in escrow. Seller will ship shortly.</div>
+        <div style="font-size:14px;color:var(--ink3);margin-bottom:14px;">This checkout is not connected to a payment provider yet.</div>
         <div class="success-ref" id="success-ref">ORD-0000</div>
         <div class="tracker">
           <div style="font-size:14px;font-weight:700;margin-bottom:14px;">🔒 Escrow Status</div>
-          <div class="tracker-step"><div class="td done">✓</div><div><div style="font-size:13px;font-weight:600;">Payment Received</div><div style="font-size:11px;color:var(--ink4);">Funds secured in escrow</div></div></div>
+          <div class="tracker-step"><div class="td pending">1</div><div><div style="font-size:13px;font-weight:600;">Payment</div><div style="font-size:11px;color:var(--ink4);">Payment status will appear here when checkout is connected.</div></div></div>
           <div class="tracker-step"><div class="td active">⏳</div><div><div style="font-size:13px;font-weight:600;">Seller Ships Order</div><div style="font-size:11px;color:var(--ink4);">Awaiting dispatch</div></div></div>
           <div class="tracker-step"><div class="td pending">○</div><div><div style="font-size:13px;font-weight:600;">You Confirm Delivery</div><div style="font-size:11px;color:var(--ink4);">Tap button when received</div></div></div>
           <div class="tracker-step"><div class="td pending">○</div><div><div style="font-size:13px;font-weight:600;">Funds Released to Seller</div><div style="font-size:11px;color:var(--ink4);">Payment released to seller</div></div></div>
@@ -875,7 +1021,7 @@ tr:hover td{background:var(--bg);}
         <div id="become-seller-login" style="display:none;text-align:center;padding:32px;">
           <div style="font-size:56px;margin-bottom:14px;">🏪</div>
           <h1 style="font-family:var(--font2);font-size:26px;font-weight:800;margin-bottom:10px;">Start Selling on SOKO</h1>
-          <p style="color:var(--ink3);font-size:14px;max-width:460px;margin:0 auto 24px;">Join verified Rwanda sellers. Upload real product photos, receive escrow-protected payments, weekly payouts to your Mobile Money.</p>
+          <p style="color:var(--ink3);font-size:14px;max-width:460px;margin:0 auto 24px;">Join Rwanda’s local marketplace. Upload clear product photos, set your prices, and connect with buyers.</p>
           <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;text-align:left;margin-bottom:24px;">
             <div style="padding:12px;background:var(--gbg);border-radius:var(--r4);"><div style="font-size:12px;font-weight:600;color:var(--g);">✓ Escrow Protected</div><div style="font-size:11px;color:var(--ink3);margin-top:4px;">Your money is safe</div></div>
             <div style="padding:12px;background:var(--gbg);border-radius:var(--r4);"><div style="font-size:12px;font-weight:600;color:var(--g);">✓ ID Verified</div><div style="font-size:11px;color:var(--ink3);margin-top:4px;">4-hour approval</div></div>
@@ -894,7 +1040,7 @@ tr:hover td{background:var(--bg);}
       <div style="max-width:580px;margin:20px auto;padding:0 20px;">
         <div class="checkout-sec">
           <div class="checkout-sec-title">Report an Issue</div>
-          <div style="background:var(--bbg);border:1px solid var(--bb);border-radius:var(--r4);padding:10px 14px;font-size:13px;color:var(--b);margin-bottom:14px;">🔒 Your payment is still in escrow and will NOT be released to the seller until this dispute is resolved.</div>
+          <div style="background:var(--bbg);border:1px solid var(--bb);border-radius:var(--r4);padding:10px 14px;font-size:13px;color:var(--b);margin-bottom:14px;">Share the order details and the seller’s response so the SOKO team can review the issue.</div>
           <div class="fld">
             <label class="fld-lbl">Issue type</label>
             <select class="fld-sel" id="dispute-type">
@@ -1026,7 +1172,7 @@ tr:hover td{background:var(--bg);}
   <span>✨</span><span id="ai-gen-label">Generate description with AI</span>
 </button>
       <div style="background:var(--gbg);border:1px solid var(--gb);border-radius:var(--r4);padding:10px 12px;font-size:12px;color:var(--gd);">
-        💡 You receive your earnings after a small platform fee. Payments are escrow-protected.
+        💡 Keep your shop details and listing information up to date so buyers can reach you.
       </div>
     </div>
     <div class="modal-footer">
@@ -1085,7 +1231,7 @@ tr:hover td{background:var(--bg);}
       <div style="background:var(--gbg);border:1px solid var(--gb);border-radius:var(--r8);padding:16px;margin-bottom:16px;text-align:center;">
         <div style="font-size:11px;color:var(--gd);text-transform:uppercase;font-weight:700;margin-bottom:6px;">Available for Payout</div>
         <div style="font-family:var(--font2);font-size:32px;font-weight:800;color:var(--gd);" id="withdraw-available">0 RWF</div>
-        <div style="font-size:11px;color:var(--ink3);margin-top:4px;">Funds held in escrow are not yet withdrawable</div>
+        <div style="font-size:11px;color:var(--ink3);margin-top:4px;">Payout processing is not connected yet.</div>
       </div>
       <div class="fld">
         <label class="fld-lbl">Amount to withdraw (RWF)</label>
@@ -1137,40 +1283,11 @@ const CATS=[
   {id:'sports',en:'Sports',fr:'Sports',rw:'Siporo',icon:'⚽'},
 ];
 
-let PRODUCTS=[
-  {id:1,name:'Fresh Avocados 1kg — Organic Musanze',cat:'food',price:1500,stock:50,emoji:'🥑',images:[],rating:4.9,reviews:88,seller:'Farm Fresh RW',sellerPhone:'+250788800001',desc:'Fresh organic avocados from Musanze farms. 1kg bag.',badge:'new'},
-  {id:2,name:'Primus Beer — 12 Pack × 500ml',cat:'food',price:9000,stock:100,emoji:'🍺',images:[],rating:4.8,reviews:142,seller:'Drinks RW',sellerPhone:'+250788800002',desc:"Rwanda's favourite beer. 12×500ml cold bottles.",badge:'hot'},
-  {id:3,name:'Fresh Whole Milk — 1 Litre Daily',cat:'food',price:800,stock:150,emoji:'🥛',images:[],rating:4.9,reviews:203,seller:'Farm Fresh RW',sellerPhone:'+250788800001',desc:'Fresh pasteurized milk from local Rwanda farms.',badge:''},
-  {id:4,name:'Ibirayi Potatoes — 5kg Local Farm',cat:'food',price:2500,stock:200,emoji:'🥔',images:[],rating:4.7,reviews:55,seller:'Farm Fresh RW',sellerPhone:'+250788800001',desc:'Fresh potatoes from Rwandan farms. 5kg bag.',badge:''},
-  {id:5,name:'Samsung Galaxy A55 5G — 128GB',cat:'electronics',price:280000,stock:5,emoji:'📱',images:[],rating:4.7,reviews:18,seller:'PhoneCity KG',sellerPhone:'+250788200002',desc:'Samsung A55 5G — 128GB, 8GB RAM, triple camera.',badge:'new'},
-  {id:6,name:'Wireless Earbuds Pro — Bluetooth 5.2',cat:'electronics',price:22000,stock:20,emoji:'🎧',images:[],rating:4.5,reviews:89,seller:'TechHub RW',sellerPhone:'+250788100001',desc:'Premium earbuds. Bluetooth 5.2, 24hr battery.',badge:'sale'},
-  {id:7,name:'Laptop HP 256G10 — Intel i5 8GB RAM',cat:'electronics',price:520000,stock:3,emoji:'💻',images:[],rating:4.6,reviews:11,seller:'PhoneCity KG',sellerPhone:'+250788200002',desc:'HP Laptop: Intel Core i5, 8GB RAM, 256GB SSD.',badge:'hot'},
-  {id:8,name:'Sony Bluetooth Speaker — 20W Waterproof',cat:'electronics',price:35000,stock:14,emoji:'🔊',images:[],rating:4.6,reviews:56,seller:'TechHub RW',sellerPhone:'+250788100001',desc:'Portable waterproof speaker. 20W, 12hr battery.',badge:''},
-  {id:9,name:'Nike Air Force 1 — White (Sizes 39–46)',cat:'shoes',price:45000,stock:12,emoji:'👟',images:[],rating:4.8,reviews:42,seller:'SneakerHub RW',sellerPhone:'+250788100001',desc:'Authentic Nike Air Force 1. White. Sizes 39–46.',badge:'hot'},
-  {id:10,name:'Adidas Ultraboost 22 — Running Shoes',cat:'shoes',price:38000,stock:8,emoji:'👟',images:[],rating:4.9,reviews:33,seller:'SportZone RW',sellerPhone:'+250788400004',desc:'Adidas Ultraboost 22. Sizes 38–47.',badge:''},
-  {id:11,name:'African Print Kente Dress — S/M/L/XL',cat:'clothes',price:15000,stock:30,emoji:'👗',images:[],rating:4.6,reviews:67,seller:'Umucyo Fashion',sellerPhone:'+250788300003',desc:'Beautiful Kente-style African print dress.',badge:''},
-  {id:12,name:"Men's Rwanda Hoodie — Premium Cotton",cat:'clothes',price:12000,stock:25,emoji:'👕',images:[],rating:4.4,reviews:38,seller:'Umucyo Fashion',sellerPhone:'+250788300003',desc:'"Made in Rwanda" premium cotton hoodie.',badge:'new'},
-  {id:13,name:'Rice Cooker 1.8L — Non-stick with Steamer',cat:'home',price:18000,stock:22,emoji:'🍚',images:[],rating:4.7,reviews:61,seller:'HomeStore RW',sellerPhone:'+250788700007',desc:'1.8L rice cooker. Non-stick, steamer tray.',badge:''},
-  {id:14,name:'Football — FIFA Standard Size 5',cat:'sports',price:9000,stock:30,emoji:'⚽',images:[],rating:4.8,reviews:92,seller:'SportZone RW',sellerPhone:'+250788400004',desc:'FIFA-quality football. Indoor/outdoor.',badge:''},
-  {id:15,name:'Vitamin C Brightening Serum 30ml',cat:'beauty',price:8500,stock:45,emoji:'🧴',images:[],rating:4.7,reviews:124,seller:'GlowSkin RW',sellerPhone:'+250788500005',desc:'30ml brightening serum. Reduces dark spots.',badge:''},
-  {id:16,name:'Cooking Oil — Pure Sunflower 5L',cat:'food',price:12000,stock:80,emoji:'🛢️',images:[],rating:4.6,reviews:77,seller:'Drinks RW',sellerPhone:'+250788800002',desc:'Pure sunflower cooking oil. 5 litre bottle.',badge:''},
-];
+let PRODUCTS=[];
 
-let ORDERS=[
-  {id:'ORD-2041',buyer:'Jean Mutoni',phone:'+250788000001',addr:'KG 7 Ave',city:'Kigali',product:'Nike Air Force 1',productId:9,qty:1,total:45000,commission:1800,sellerNet:43200,payment:'MTN MoMo',delivery:'moto',status:'confirmed',escrow:'held',date:'2025-05-08',seller:'SneakerHub RW'},
-  {id:'ORD-2038',buyer:'Marie Claire',phone:'+250788000002',addr:'KN 5 Rd',city:'Kigali',product:'Samsung Galaxy A55',productId:5,qty:1,total:280000,commission:11200,sellerNet:268800,payment:'Airtel Money',delivery:'moto',status:'shipped',escrow:'held',date:'2025-05-06',seller:'PhoneCity KG'},
-  {id:'ORD-2035',buyer:'Eric Habimana',phone:'+250788000003',addr:'KG 200 St',city:'Kigali',product:'African Print Dress',productId:11,qty:2,total:30000,commission:1200,sellerNet:28800,payment:'Cash on Delivery',delivery:'pickup',status:'delivered',escrow:'released',date:'2025-05-04',seller:'Umucyo Fashion'},
-  {id:'ORD-2030',buyer:'Diane Uwase',phone:'+250788000004',addr:'KK 15 Ave',city:'Kigali',product:'Wireless Earbuds Pro',productId:6,qty:1,total:22000,commission:880,sellerNet:21120,payment:'MTN MoMo',delivery:'moto',status:'pending',escrow:'held',date:'2025-05-03',seller:'TechHub RW'},
-  {id:'ORD-2028',buyer:'Patrick N.',phone:'+250788000005',addr:'KK 3 Ave',city:'Kigali',product:'Adidas Ultraboost 22',productId:10,qty:1,total:38000,commission:1520,sellerNet:36480,payment:'Card',delivery:'moto',status:'cancelled',escrow:'refunded',date:'2025-05-01',seller:'SportZone RW'},
-];
+let ORDERS=[];
 
-let KYC=[
-  {id:'kyc-1',name:'Alice Uwimana',phone:'+250788111001',idNum:'1198570025080016',date:'2025-05-07',status:'pending',idImage:null},
-  {id:'kyc-2',name:'Bob Ndikumana',phone:'+250788111002',idNum:'1199400015060023',date:'2025-05-06',status:'pending',idImage:null},
-  {id:'kyc-3',name:'Claudette Mukandahiro',phone:'+250788111003',idNum:'1200450025040031',date:'2025-05-05',status:'pending',idImage:null},
-  {id:'kyc-4',name:'Daniel Habimana',phone:'+250788111004',idNum:'1197560035020042',date:'2025-05-03',status:'approved',idImage:null},
-  {id:'kyc-5',name:'Eva Ingabire',phone:'+250788111005',idNum:'1200580015010055',date:'2025-05-02',status:'rejected',idImage:null},
-];
+let KYC=[];
 
 let USERS=[];
 
@@ -1205,6 +1322,8 @@ document.addEventListener('click',e=>{
 
 window.addEventListener('DOMContentLoaded',()=>{
   setTimeout(()=>{const ls=document.getElementById('loading-screen');if(ls)ls.classList.add('hidden');},1500);
+  buildBuyerHome();
+  loadProductsFromSupabase().then(()=>buildBuyerHome());
   // Password recovery: Supabase returns the user with #access_token=…&type=recovery.
   // onAuthStateChange covers the PKCE (?code=) variant, the hash check covers implicit.
   const inRecovery=/[?#&]type=recovery/.test(window.location.hash+window.location.search);
@@ -1218,10 +1337,8 @@ function applyLang(l){
   document.querySelectorAll('select[onchange*="applyLang"]').forEach(s=>s.value=l);
   renderCats();
   renderProds(PRODUCTS.slice(0,8),'home-products');
-  renderProds(PRODUCTS.filter(p=>p.cat==='food').slice(0,4),'food-products');
-  renderProds(PRODUCTS.filter(p=>p.cat==='electronics').slice(0,4),'elec-products');
   const ht=document.getElementById('hero-title');
-  if(ht){if(l==='fr')ht.innerHTML="Tout ce dont vous avez besoin,<br/>livré en toute <em>confiance</em>";else if(l==='rw')ht.innerHTML="Ibintu byose ukeneye,<br/>gutumizwa mu <em>zizira</em>";else ht.innerHTML="Everything you need,<br/>delivered with <em>confidence</em>";}
+  if(ht){if(l==='fr')ht.innerHTML="De belles trouvailles.<br/><em>Tout près de vous.</em>";else if(l==='rw')ht.innerHTML="Ibyiza byo hafi.<br/><em>Byegereye urugo.</em>";else ht.innerHTML="Good finds.<br/><em>Closer to home.</em>";}
   const snItems=document.querySelectorAll('.snav');
   const sLbls=l==='fr'?['☰ Tout','🍎 Alimentation','📱 Électronique','👕 Vêtements','👟 Chaussures','🏠 Maison','💄 Beauté','⚽ Sports','🏪 Vendre']:l==='rw'?['☰ Byose','🍎 Ibiribwa','📱 Ikoranabuhanga','👕 Imyenda','👟 Ingofora','🏠 Urugo','💄 Ubwiza','⚽ Siporo','🏪 Gurisha']:['☰ All','🍎 Food & Drinks','📱 Electronics','👕 Clothes','👟 Shoes','🏠 Home','💄 Beauty','⚽ Sports','🏪 Sell on SOKO'];
   snItems.forEach((el,i)=>{if(sLbls[i])el.textContent=sLbls[i];});
@@ -1441,41 +1558,47 @@ async function forgotPassword(){
 
 // BUYER HOME
 function buildBuyerHome(){
-  renderPromos();renderCats();
+  renderCats();
+  renderHeroPicks();
   renderProds(PRODUCTS.slice(0,8),'home-products');
-  renderProds(PRODUCTS.filter(p=>p.cat==='food').slice(0,4),'food-products');
-  renderProds(PRODUCTS.filter(p=>p.cat==='electronics').slice(0,4),'elec-products');
   buildBecomeSeller();buildNotifs();updateCartBadge();
 }
-function renderPromos(){
-  const el=document.getElementById('promo-grid');if(!el)return;
-  el.innerHTML=[{cls:'pt1',em:'📱',lbl:'Flash Sale',title:'Electronics Up to 30% Off',cta:'Shop Electronics →',cat:'electronics'},{cls:'pt2',em:'🍎',lbl:'Fresh Today',title:'Local Food & Groceries',cta:'Order Food →',cat:'food'},{cls:'pt3',em:'👗',lbl:'New Arrivals',title:'African Fashion Collection',cta:'Explore →',cat:'clothes'},{cls:'pt4',em:'👟',lbl:'Top Sellers',title:'Shoes for Every Occasion',cta:'View Shoes →',cat:'shoes'}]
-  .map(p=>`<div class="promo-tile ${p.cls}" data-emoji="${p.em}" onclick="filterCat('${p.cat}')"><div><div class="promo-lbl">${p.lbl}</div><div class="promo-title">${p.title}</div></div><div class="promo-cta">${p.cta}</div></div>`).join('');
+function renderHeroPicks(){
+  const el=document.getElementById('hero-picks');if(!el)return;
+  const picks=PRODUCTS.filter(p=>p&&p.active!==false).slice(0,3);
+  if(!picks.length){el.innerHTML=`<div class="hero-pick"><div class="hero-pick-visual">✳</div><div class="hero-pick-copy"><span>Local marketplace</span><b>Discover the latest listings</b></div></div>`;return;}
+  el.innerHTML=picks.map((p,i)=>{
+    const image=Array.isArray(p.images)?p.images[0]:'';
+    const visual=image?`<img src="${image}" alt=""/>`:`<span>${p.emoji||'✳'}</span>`;
+    return `<div class="hero-pick"><div class="hero-pick-visual">${visual}</div><div class="hero-pick-copy"><span>${i===0?'In the market':'Local find'}</span><b>${p.name||'Marketplace listing'}</b></div></div>`;
+  }).join('');
 }
 function renderCats(){
   const el=document.getElementById('cat-grid');if(!el)return;
-  el.innerHTML=CATS.map(c=>`<div class="cat-card" onclick="filterCat('${c.id}')"><div style="font-size:30px;margin-bottom:7px;">${c.icon}</div><div style="font-size:12px;font-weight:600;">${getCat(c.id)}</div></div>`).join('');
+  el.innerHTML=CATS.map(c=>`<button class="cat-card" onclick="filterCat('${c.id}')"><div class="cat-icon">${c.icon}</div><div class="cat-name">${getCat(c.id)}</div></button>`).join('');
   const fc=document.getElementById('filter-cats');
   if(fc)fc.innerHTML=CATS.map(c=>`<div class="fopt"><input type="checkbox" onchange="filterCat('${c.id}')"/> ${c.icon} ${getCat(c.id)}</div>`).join('');
 }
 function renderProds(list,cid){
   const c=document.getElementById(cid);if(!c)return;
-  if(!list.length){c.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--ink3);"><div style="font-size:40px;margin-bottom:10px;">🔍</div><div style="font-weight:600;">No products found</div></div>`;return;}
+  if(!list.length){c.innerHTML=`<div style="grid-column:1/-1;text-align:center;padding:40px;color:var(--ink3);"><div style="font-size:40px;margin-bottom:10px;">⌕</div><div style="font-weight:600;">New listings will appear here</div></div>`;return;}
   c.innerHTML=list.map(p=>{
     const badge=p.badge?`<div class="prod-badge ${p.badge}">${p.badge==='hot'?'Top rated':p.badge==='new'?'New':'Sale'}</div>`:'';
-    const thumb=(p.images&&p.images.length)?`<img src="${p.images[0]}" style="width:100%;height:100%;object-fit:cover;"/>`:`<span>${p.emoji}</span>`;
-    return `<div class="prod-card"><div class="prod-thumb">${badge}${thumb}</div><div class="prod-info" onclick="showProduct(${p.id})"><div class="prod-brand">${p.seller}</div><div class="prod-name">${p.name}</div><div><span class="prod-stars">${stars(p.rating)}</span><span class="prod-rc">${p.reviews.toLocaleString()}</span></div><div class="prod-price">RWF ${fmt(p.price)}</div><div style="font-size:11px;color:var(--g);font-weight:600;">🔒 Payment protected</div></div><div style="padding:0 12px 12px;"><button class="btn-atc" onclick="addToCartGrid(event,${p.id})">Add to cart</button></div></div>`;
+    const images=Array.isArray(p.images)?p.images:[];
+    const thumb=images[0]?`<img src="${images[0]}" alt="${p.name||'Product'}" loading="lazy"/>`:`<span>${p.emoji||'📦'}</span>`;
+    const productId=JSON.stringify(String(p.id)).replace(/"/g,'&quot;');
+    const rating=Number(p.rating)||0,reviews=Number(p.reviews)||0;
+    return `<div class="prod-card"><div class="prod-thumb">${badge}${thumb}</div><div class="prod-info" onclick="showProduct(${productId})"><div class="prod-brand">${p.seller||'Local seller'}</div><div class="prod-name">${p.name||'Marketplace listing'}</div>${rating?`<div><span class="prod-stars">${stars(rating)}</span><span class="prod-rc">${reviews.toLocaleString()}</span></div>`:''}<div class="prod-price">RWF ${fmt(p.price)}</div></div><div style="padding:0 12px 12px;"><button class="btn-atc" onclick="addToCartGrid(event,${productId})">Add to cart</button></div></div>`;
   }).join('');
 }
 function buildBecomeSeller(){
   const el=document.getElementById('become-steps');if(!el)return;el.innerHTML='';
-  [{icon:'📋',t:'Submit your ID (KYC)',d:'National ID reviewed in 24–48 hours'},{icon:'📦',t:'List your products',d:'Upload real photos, prices, stock levels'},{icon:'🔒',t:'Escrow-protected sales',d:'Payment held until buyer confirms delivery'},{icon:'💰',t:'Weekly payouts',d:'98% of every sale sent to your MoMo'}]
+  [{icon:'📋',t:'Set up your seller profile',d:'Add your shop details and contact information'},{icon:'📦',t:'List your products',d:'Upload clear photos, prices, and stock levels'},{icon:'🤝',t:'Connect with buyers',d:'Respond to questions and arrange delivery'},{icon:'🌱',t:'Grow your shop',d:'Keep listings up to date as your business grows'}]
   .forEach(s=>{el.innerHTML+=`<div style="background:var(--bg2);border-radius:8px;padding:14px;display:flex;gap:10px;"><span style="font-size:22px;">${s.icon}</span><div><div style="font-weight:700;font-size:13px;margin-bottom:2px;">${s.t}</div><div style="font-size:12px;color:var(--ink3);">${s.d}</div></div></div>`;});
 }
 function buildNotifs(){
   const el=document.getElementById('notif-items');if(!el)return;
-  [{icon:'🔒',text:'Payment for <b>ORD-2041</b> held in escrow.',time:'2 min ago',u:true},{icon:'🚚',text:'Order <b>ORD-2038</b> is out for delivery.',time:'1 hour ago',u:true},{icon:'✅',text:'Payment released for <b>ORD-2035</b>.',time:'Yesterday',u:false},{icon:'⭐',text:'Rate your purchase from <b>TechHub RW</b>.',time:'2 days ago',u:false}]
-  .forEach(n=>{el.innerHTML+=`<div class="notif-item${n.u?' unread':''}"><div style="font-size:20px;flex-shrink:0;margin-top:1px;">${n.icon}</div><div><div style="font-size:13px;color:var(--ink2);">${n.text}</div><div style="font-size:11px;color:var(--ink4);margin-top:2px;">${n.time}</div></div></div>`;});
+  el.innerHTML='<div class="notif-empty">You’re all caught up.</div>';
 }
 
 // BUYER NAVIGATION
@@ -1541,16 +1664,9 @@ function showProduct(id){
         <div style="font-size:12px;color:var(--b);margin-bottom:8px;"><a onclick="filterCat('${p.cat}')">${getCat(p.cat)}</a></div>
         <div class="detail-title">${p.name}</div>
         <div class="detail-brand">Visit the <span style="color:var(--b);">${p.seller}</span> Store</div>
-        <div class="detail-rating-row"><span style="color:var(--or);font-size:16px;">${stars(p.rating)}</span><span style="color:var(--or);font-weight:700;">${p.rating}</span><a style="color:var(--b);font-size:13px;">${p.reviews.toLocaleString()} ratings</a><span style="color:var(--ink4);">·</span><a style="color:var(--b);font-size:13px;">✓ Verified seller</a></div>
-        <div style="font-size:13px;color:var(--ink3);">List Price: <s>RWF ${fmt(Math.round(p.price*1.12))}</s></div>
-        <div><span class="detail-price">RWF ${fmt(p.price)}</span> <span style="font-size:13px;color:var(--r);">(Save ${Math.round((1-1/1.12)*100)}%)</span></div>
+        ${p.rating?`<div class="detail-rating-row"><span style="color:var(--or);font-size:16px;">${stars(p.rating)}</span><span style="color:var(--or);font-weight:700;">${p.rating}</span><a style="color:var(--b);font-size:13px;">${(Number(p.reviews)||0).toLocaleString()} ratings</a></div>`:''}
+        <div><span class="detail-price">RWF ${fmt(p.price)}</span></div>
         <div class="detail-desc">${p.desc}</div>
-        <div class="escrow-box">
-          <div class="escrow-box-title">🔒 Payment is Escrow-Protected</div>
-          <div class="escrow-step"><div class="escrow-dot">1</div><span>You pay RWF ${fmt(p.price)} → SOKO holds it safely</span></div>
-          <div class="escrow-step"><div class="escrow-dot">2</div><span>Seller ships · You confirm delivery</span></div>
-         <div class="escrow-step"><div class="escrow-dot">3</div><span>Payment released · 2% platform fee deducted · seller receives 98%</span></div> 
-        </div>
         ${p.stock===0?'<div style="padding:14px;background:var(--rbg);border-radius:var(--r4);color:var(--r);font-weight:700;text-align:center;margin-top:12px;">Out of Stock</div>':''}
       </div>
       <div class="buy-box">
@@ -1560,10 +1676,9 @@ function showProduct(id){
         <div class="buy-box-stock">${p.stock>0?'In Stock':'Out of Stock'}</div>
         ${p.stock>0?`<div style="font-size:12px;font-weight:600;margin-bottom:6px;">Qty:</div>
         <div class="qty-ctrl"><button class="qty-btn" onclick="changeQty(-1)">−</button><span class="qty-num" id="detail-qty">1</span><button class="qty-btn" onclick="changeQty(1)">+</button></div>
-        <button class="btn-atcr" onclick="addDetailToCart(${p.id})">Add to Cart</button>
-        <button class="btn-buynow" onclick="buyNow(${p.id})">Buy Now</button>`:''}
-        <div style="font-size:12px;color:var(--ink3);margin-bottom:10px;">🔒 Secure transaction</div>
-        <div class="buy-box-seller">Sold by <span>${p.seller}</span><div style="color:var(--g);font-size:12px;font-weight:600;margin-top:2px;">✓ KYC Verified</div></div>
+        <button class="btn-atcr" onclick="addDetailToCart(${JSON.stringify(String(p.id))})">Add to Cart</button>
+        <button class="btn-buynow" onclick="buyNow(${JSON.stringify(String(p.id))})">Buy Now</button>`:''}
+        <div class="buy-box-seller">Sold by <span>${p.seller}</span></div>
         <div class="contact-btns">
           <a href="tel:${p.sellerPhone}" class="btn-contact">📞 Call</a>
           <a href="https://wa.me/${p.sellerPhone.replace(/\s/g,'')}" class="btn-contact" target="_blank">💬 WhatsApp</a>
@@ -1599,34 +1714,33 @@ function renderCart(){
       <div style="font-size:14px;color:var(--b);margin-bottom:3px;">${item.name}</div>
       <div style="color:var(--g);font-size:12px;font-weight:600;margin-bottom:3px;">In Stock</div>
       <div style="font-size:12px;color:var(--ink3);">Sold by ${item.seller}</div>
-      <div style="font-size:12px;color:var(--g);">🔒 Escrow protected</div>
       <div style="display:flex;align-items:center;gap:8px;margin-top:8px;">
         <span style="font-size:12px;font-weight:600;">Qty:</span>
         <div style="display:flex;align-items:center;border:var(--border);border-radius:var(--r4);">
-          <button class="qty-btn" style="width:28px;height:28px;font-size:14px;" onclick="cartQty(${item.id},-1)">−</button>
+          <button class="qty-btn" style="width:28px;height:28px;font-size:14px;" onclick="cartQty(${JSON.stringify(String(item.id))},-1)">−</button>
           <span style="width:32px;text-align:center;font-size:13px;font-weight:700;">${item.qty}</span>
-          <button class="qty-btn" style="width:28px;height:28px;font-size:14px;" onclick="cartQty(${item.id},1)">+</button>
+          <button class="qty-btn" style="width:28px;height:28px;font-size:14px;" onclick="cartQty(${JSON.stringify(String(item.id))},1)">+</button>
         </div>
       </div>
       <div style="display:flex;gap:8px;margin-top:6px;">
-        <button style="padding:5px 10px;border:var(--border);border-radius:var(--r4);background:var(--bg2);font-size:12px;cursor:pointer;color:var(--b);" onclick="cartRemove(${item.id})">Delete</button>
+        <button style="padding:5px 10px;border:var(--border);border-radius:var(--r4);background:var(--bg2);font-size:12px;cursor:pointer;color:var(--b);" onclick="cartRemove(${JSON.stringify(String(item.id))})">Delete</button>
       </div>
     </div>
     <div style="font-size:16px;font-weight:700;flex-shrink:0;">RWF ${fmt(item.price*item.qty)}</div>
   </div>`).join('')+
   `<div style="text-align:right;font-size:16px;padding:12px 0;border-top:var(--border);">Subtotal (${cart.reduce((a,c)=>a+c.qty,0)} items): <strong>RWF ${fmt(sub)}</strong></div></div>`;
-  sw.innerHTML=`<div class="cart-escrow-note">🔒 All purchases are escrow-protected. Payment released only after you confirm delivery.</div>
+  sw.innerHTML=`<div class="cart-escrow-note">Delivery and payment arrangements will be confirmed with the seller.</div>
     <div style="font-size:18px;margin-bottom:14px;">Subtotal (${cart.reduce((a,c)=>a+c.qty,0)} items):<br/><strong style="font-size:22px;">RWF ${fmt(sub)}</strong></div>
     <button class="btn-checkout" onclick="buyerShowView('checkout')">Proceed to checkout</button>
-    <div style="font-size:11px;color:var(--ink4);margin-top:8px;text-align:center;">Secure checkout powered by SOKO Escrow</div>`;
+    <div style="font-size:11px;color:var(--ink4);margin-top:8px;text-align:center;">Review your order before confirming.</div>`;
 }
 function cartQty(id,d){const item=cart.find(c=>c.id===id);if(item){item.qty=Math.max(1,item.qty+d);updateCartBadge();renderCart();}}
 function cartRemove(id){cart=cart.filter(c=>c.id!==id);updateCartBadge();renderCart();}
 function renderCoSummary(){
-  const sub=cart.reduce((a,c)=>a+c.price*c.qty,0),del=1000,total=sub+del;
+  const sub=cart.reduce((a,c)=>a+c.price*c.qty,0);
   const el=document.getElementById('co-summary');if(!el)return;
   el.innerHTML=cart.map(item=>`<div class="co-row"><span>${item.emoji} ${item.name.slice(0,22)}… ×${item.qty}</span><span style="font-weight:600;color:var(--ink);">RWF ${fmt(item.price*item.qty)}</span></div>`).join('')+
-  `<div class="co-row"><span>Subtotal</span><span>RWF ${fmt(sub)}</span></div><div class="co-row"><span>Delivery</span><span>RWF ${fmt(del)}</span></div><div class="co-row total"><span>Order total</span><span>RWF ${fmt(total)}</span></div>`;
+  `<div class="co-row"><span>Subtotal</span><span>RWF ${fmt(sub)}</span></div><div class="co-row"><span>Delivery</span><span>Confirm with seller</span></div><div class="co-row total"><span>Item total</span><span>RWF ${fmt(sub)}</span></div>`;
 }
 function selPay(el){document.querySelectorAll('.checkout-sec .pay-opt').forEach(o=>{o.classList.remove('sel');const r=o.querySelector('input');if(r)r.checked=false;});el.classList.add('sel');const r=el.querySelector('input');if(r)r.checked=true;}
 function selDel(el){document.querySelectorAll('.checkout-sec .del-opt').forEach(o=>o.classList.remove('sel'));el.classList.add('sel');}
@@ -1638,17 +1752,9 @@ function placeOrder(){
     authTab('login');
     return;
   }
-  const name=document.getElementById('co-name')?.value.trim(),phone=document.getElementById('co-phone')?.value.trim(),addr=document.getElementById('co-addr')?.value.trim();
-  if(!name||!phone||!addr){toast('Please fill all delivery details','r');return;}
-  const sub=cart.reduce((a,c)=>a+c.price*c.qty,0),total=sub+1000,comm=Math.round(total*(commissionRate/100));
-  const first=cart[0],p=PRODUCTS.find(x=>x.id===first?.id);
-  const id='ORD-'+(2050+ORDERS.length);
-  ORDERS.unshift({id,buyer:name,phone,addr,city:'Kigali',product:first?.name||'',productId:first?.id,qty:first?.qty||1,total,commission:comm,sellerNet:total-comm,payment:'MTN MoMo',delivery:'moto',status:'pending',escrow:'held',date:new Date().toISOString().slice(0,10),seller:p?.seller||'Seller'});
-  document.getElementById('success-ref').textContent=id;
-  cart=[];updateCartBadge();buyerShowView('success');
-  toast('🎉 Order placed! Payment secured in escrow.','g');
+  toast('Online checkout is not connected yet. Please contact the seller from the product page.','r');
 }
-function confirmDelivery(){toast('✅ Delivery confirmed! Funds released to seller.','g');if(ORDERS[0]){ORDERS[0].status='delivered';ORDERS[0].escrow='released';}setTimeout(()=>buyerHome(),1600);}
+function confirmDelivery(){toast('Order tracking will be available once checkout is connected.','r');}
 
 // ORDERS
 function renderOrders(){
@@ -1882,16 +1988,21 @@ async function addSellerProduct(){
 
 // ADMIN
 async function loadProductsFromSupabase(){
-  if(!sb)return;
+  if(!sb){PRODUCTS=[];return;}
   const{data,error}=await sb.from('products').select('*').eq('active',true).order('created_at',{ascending:false});
-  if(error){console.log('Products load error:',error);return;}
-  if(!data||!data.length)return;
+  if(error){console.log('Products load error:',error);PRODUCTS=[];return;}
   PRODUCTS=data.map(p=>({
     id:p.id,name:p.name,cat:p.cat||p.category,price:p.price,stock:p.stock,
-    emoji:p.emoji||'📦',images:p.images||[],rating:p.rating||5.0,
+    emoji:p.emoji||'📦',images:normalizeProductImages(p.images),rating:p.rating||0,
     reviews:p.reviews_count||p.reviews||0,seller:p.seller_name||p.seller||'Seller',
     sellerPhone:p.seller_phone||'',desc:p.description||'',badge:p.badge||'',
   }));
+}
+function normalizeProductImages(value){
+  if(Array.isArray(value))return value.filter(v=>typeof v==='string'&&v.trim());
+  if(typeof value!=='string'||!value.trim())return[];
+  try{const parsed=JSON.parse(value);if(Array.isArray(parsed))return parsed.filter(v=>typeof v==='string'&&v.trim());}catch(e){}
+  return[value.trim()];
 }
 function openWithdrawModal(){
   const available=94300;
