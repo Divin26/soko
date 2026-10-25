@@ -1279,20 +1279,24 @@ async function doLogin(){
   if(!identifier||!pw){toast('Please enter your email/phone and password','r');return;}
   if(!sb){toast('Backend unavailable — try again shortly','r');return;}
   toast('Signing in…');
-  let email=identifier;
-  if(!identifier.includes('@')){
-    const{data:match,error:lookupErr}=await sb.from('users').select('email').eq('phone',identifier).single();
-    if(lookupErr||!match){toast('No account found with that phone number','r');return;}
-    email=match.email;
+  let data,error;
+  if(identifier.includes('@'))({data,error}=await sb.auth.signInWithPassword({email:identifier,password:pw}));
+  else{
+    const{data:phoneAuth,error:phoneError}=await sb.functions.invoke('phone-auth',{body:{action:'login',phone:identifier,password:pw}});
+    if(phoneError||!phoneAuth?.session){toast('Sign-in failed. Check your details and try again.','r');return;}
+    data={session:phoneAuth.session,user:phoneAuth.session.user};
+    ({error}=await sb.auth.setSession({access_token:phoneAuth.session.access_token,refresh_token:phoneAuth.session.refresh_token}));
   }
-  const{data,error}=await sb.auth.signInWithPassword({email,password:pw});
   if(error){toast(error.message,'r');return;}
-  let{data:profile}=await sb.from('users').select('*').eq('email',email).single();
+  const userId=data.user?.id||data.session?.user?.id;
+  let{data:profile}=await sb.from('users').select('id,name,email,phone,role,verified,status,auth_id,created_at').eq('auth_id',userId).single();
   if(!profile){
-    const{data:np}=await sb.from('users').insert([{name:email.split('@')[0],email,auth_id:data.user.id,role:'buyer',verified:false,status:'active'}]).select().single();
+    const email=data.user?.email||data.session?.user?.email||identifier;
+    const{data:np}=await sb.from('users').insert([{name:email.split('@')[0],email,auth_id:userId,role:'buyer',verified:false,status:'active'}]).select('id,name,email,phone,role,verified,status,auth_id,created_at').single();
     profile=np;
   }
   if(profile){signupData={name:profile.name,email:profile.email,phone:profile.phone||'',role:profile.role,_ctx:'login'};loginSuccess();}
+  else{await sb.auth.signOut();toast('Your account profile could not be loaded. Please contact support.','r');}
 }
 async function doSignup(){
   const fn=document.getElementById('su-fname').value.trim(),ln=document.getElementById('su-lname').value.trim();
@@ -1402,7 +1406,7 @@ async function restoreSession(){
   try{
     const{data:{session}}=await sb.auth.getSession();
     if(!session)return;
-    const{data:profile}=await sb.from('users').select('*').eq('email',session.user.email).single();
+    const{data:profile}=await sb.from('users').select('id,name,email,phone,role,verified,status,auth_id,created_at').eq('auth_id',session.user.id).single();
     if(profile){signupData={name:profile.name,email:profile.email,phone:profile.phone||'',role:profile.role,_ctx:'login'};loginSuccess();}
   }catch(e){console.log('Session restore:',e);}
 }
@@ -1429,19 +1433,14 @@ async function forgotPassword(){
   const identifier=document.getElementById('login-identifier').value.trim();
   if(!identifier){toast('Enter your email or phone first','r');return;}
   if(!sb){toast('Supabase not configured','r');return;}
-  let email=identifier;
-  if(!identifier.includes('@')){
-    const{data:match}=await sb.from('users').select('email,role').eq('phone',identifier).single();
-    if(!match){toast('No account found with that phone number','r');return;}
-    if(match.role==='admin'){toast('Admin passwords can only be changed from inside the Admin panel','r');return;}
-    email=match.email;
+  if(identifier.includes('@')){
+    const{error}=await sb.auth.resetPasswordForEmail(identifier,{redirectTo:'https://soko-omega.vercel.app/reset-password'});
+    if(error){toast('Could not request a reset. Please try again shortly.','r');return;}
   }else{
-    const{data:match}=await sb.from('users').select('role').eq('email',email).single();
-    if(match&&match.role==='admin'){toast('Admin passwords can only be changed from inside the Admin panel','r');return;}
+    const{error}=await sb.functions.invoke('phone-auth',{body:{action:'recover',phone:identifier,redirectTo:'https://soko-omega.vercel.app/reset-password'}});
+    if(error){toast('Could not request a reset. Please try again shortly.','r');return;}
   }
-  const{error}=await sb.auth.resetPasswordForEmail(email,{redirectTo:window.location.origin+'/reset-password'});
-  if(error){toast(error.message,'r');return;}
-  toast('✓ Password reset link sent to '+email,'g');
+  toast('If an account matches those details, a password reset link will be sent to its registered email.','g');
 }
 
 // BUYER HOME
@@ -1810,6 +1809,10 @@ async function addSellerProduct(){
   const emoji=document.getElementById('mp-emoji').value||'📦';
   const desc=document.getElementById('mp-desc').value||'';
   if(!name||!price){toast('Product name and price are required','r');return;}
+  const{data:{user:authUser}}=await sb.auth.getUser();
+  if(!authUser){toast('Please sign in again before adding a product.','r');return;}
+  const{data:profile,error:profileError}=await sb.from('users').select('id,role').eq('auth_id',authUser.id).single();
+  if(profileError||!profile||profile.role!=='seller'){toast('Your account is not approved for seller listings.','r');return;}
   toast('Uploading images…');
   let imageUrls=[];
   for(let i=0;i<prodImages.length;i++){
@@ -1827,7 +1830,7 @@ async function addSellerProduct(){
     name,category:cat,cat,price,stock,emoji,description:desc,
     images:imageUrls,badge:'new',
     seller_name:currentUser?.name||'My Store',seller:currentUser?.name||'My Store',
-    seller_phone:currentUser?.phone||'',seller_id:currentUser?.email||currentUser?.phone||'',
+    seller_phone:currentUser?.phone||'',seller_id:profile.id,
     active:true,
   }]).select().single();
   if(error){toast('Failed to save product: '+error.message,'r');return;}
@@ -1889,7 +1892,7 @@ async function sendAIMessage(){
   if(!msg)return;
   input.value='';
   const box=document.getElementById('ai-messages');
-  box.innerHTML+=`<div style="background:#E0912A;border-radius:8px;padding:10px 12px;font-size:13px;color:#17222E;box-shadow:0 1px 4px rgba(0,0,0,.08);max-width:85%;align-self:flex-end;">${msg}</div>`;
+  const userBubble=document.createElement('div');userBubble.style.cssText='background:#E0912A;border-radius:8px;padding:10px 12px;font-size:13px;color:#17222E;box-shadow:0 1px 4px rgba(0,0,0,.08);max-width:85%;align-self:flex-end;';userBubble.textContent=msg;box.appendChild(userBubble);
   box.innerHTML+=`<div id="ai-typing" style="background:#fff;border-radius:8px;padding:10px 12px;font-size:13px;color:#78838D;max-width:85%;">Thinking…</div>`;
   box.scrollTop=box.scrollHeight;
   try{
@@ -1901,11 +1904,11 @@ async function sendAIMessage(){
     const data=await response.json();
     const reply=data.content?.[0]?.text||'Sorry, I could not get a response.';
     document.getElementById('ai-typing').remove();
-    box.innerHTML+=`<div style="background:#fff;border-radius:8px;padding:10px 12px;font-size:13px;color:#333;box-shadow:0 1px 4px rgba(0,0,0,.08);max-width:85%;">${reply}</div>`;
+    const replyBubble=document.createElement('div');replyBubble.style.cssText='background:#fff;border-radius:8px;padding:10px 12px;font-size:13px;color:#333;box-shadow:0 1px 4px rgba(0,0,0,.08);max-width:85%;';replyBubble.textContent=reply;box.appendChild(replyBubble);
     box.scrollTop=box.scrollHeight;
   }catch(e){
     document.getElementById('ai-typing').remove();
-    box.innerHTML+=`<div style="background:#fff;border-radius:8px;padding:10px 12px;font-size:13px;color:#C2452E;max-width:85%;">Something went wrong. Please try again.</div>`;
+    const errorBubble=document.createElement('div');errorBubble.style.cssText='background:#fff;border-radius:8px;padding:10px 12px;font-size:13px;color:#C2452E;max-width:85%;';errorBubble.textContent='Something went wrong. Please try again.';box.appendChild(errorBubble);
     box.scrollTop=box.scrollHeight;
   }
 }
