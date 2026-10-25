@@ -193,12 +193,26 @@ img{display:block;max-width:100%;}
 .breadcrumb a:hover{text-decoration:underline;}
 /* ── PRODUCT DETAIL ───────────────────────────────────────── */
 .detail-wrap{display:flex;gap:24px;padding:20px;background:var(--w);margin:16px 20px;border-radius:var(--r8);border:var(--border);box-shadow:var(--sh);}
-.detail-gallery{width:360px;flex-shrink:0;}
-.detail-main-img{width:100%;aspect-ratio:1;background:var(--bg2);border:var(--border);border-radius:var(--r8);display:flex;align-items:center;justify-content:center;font-size:130px;overflow:hidden;margin-bottom:8px;}
-.detail-main-img img{width:100%;height:100%;object-fit:contain;}
-.detail-thumbs{display:flex;gap:7px;}
-.detail-thumb{width:52px;height:52px;border:2px solid var(--bg3);border-radius:var(--r4);display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;overflow:hidden;}
-.detail-thumb:hover,.detail-thumb.active{border-color:var(--or);}
+.detail-gallery{width:min(43vw,500px);flex-shrink:0;}
+.detail-gallery-stage{position:relative;isolation:isolate;width:100%;aspect-ratio:1/1.04;overflow:hidden;border-radius:18px;background:radial-gradient(circle at 50% 42%,#fff9e6 0 25%,transparent 26%),linear-gradient(145deg,#f8c77b,#fa714c 58%,#e8ff61);}
+.detail-gallery-stage:before{content:'';position:absolute;inset:0;background:repeating-linear-gradient(45deg,transparent 0 27px,rgba(35,19,47,.07) 28px 30px,transparent 31px 55px);mask-image:linear-gradient(135deg,#000,transparent 78%);pointer-events:none;}
+.detail-gallery-card{position:absolute;left:50%;top:50%;width:66%;height:76%;overflow:hidden;border:6px solid #fff9ee;border-radius:12px;background:#fff9ee;box-shadow:0 24px 48px rgba(35,19,47,.22);transition:transform .38s cubic-bezier(.2,.8,.2,1),opacity .3s;}
+.detail-gallery-card img{width:100%;height:100%;object-fit:contain;background:#fff9ee;display:block;}
+.detail-gallery-card.active{z-index:3;transform:translate(-50%,-50%) rotate(-2deg);}
+.detail-gallery-card.previous{z-index:2;transform:translate(-115%,-47%) rotate(-10deg) scale(.78);opacity:.8;cursor:pointer;}
+.detail-gallery-card.next{z-index:2;transform:translate(15%,-49%) rotate(9deg) scale(.78);opacity:.82;cursor:pointer;}
+.detail-gallery-card.single{width:74%;height:80%;}
+.detail-gallery-empty{position:absolute;inset:0;display:grid;place-items:center;text-align:center;color:#23132f;}
+.detail-gallery-empty span{display:block;font-size:clamp(82px,12vw,144px);filter:drop-shadow(0 14px 9px rgba(35,19,47,.15));}
+.detail-gallery-empty small{display:block;margin-top:10px;font:800 9px/1 var(--font);letter-spacing:.16em;text-transform:uppercase;}
+.detail-gallery-arrow{position:absolute;z-index:5;top:50%;transform:translateY(-50%);width:40px;height:40px;border:0;border-radius:50%;background:#fff9ee;color:#23132f;box-shadow:0 5px 18px rgba(35,19,47,.18);font-size:22px;cursor:pointer;}
+.detail-gallery-arrow:hover{background:#e8ff61;}
+.detail-gallery-arrow.prev{left:14px;}.detail-gallery-arrow.next{right:14px;}
+.detail-gallery-count{position:absolute;z-index:4;right:14px;bottom:14px;background:#23132f;color:#fff9ee;padding:8px 10px;border-radius:4px;font-size:10px;font-weight:800;letter-spacing:.08em;}
+.detail-gallery-note{position:absolute;z-index:4;left:16px;bottom:15px;color:#23132f;font:700 11px/1.2 var(--font2);}
+.detail-thumbs{display:flex;gap:8px;padding:12px 2px 2px;overflow-x:auto;}
+.detail-thumb{width:58px;height:58px;flex:0 0 58px;border:2px solid #e5dcc8;border-radius:7px;background:#fff9ee;display:flex;align-items:center;justify-content:center;font-size:20px;cursor:pointer;overflow:hidden;padding:0;}
+.detail-thumb:hover,.detail-thumb.active{border-color:#ff5b35;box-shadow:0 0 0 2px rgba(255,91,53,.14);}
 .detail-thumb img{width:100%;height:100%;object-fit:cover;}
 .detail-info{flex:1;min-width:0;}
 .detail-title{font-size:22px;font-weight:400;line-height:1.3;margin-bottom:6px;}
@@ -1528,15 +1542,14 @@ function showProduct(id){
   activeProductId=id;prevBuyerView=currentBuyerView;currentBuyerView='detail';
   showBuyerSec('buyer-detail');
   const p=PRODUCTS.find(x=>x.id===id);if(!p)return;
-  const hasPics=p.images&&p.images.length;
-  const mainHtml=hasPics?`<img src="${p.images[0]}" style="width:100%;height:100%;object-fit:contain;"/>`:`<span style="font-size:130px;">${p.emoji}</span>`;
-  const thumbsHtml=(hasPics?p.images.slice(0,4):[p.emoji,p.emoji,p.emoji]).map((img,i)=>`<div class="detail-thumb ${i===0?'active':''}" onclick="swapImg(this,'${img}',${hasPics})">${hasPics?`<img src="${img}"/>`:`<span style="font-size:20px;">${img}</span>`}</div>`).join('');
+  const galleryImages=normalizeProductImages(p.images);
+  window.activeDetailGallery={images:galleryImages,emoji:p.emoji||'📦',name:p.name||'Product',index:0};
+  const galleryHtml=renderDetailGallery();
   document.getElementById('detail-crumb').innerHTML=`<a onclick="buyerHome()">Home</a> › <a onclick="filterCat('${p.cat}')">${getCat(p.cat)}</a> › ${p.name.slice(0,40)}…`;
   document.getElementById('detail-content').innerHTML=`
     <div class="detail-wrap">
       <div class="detail-gallery">
-        <div class="detail-main-img" id="detail-main">${mainHtml}</div>
-        <div class="detail-thumbs">${thumbsHtml}</div>
+        ${galleryHtml}
       </div>
       <div class="detail-info">
         <div style="font-size:12px;color:var(--b);margin-bottom:8px;"><a onclick="filterCat('${p.cat}')">${getCat(p.cat)}</a></div>
@@ -1564,7 +1577,24 @@ function showProduct(id){
     </div>
     <div class="reviews-sec"><div style="font-size:19px;font-weight:700;margin-bottom:8px;">Reviews</div><p style="font-size:13px;color:var(--ink3);">Customer reviews will appear here once the review service is connected.</p></div>`;
 }
-function swapImg(thumb,src,isReal){document.querySelectorAll('.detail-thumb').forEach(t=>t.classList.remove('active'));thumb.classList.add('active');const m=document.getElementById('detail-main');if(m)m.innerHTML=isReal?`<img src="${src}" style="width:100%;height:100%;object-fit:contain;"/>`:`<span style="font-size:130px;">${src}</span>`;}
+function escapeImageAttribute(value){return String(value).replace(/&/g,'&amp;').replace(/"/g,'&quot;').replace(/</g,'&lt;').replace(/>/g,'&gt;');}
+function renderDetailGallery(){
+  const gallery=window.activeDetailGallery;if(!gallery)return'';
+  const {images,emoji,name}=gallery;
+  const count=images.length;
+  const cards=count?(count===1?[0]:[-1,0,1]).map(offset=>{
+    const imageIndex=(gallery.index+offset+count)%count;
+    const state=offset===0?'active':offset<0?'previous':'next';
+    const single=count===1?' single':'';
+    const url=escapeImageAttribute(images[imageIndex]);
+    return `<div class="detail-gallery-card ${state}${single}" ${offset===0?'':'onclick="setDetailImage('+imageIndex+')"'}><img src="${url}" alt="${escapeImageAttribute(name)} — photo ${imageIndex+1}" decoding="async" fetchpriority="${offset===0?'high':'low'}" onerror="this.style.display='none';this.nextElementSibling.hidden=false"/><span class="detail-gallery-empty" hidden><span>${escapeImageAttribute(emoji)}</span><small>Photo unavailable</small></span></div>`;
+  }).join(''):`<div class="detail-gallery-empty"><div><span>${escapeImageAttribute(emoji)}</span><small>Seller photos coming soon</small></div></div>`;
+  const thumbs=count>1?`<div class="detail-thumbs" aria-label="Product photos">${images.map((url,index)=>`<button class="detail-thumb ${index===gallery.index?'active':''}" onclick="setDetailImage(${index})" aria-label="View photo ${index+1}"><img src="${escapeImageAttribute(url)}" alt="" loading="lazy" decoding="async" onerror="this.style.display='none';this.parentElement.textContent='📦'"/></button>`).join('')}</div>`:'';
+  return `<div class="detail-gallery-stage" id="detail-gallery-stage" role="region" tabindex="0" aria-label="${escapeImageAttribute(name)} photos" onkeydown="if(event.key==='ArrowLeft')stepDetailImage(-1);if(event.key==='ArrowRight')stepDetailImage(1)">${cards}${count>1?`<button class="detail-gallery-arrow prev" onclick="stepDetailImage(-1)" aria-label="Previous photo">‹</button><button class="detail-gallery-arrow next" onclick="stepDetailImage(1)" aria-label="Next photo">›</button>`:''}<span class="detail-gallery-note">${count?'A closer look':'A little more about this find'}</span>${count?`<span class="detail-gallery-count">${gallery.index+1} / ${count}</span>`:''}</div>${thumbs}`;
+}
+function setDetailImage(index){const gallery=window.activeDetailGallery;if(!gallery||!gallery.images.length)return;gallery.index=(index+gallery.images.length)%gallery.images.length;const el=document.querySelector('.detail-gallery');if(el)el.innerHTML=renderDetailGallery();}
+function stepDetailImage(amount){const gallery=window.activeDetailGallery;if(gallery)setDetailImage(gallery.index+amount);}
+function swapImg(thumb,src,isReal){if(isReal){const gallery=window.activeDetailGallery;const index=gallery?.images.indexOf(src)??-1;if(index>=0)setDetailImage(index);}}
 function changeQty(d){const el=document.getElementById('detail-qty');if(el)el.textContent=Math.max(1,Math.min(10,parseInt(el.textContent)+d));}
 function addDetailToCart(id){const qty=parseInt(document.getElementById('detail-qty')?.textContent)||1;const p=PRODUCTS.find(x=>x.id===id);if(!p)return;doAddToCart(p,qty);toast('✓ Added to cart','g');}
 function buyNow(id){addDetailToCart(id);buyerShowView('checkout');}
@@ -1676,10 +1706,22 @@ function handleProdFiles(files){
   const remaining=5-prodImages.length;
   Array.from(files).slice(0,remaining).forEach(file=>{
     if(file.size>5*1024*1024){toast('Image too large. Max 5MB.','r');return;}
-    const r=new FileReader();
-    r.onload=e=>{prodImages.push({url:e.target.result,name:file.name});renderProdPreviews();};
-    r.readAsDataURL(file);
+    optimizeProductImage(file).then(blob=>{
+      const r=new FileReader();
+      r.onload=e=>{prodImages.push({url:e.target.result,name:file.name,blob,type:blob.type});renderProdPreviews();};
+      r.readAsDataURL(blob);
+    }).catch(()=>toast('This image could not be prepared. Try another photo.','r'));
   });
+}
+async function optimizeProductImage(file){
+  if(!window.createImageBitmap||!document.createElement('canvas').toBlob)return file;
+  const bitmap=await createImageBitmap(file);
+  const scale=Math.min(1,1800/Math.max(bitmap.width,bitmap.height));
+  const canvas=document.createElement('canvas');
+  canvas.width=Math.max(1,Math.round(bitmap.width*scale));canvas.height=Math.max(1,Math.round(bitmap.height*scale));
+  canvas.getContext('2d',{alpha:true}).drawImage(bitmap,0,0,canvas.width,canvas.height);bitmap.close();
+  const optimized=await new Promise(resolve=>canvas.toBlob(resolve,'image/webp',.82));
+  return optimized&&(scale<1||optimized.size<file.size)?optimized:file;
 }
 function handleProdDrop(e){e.preventDefault();document.getElementById('prod-drop').classList.remove('over');handleProdFiles(e.dataTransfer.files);}
 function renderProdPreviews(){
@@ -1772,8 +1814,7 @@ async function addSellerProduct(){
   let imageUrls=[];
   for(let i=0;i<prodImages.length;i++){
     const img=prodImages[i];
-    const res=await fetch(img.url);
-    const blob=await res.blob();
+    const blob=img.blob||await(await fetch(img.url)).blob();
     const ext=blob.type.split('/')[1]||'jpg';
     const fileName=`products/${Date.now()}_${i}.${ext}`;
     const{data,error}=await sb.storage.from('product-images').upload(fileName,blob,{contentType:blob.type,upsert:false});
@@ -1813,10 +1854,11 @@ async function loadProductsFromSupabase(){
   }));
 }
 function normalizeProductImages(value){
-  if(Array.isArray(value))return value.filter(v=>typeof v==='string'&&v.trim());
+  const validUrl=v=>typeof v==='string'&&/^https?:\/\//i.test(v.trim());
+  if(Array.isArray(value))return value.filter(validUrl).map(v=>v.trim());
   if(typeof value!=='string'||!value.trim())return[];
-  try{const parsed=JSON.parse(value);if(Array.isArray(parsed))return parsed.filter(v=>typeof v==='string'&&v.trim());}catch(e){}
-  return[value.trim()];
+  try{const parsed=JSON.parse(value);if(Array.isArray(parsed))return parsed.filter(validUrl).map(v=>v.trim());return[];}catch(e){}
+  return validUrl(value)?[value.trim()]:[];
 }
 // AI CHAT
 function toggleAIChat(){
